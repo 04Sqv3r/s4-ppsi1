@@ -1,0 +1,64 @@
+@model IEnumerable<meow.Models.Wypozyczenie>
+    @{ ViewData["Title"] = "Raport finansowy"; }
+    <h2>Rejestr rozliczeń finansowych oraz windykacji opóźnień</h2>
+
+    <form method="get" action="/Reports/Index" style="background:#eee; padding:15px; border-radius:4px; display:flex; gap:15px; align-items:flex-end;">
+        <div>
+            <label style="margin-top:0;">Od dnia:</label>
+            <input type="date" name="data_od" value="@ViewBag.DataOd" style="width:auto;">
+        </div>
+        <div>
+            <label style="margin-top:0;">Do dnia:</label>
+            <input type="date" name="data_do" value="@ViewBag.DataDo" style="width:auto;">
+        </div>
+        <button type="submit" style="margin-top:0;">Generuj wykaz finansowy</button>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Klient</th>
+            <th>Tytuł oraz kod</th>
+            <th>Data wydania</th>
+            <th>Faktyczny Zwrot</th>
+            <th>Termin regulaminu</th>
+            <th>Zwłoka (Dni)</th>
+            <th>Naliczona opłata spóźnienia</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model.Any())
+        {
+        @foreach (var row in Model)
+        {
+        int dniSpoznienia = 0;
+        if (row.DataZwrotu.HasValue && row.DataZwrotu.Value.Date > row.DataPlanowanegoZwrotu.Date)
+        {
+        dniSpoznienia = (row.DataZwrotu.Value.Date - row.DataPlanowanegoZwrotu.Date).Days;
+        }
+        else if (!row.DataZwrotu.HasValue && DateTime.Today > row.DataPlanowanegoZwrotu.Date)
+        {
+        dniSpoznienia = (DateTime.Today - row.DataPlanowanegoZwrotu.Date).Days;
+        }
+
+        <tr>
+            <td>@row.Klient?.Nazwisko @row.Klient?.Imie</td>
+            <td>@row.Egzemplarz?.Book?.Tytul <br><small>(@row.Egzemplarz?.NumerInwentarzowy)</small></td>
+            <td>@row.DataWypozyczenia.ToString("yyyy-MM-dd")</td>
+            <td>@(row.DataZwrotu?.ToString("yyyy-MM-dd") ?? "Wypożyczona")</td>
+            <td>@row.DataPlanowanegoZwrotu.ToString("yyyy-MM-dd")</td>
+            <td style="@(dniSpoznienia > 0 ? "color:red; font-weight:bold;" : "")">@dniSpoznienia</td>
+            <td>@(row.Platnosc?.Kwota.ToString("F2") ?? "0.00") zł</td>
+        </tr>
+        }
+        <tr class="total-row">
+            <td colspan="6" style="text-align: right;">SUMARYCZNY PRZYCHÓD SYSTEMU :</td>
+            <td>@ViewBag.SumaGlobalna.ToString("F2") zł</td>
+        </tr>
+        }
+        else
+        {
+        <tr><td colspan="7" style="text-align:center; padding:30px;">Brak wpisów dla wybranego przedziału czasowego.</td></tr>
+        }
+        </tbody>
+    </table>

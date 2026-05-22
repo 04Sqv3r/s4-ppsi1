@@ -1,0 +1,176 @@
+@model meow.Models.Book
+@{ ViewData["Title"] = "Edytuj Produkt"; }
+
+<style>
+    .books-container {
+        max-width: 650px;
+        margin: 20px auto;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-top: 5px solid #234465;
+    }
+    .books-container h2 {
+        color: #234465;
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .form-section {
+        background: #f8fafc;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border-left: 4px solid #234465;
+    }
+    .shop-section {
+        border-left-color: #e67e22;
+    }
+    .form-section h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        color: #475569;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+        outline: none;
+    }
+    .form-control:focus {
+        border-color: #234465;
+    }
+    .current-cover {
+        width: 90px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-top: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        display: block;
+    }
+    .btn-submit {
+        background: #234465;
+        color: white;
+        border: none;
+        padding: 13px;
+        width: 100%;
+        font-size: 15px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn-submit:hover {
+        background: #172d44;
+    }
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 13px;
+    }
+</style>
+
+<div class="books-container">
+    <h2>Modyfikacja zasobu #@Model.Id 🐾</h2>
+
+    <form action="/Books/Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="form-section">
+            <h3>📖 Informacje wydawnicze</h3>
+            
+            <div class="form-group">
+                <label>Tytuł utworu</label>
+                <input type="text" name="Tytul" class="form-control" value="@Model.Tytul" required>
+            </div>
+
+            <div class="form-group">
+                <label>Autor / Pisarz</label>
+                <input type="text" name="Autor" class="form-control" value="@Model.Autor" required>
+            </div>
+
+            <div class="form-group">
+                <label>Kategoria / Gatunek</label>
+                <input type="text" name="Gatunek" class="form-control" value="@Model.Gatunek" required>
+            </div>
+
+            <div class="form-group">
+                <label>Rok wydania</label>
+                <input type="number" name="RokWydania" class="form-control" value="@Model.RokWydania" min="1000" max="@DateTime.Now.Year" required>
+            </div>
+
+            <div class="form-group">
+                <label>Wydawnictwo</label>
+                <input type="text" name="Wydawnictwo" class="form-control" value="@Model.Wydawnictwo">
+            </div>
+
+            <div class="form-group">
+                <label>Numer EAN (13 cyfr)</label>
+                <input type="text" name="EAN" class="form-control" value="@Model.EAN" maxlength="13" pattern="[0-9]{13}">
+            </div>
+
+            <div class="form-group">
+                <label>Opis / Recenzja wydawcy</label>
+                <textarea name="opis" class="form-control" rows="5">@Model.Opis</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Zmień grafikę okładki (Pozostaw puste, aby zachować obecną)</label>
+                <input type="file" name="noweZdjecie" class="form-control" accept="image/*">
+                
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <label style="margin-top:15px; font-size:11px; color:#777;">Aktualna okładka:</label>
+                    <img src="@Model.ImageUrl" class="current-cover" alt="Aktualna okładka" />
+                }
+            </div>
+        </div>
+
+        <div class="form-section shop-section">
+            <h3>🛒 Zarządzanie sprzedażą</h3>
+            
+            <div class="form-group">
+                <label>Cena okładkowa / sugerowana wydawcy (PLN)</label>
+                <input type="text" name="cenaOkladkaPub" class="form-control" 
+                       value="@Model.CenaOkladkowa?.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)">
+            </div>
+
+            <div class="form-group">
+                <label>Cena detaliczna sprzedaży (PLN)</label>
+                <input type="text" name="cenaSklep" class="form-control" 
+                       value="@Model.Cena?.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)">
+            </div>
+            
+            <div class="form-group">
+                <label>Stan magazynowy e-sklepu (Dostępne sztuki)</label>
+                <input type="number" name="IloscDoSprzedazy" class="form-control" value="@Model.IloscDoSprzedazy" min="0" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Zatwierdź zmiany w bazie 🐾</button>
+    </form>
+
+    <a href="/Books/Index" class="back-link">Anuluj zmiany i wróć</a>
+</div>

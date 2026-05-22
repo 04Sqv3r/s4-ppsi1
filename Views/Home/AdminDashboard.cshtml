@@ -1,0 +1,130 @@
+@{
+ViewData["Title"] = "Panel Zarządzania Administratora";
+}
+
+<style>
+    .dashboard-container {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin-top: 20px;
+    }
+    .welcome-banner {
+        background: #234465;
+        color: white;
+        padding: 30px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-bottom: 35px;
+    }
+    .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-left: 4px solid #234465;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .stat-card.shop { border-left-color: #ff5a00; }
+    .stat-card.rent { border-left-color: #16a34a; }
+    .stat-card.users { border-left-color: #f1c40f; }
+
+    .stat-number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #1e293b;
+        margin-top: 10px;
+    }
+    .stat-label {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .quick-actions-section {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+    .action-btn {
+        display: block;
+        text-align: center;
+        padding: 15px;
+        background: #f8fafc;
+        color: #234465;
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+    .action-btn:hover {
+        background: #234465;
+        color: white;
+        border-color: #234465;
+        transform: translateY(-2px);
+    }
+    .action-btn.primary-action {
+        background: #ff5a00;
+        color: white;
+        border-color: #ff5a00;
+    }
+    .action-btn.primary-action:hover {
+        background: #d04900;
+        border-color: #d04900;
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="welcome-banner">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 700;">🐾 Konsola Administracyjna </h1>
+        <p style="margin: 10px 0 0 0; color: #cbd5e1; font-size: 15px;">Witaj z powrotem, Administratorze! Masz pełny dostęp do zarządzania zasobami biblioteki oraz realizacji zamówień sklepu internetowego.</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-label">Tytuły w katalogu</span>
+            <span class="stat-number">@ViewBag.LiczbaKsiazek</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Wszystkie Egzemplarze</span>
+            <span class="stat-number">@ViewBag.LiczbaEgzemplarzy</span>
+        </div>
+        <div class="stat-card stat-card.rent">
+            <span class="stat-label">Książki u czytelników</span>
+            <span class="stat-number" style="color: #15803d;">@ViewBag.AktywneWypozyczenia</span>
+        </div>
+        <div class="stat-card stat-card.shop">
+            <span class="stat-label">Nowe zamówienia e-sklepu</span>
+            <span class="stat-number" style="color: #ff5a00;">@ViewBag.NoweZamowieniaSklep</span>
+        </div>
+        <div class="stat-card stat-card.users">
+            <span class="stat-label">Zarejestrowani Klienci</span>
+            <span class="stat-number" style="color: #b45309;">@ViewBag.LiczbaKlientow</span>
+        </div>
+    </div>
+
+    <div class="quick-actions-section">
+        <h3 style="color: #234465; margin: 0; font-size: 18px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">⚡ Szybkie akcje zarządcze</h3>
+        <div class="actions-grid">
+            <a href="/Rentals/Returns" class="action-btn primary-action">📦 Obsługa Zamówień i Paczek</a>
+            <a href="/Books/Create" class="action-btn">➕ Dodaj Nowy Produkt</a>
+            <a href="/Books" class="action-btn">📚 Zarządzaj Stanem Magazynowym</a>
+            <a href="/Clients/Index" class="action-btn">👥 Kartoteka Użytkowników</a>
+        </div>
+    </div>
+</div>

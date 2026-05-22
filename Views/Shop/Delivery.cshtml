@@ -1,0 +1,258 @@
+@{
+    ViewData["Title"] = "Dostawa i płatność";
+}
+
+<style>
+    .checkout-container {
+        display: flex;
+        gap: 30px;
+        margin-top: 30px;
+        font-family: sans-serif;
+    }
+
+    .main-section {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .checkout-block {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .summary-section {
+        flex: 1;
+        align-self: flex-start;
+    }
+
+    .summary-box {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .selection-tile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 2px solid #e2e8f0;
+        padding: 18px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .selection-tile:hover {
+        border-color: #cbd5e1;
+        background-color: #f8fafc;
+    }
+
+    .selection-tile.selected {
+        border-color: #ff5a00;
+        background-color: #fff7ed;
+    }
+
+    .btn-finalize {
+        background-color: #ff5a00;
+        color: white;
+        border: none;
+        padding: 14px;
+        width: 100%;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.2s;
+        text-decoration: none;
+        display: block;
+    }
+
+    .btn-finalize:hover {
+        background-color: #e04f00;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .blik-input-container {
+        margin-top: 10px;
+        padding: 15px;
+        background: #f8fafc;
+        border-radius: 6px;
+        border: 1px dashed #cbd5e1;
+    }
+</style>
+
+<div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; font-size: 14px; color: #94a3b8; font-weight: 500; margin-top: 10px;">
+    <span style="color: #64748b;">Koszyk</span> &nbsp;➔&nbsp; 
+    <span style="color: #64748b;">Kasa (Adres)</span> &nbsp;➔&nbsp; 
+    <span style="color: #ff5a00; font-weight: bold; border-bottom: 2px solid #ff5a00; padding-bottom: 15px;">Dostawa i Płatność</span> &nbsp;➔&nbsp; 
+    <span>Gotowe</span>
+</div>
+
+<form action="/Shop/FinalizeOrder" method="post" id="checkoutForm">
+    <input type="hidden" name="metodaDostawy" id="hiddenMethod" value="Dostawa do salonu " />
+    <input type="hidden" name="kosztDostawy" id="hiddenCost" value="0.00" />
+    <input type="hidden" name="metodaPlatnosci" id="hiddenPayment" value="BLIK" />
+
+    <div class="checkout-container">
+        
+        <div class="main-section">
+            
+            <div class="checkout-block">
+                <h2 style="font-size: 20px; color: #1e293b; margin-top: 0; margin-bottom: 20px; font-weight: 700;">1. Wybierz sposób dostawy</h2>
+
+                <div class="selection-tile delivery-tile selected" onclick="selectDelivery('Dostawa do salonu ', 0.00, this)">
+                    <div>
+                        <input type="radio" checked name="radioDelivery" style="margin-right: 12px; accent-color: #ff5a00;">
+                        <span style="font-weight: 600; color: #1e293b;">Dostawa do salonu stacjonarnego </span>
+                    </div>
+                    <div><span style="font-weight: bold; color: #16a34a;">0,00 zł</span></div>
+                </div>
+
+                <div class="selection-tile delivery-tile" onclick="selectDelivery('Paczkomaty InPost / Punkty Żabka', 8.99, this)">
+                    <div>
+                        <input type="radio" name="radioDelivery" style="margin-right: 12px; accent-color: #ff5a00;">
+                        <span style="font-weight: 600; color: #1e293b;">Automaty paczkowe i punkty odbioru (InPost, Żabka)</span>
+                    </div>
+                    <div><span style="font-weight: bold; color: #1e293b;">8,99 zł</span></div>
+                </div>
+
+                <div class="selection-tile delivery-tile" onclick="selectDelivery('Kurier DPD', 15.00, this)">
+                    <div>
+                        <input type="radio" name="radioDelivery" style="margin-right: 12px; accent-color: #ff5a00;">
+                        <span style="font-weight: 600; color: #1e293b;">Przesyłka kurierska - DPD szybka dostawa</span>
+                    </div>
+                    <div><span style="font-weight: bold; color: #1e293b;">15,00 zł</span></div>
+                </div>
+            </div>
+
+            <div class="checkout-block">
+                <h2 style="font-size: 20px; color: #1e293b; margin-top: 0; margin-bottom: 20px; font-weight: 700;">2. Wybierz metodę płatności</h2>
+
+                <div class="selection-tile payment-tile selected" onclick="selectPayment('BLIK', this)">
+                    <div>
+                        <input type="radio" checked name="radioPayment" style="margin-right: 12px; accent-color: #ff5a00;">
+                        <span style="font-weight: 600; color: #1e293b;">Szybka płatność BLIK</span>
+                    </div>
+                    <div><span style="font-size: 12px; color: #64748b; font-weight: bold;">Telefonem</span></div>
+                </div>
+
+                <div class="blik-input-container" id="blikField">
+                    <label style="font-size: 13px; color: #475569; display: block; margin-bottom: 8px; font-weight: 600;">Wpisz 6-cyfrowy kod BLIK:</label>
+                    <input type="text" name="kodBlik" placeholder="000-000" maxlength="6" style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 16px; letter-spacing: 3px; font-weight: bold; width: 120px; text-align: center;" />
+                </div>
+
+                <div class="selection-tile payment-tile" style="margin-top: 12px;" onclick="selectPayment('Karta płatnicza', this)">
+                    <div>
+                        <input type="radio" name="radioPayment" style="margin-right: 12px; accent-color: #ff5a00;">
+                        <span style="font-weight: 600; color: #1e293b;">Karta kredytowa / debetowa (Visa, Mastercard)</span>
+                    </div>
+                    <div><span style="font-size: 12px; color: #64748b;">Online</span></div>
+                </div>
+
+                <div class="selection-tile payment-tile" onclick="selectPayment('Za pobraniem', this)">
+                    <div>
+                        <input type="radio" name="radioPayment" style="margin-right: 12px; accent-color: #ff5a00;">
+                        <span style="font-weight: 600; color: #1e293b;">Płatność przy odbiorze (Za pobraniem)</span>
+                    </div>
+                    <div><span style="font-size: 12px; color: #64748b;">U kuriera</span></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="summary-section">
+            <div class="summary-box">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
+                    <span style="font-size: 18px; font-weight: 700; color: #1e293b;">Do zapłaty</span>
+                    <span style="font-size: 24px; font-weight: 700; color: #1e293b;" id="textTotal">@(((decimal)ViewBag.WartoscKoszyka).ToString("F2")) zł</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Wartość produktów</span>
+                    <span>@(((decimal)ViewBag.WartoscProduktow).ToString("F2")) zł</span>
+                </div>
+                <div class="summary-row" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
+                    <span>Koszt dostawy</span>
+                    <span id="textDeliveryCost" style="color: #16a34a; font-weight: 600;">0,00 zł</span>
+                </div>
+
+                <button type="submit" class="btn-finalize">
+                    Złóż zamówienie i zapłać 🐾
+                </button>
+
+                <p style="font-size: 11px; color: #94a3b8; line-height: 1.5; margin-top: 15px; text-align: center;">
+                    Klikając przycisk zatwierdzasz operację. Dane zostaną przetworzone, a stany magazynowe w bazie zostaną automatycznie zaktualizowane.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    // Cena bazowa pobrana z ViewBag
+    var baseProductPrice = parseFloat("@((decimal)ViewBag.WartoscProduktow)".replace(',', '.'));
+
+    // Funkcja zarządzania kafelkami DOSTAWY
+    function selectDelivery(methodName, cost, element) {
+        var tiles = document.querySelectorAll('.delivery-tile');
+        tiles.forEach(function(tile) {
+            tile.classList.remove('selected');
+            tile.querySelector('input[type="radio"]').checked = false;
+        });
+
+        element.classList.add('selected');
+        element.querySelector('input[type="radio"]').checked = true;
+
+        document.getElementById('hiddenMethod').value = methodName;
+        document.getElementById('hiddenCost').value = cost.toFixed(2);
+
+        var textDeliveryCost = document.getElementById('textDeliveryCost');
+        if (cost === 0) {
+            textDeliveryCost.innerText = "0,00 zł";
+            textDeliveryCost.style.color = "#16a34a";
+        } else {
+            textDeliveryCost.innerText = cost.toFixed(2).replace('.', ',') + " zł";
+            textDeliveryCost.style.color = "#1e293b";
+        }
+
+        var newTotal = baseProductPrice + cost;
+        document.getElementById('textTotal').innerText = newTotal.toFixed(2).replace('.', ',') + " zł";
+    }
+
+    // Funkcja zarządzania kafelkami PŁATNOŚCI
+    function selectPayment(paymentName, element) {
+        var tiles = document.querySelectorAll('.payment-tile');
+        tiles.forEach(function(tile) {
+            tile.classList.remove('selected');
+            tile.querySelector('input[type="radio"]').checked = false;
+        });
+
+        element.classList.add('selected');
+        element.querySelector('input[type="radio"]').checked = true;
+
+        document.getElementById('hiddenPayment').value = paymentName;
+
+        // Pokazywanie pola BLIK tylko gdy wybrano BLIK
+        var blikField = document.getElementById('blikField');
+        if (paymentName === 'BLIK') {
+            blikField.style.display = 'block';
+        } else {
+            blikField.style.display = 'none';
+        }
+    }
+</script>

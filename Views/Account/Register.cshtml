@@ -1,0 +1,267 @@
+@{ 
+    Layout = null; 
+}
+@model meow.Models.RegisterViewModel
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rejestracja Nowego Konta</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f4f6f9; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+        .box { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            width: 420px; 
+            box-sizing: border-box;
+        }
+        .logo-area {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #234465;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #234465;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 25px 0 10px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 5px;
+        }
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            display: block;
+            margin-top: 12px;
+        }
+        input { 
+            width: 100%; 
+            padding: 10px 14px; 
+            margin: 6px 0 14px 0; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: #ff5a00;
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        .row .col {
+            flex: 1;
+        }
+        button { 
+            width: 100%; 
+            padding: 13px; 
+            background: #ff5a00; /* Flagowy pomarańczowy meow */
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+        button:hover { 
+            background: #d04900; 
+        }
+        .alert-message { 
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px; 
+            text-align: center; 
+            font-weight: 600; 
+            margin-bottom: 20px; 
+        }
+        .error-style { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
+        .success-style { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+
+        .password-strength {
+            font-size: 11px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .nav-links {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 20px;
+            color: #64748b;
+        }
+        .nav-links a {
+            color: #234465;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .back-home-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+        .back-home-btn:hover {
+            background: #eddcd2;
+            color: #234465;
+            border-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <div class="logo-area"> E-Księgarnia 🐾</div>
+    <div class="subtitle">Załóż darmowe konto klienta</div>
+    
+    @if (ViewBag.Error != null) { 
+        <div class="alert-message error-style">@ViewBag.Error</div> 
+    }
+
+    @if (TempData["Message"] != null)
+    {
+        var msgType = TempData["MessageType"]?.ToString();
+        var styleClass = msgType == "success" ? "success-style" : "error-style";
+        <div class="alert-message @styleClass">
+            @TempData["Message"]
+        </div>
+    }
+
+    <form action="/Account/Register" method="post" onsubmit="return validateForm()">
+        @Html.AntiForgeryToken()
+        
+        <div class="section-title">Dane logowania</div>
+        
+        <label for="login">Login / Nazwa użytkownika</label>
+        <input type="text" name="login" id="login" placeholder="Min. 4 znaki" required minlength="4">
+        
+        <label for="haslo">Hasło dostępu</label>
+        <input type="password" name="haslo" id="haslo" placeholder="Min. 6 znaków" required onkeyup="checkPasswordStrength()">
+        <div id="password-status" class="password-strength"></div>
+
+        <div class="section-title">Informacje o profilu</div>
+
+        <div class="row">
+            <div class="col">
+                <label for="imie">Imię</label>
+                <input type="text" name="imie" id="imie" placeholder="Imię" required>
+            </div>
+            <div class="col">
+                <label for="nazwisko">Nazwisko</label>
+                <input type="text" name="nazwisko" id="nazwisko" placeholder="Nazwisko" required>
+            </div>
+        </div>
+
+        <label for="email">E-mail kontaktowy</label>
+        <input type="email" name="email" id="email" placeholder="np. nazwa@domena.pl" required>
+
+        <label for="telefon">Telefon komórkowy (opcjonalnie)</label>
+        <input type="text" name="telefon" id="telefon" placeholder="np. 500600700" maxlength="9">
+
+        <button type="submit">Zarejestruj się i utwórz profil</button>
+    </form>
+    
+    <div class="nav-links">
+        <a href="/Account/Login">Masz już konto? Zaloguj się</a>
+    </div>
+
+    <a href="/Shop" class="back-home-btn">
+         🏠 Wróć do przeglądania książek
+    </a>
+</div>
+
+<script>
+    // Automatyczne czyszczenie pól z niedozwolonych znaków w czasie rzeczywistym
+    document.getElementById('imie').addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '');
+    });
+
+    document.getElementById('nazwisko').addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '');
+    });
+
+    document.getElementById('telefon').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // Dynamiczny wskaźnik siły hasła
+    function checkPasswordStrength() {
+        var status = document.getElementById('password-status');
+        var password = document.getElementById('haslo').value;
+        
+        if (password.length === 0) {
+            status.innerHTML = "";
+            return;
+        }
+        
+        if (password.length < 6) {
+            status.innerHTML = "❌ Za krótkie (min. 6 znaków)";
+            status.style.color = "#ef4444";
+        } else if (password.match(/[A-Z]/) && password.match(/[0-9]/)) {
+            status.innerHTML = "✔ Silne hasło";
+            status.style.color = "#16a34a";
+        } else {
+            status.innerHTML = "⚠ Średnie (dodaj wielką literę i cyfrę)";
+            status.style.color = "#ea580c";
+        }
+    }
+
+    // Ostateczna weryfikacja przed wysłaniem formularza
+    function validateForm() {
+        var imie = document.getElementById('imie').value;
+        var nazwisko = document.getElementById('nazwisko').value;
+        var telefon = document.getElementById('telefon').value;
+        var haslo = document.getElementById('haslo').value;
+
+        if (imie.length < 2) { alert('Imię musi zawierać min. 2 znaki!'); return false; }
+        if (nazwisko.length < 2) { alert('Nazwisko musi zawierać min. 2 znaki!'); return false; }
+        if (haslo.length < 6) { alert('Hasło jest za krótkie!'); return false; }
+        
+        if (telefon.length > 0 && telefon.length !== 9) { 
+            alert('Numer telefonu musi składać się dokładnie z 9 cyfr!'); 
+            return false; 
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # 1. Kontener bazy danych MySQL
+  meow_db:
+    image: mysql:8.0.30
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wypozyczalnia_ksiazek
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - meow_network
+
+  # 2. Kontener aplikacji .NET
+  meow_app:
+    image: meow_web_app
+    container_name: meow-app-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=server=meow_db;port=3306;database=wypozyczalnia_ksiazek;user=root;password=rootpassword;
+    volumes:
+      - ./data-protection-keys:/root/.aspnet/DataProtection-Keys
+    depends_on:
+      - meow_db
+    networks:
+      - meow_network
+
+volumes:
+  mysql_data:
+
+networks:
+  meow_network:
+    driver: bridge

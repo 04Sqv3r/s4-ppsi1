@@ -1,0 +1,217 @@
+@model IEnumerable<meow.Models.Book>
+@{
+    ViewData["Title"] = "Strona Główna";
+}
+
+<style>
+    /* --- STYLIZACJA BANERU HERO --- */
+    .hero-banner {
+        background: linear-gradient(135deg, #234465 0%, #1a3047 100%);
+        color: white;
+        padding: 50px 40px;
+        border-radius: 8px;
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 20px rgba(35, 68, 101, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-text {
+        max-width: 550px;
+        z-index: 2;
+    }
+    .hero-text h1 {
+        font-size: 36px;
+        margin: 0 0 15px 0;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+    .hero-text p {
+        font-size: 16px;
+        color: #e0e0e0;
+        line-height: 1.6;
+        margin: 0 0 25px 0;
+    }
+    .hero-btn {
+        background-color: #e67e22;
+        color: white;
+        text-decoration: none;
+        padding: 12px 28px;
+        font-weight: bold;
+        border-radius: 4px;
+        display: inline-block;
+        transition: background 0.2s, transform 0.2s;
+    }
+    .hero-btn:hover {
+        background-color: #d35400;
+        transform: translateY(-2px);
+    }
+    .hero-paw {
+        font-size: 120px;
+        opacity: 0.1;
+        position: absolute;
+        right: 30px;
+        bottom: -2px;
+        user-select: none;
+    }
+
+    /* --- SEKCJE PRODUKTOWE --- */
+    .section-title {
+        font-size: 22px;
+        color: #234465;
+        font-weight: 700;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #eef2f5;
+        padding-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .section-title a {
+        font-size: 14px;
+        color: #e67e22;
+        text-decoration: none;
+    }
+    .section-title a:hover { text-decoration: underline; }
+
+    /* --- SIATKA KAFELKÓW (KATALOG) --- */
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 25px;
+        margin-bottom: 5px;
+    }
+    .book-card {
+        background: white;
+        border-radius: 6px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #f1f5f9;
+    }
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        border-color: #cbd5e1;
+    }
+    .card-img-box {
+        width: 100%;
+        height: 260px;
+        overflow: hidden;
+        border-radius: 4px;
+        margin-bottom: 12px;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card-cover {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .card-title {
+        font-size: 15px;
+        font-weight: bold;
+        margin: 0 0 4px 0;
+        color: #234465;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .card-author {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 5px;
+    }
+    .card-price {
+        font-size: 16px;
+        font-weight: bold;
+        color: #e67e22;
+    }
+    .card-badge {
+        font-size: 11px;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+        background: #f1f5f9;
+        color: #475569;
+    }
+    .badge-hybrid { background: #e0f2fe; color: #0369a1; }
+</style>
+
+<div class="hero-banner">
+    <div class="hero-text">
+        <h1>Witaj w E-Księgarni! 🐾</h1>
+        <p>Najlepsze opowieści, fascynujące kryminały i komiksy w jednym miejscu. Kupuj z dostawą do domu lub rezerwuj i wypożyczaj fizyczne egzemplarze w naszym salonie stacjonarnie!</p>
+        <a href="/Shop" class="hero-btn">Przeglądaj pełną ofertę</a>
+    </div>
+    <div class="hero-paw">🐾</div>
+</div>
+
+<div class="section-title">
+    <span>🔥 Gorące nowości w ofercie</span>
+    <a href="/Shop">Zobacz wszystkie &rarr;</a>
+</div>
+
+<div class="books-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var book in Model.Take(5)) // Wyświetlamy max 5 najnowszych pozycji
+        {
+            <a href="/Shop/Details/@book.Id" class="book-card">
+                <div class="card-img-box">
+                    @if (!string.IsNullOrEmpty(book.ImageUrl))
+                    {
+                        <img src="@book.ImageUrl" class="card-cover" alt="Okładka" />
+                    }
+                    else
+                    {
+                        <div style="font-size: 11px; color: #94a3b8; padding: 10px; text-align: center; font-weight: bold;">meow book 🐾</div>
+                    }
+                </div>
+                <h3 class="card-title">@book.Tytul</h3>
+                <div class="card-author">@book.Autor</div>
+                
+                <div class="card-footer">
+                    <div class="card-price">
+                        @(book.Cena > 0 ? $"{book.Cena.Value.ToString("F2")} zł" : "Biblioteka")
+                    </div>
+                    @if (book.Cena > 0 && book.IloscEgzemplarzy > 0)
+                    {
+                        <span class="card-badge badge-hybrid">Sklep + Czytelnia</span>
+                    }
+                    else if (book.Cena > 0)
+                    {
+                        <span class="card-badge">Tylko Kupno</span>
+                    }
+                    else
+                    {
+                        <span class="card-badge">Wypożycz</span>
+                    }
+                </div>
+            </a>
+        }
+    }
+    else
+    {
+        <div style="grid-column: span 5; text-align: center; padding: 40px; color: #94a3b8; font-weight: bold; background: white; border-radius: 6px;">
+            Brak produktów do wyświetlenia. Dodaj pierwsze książki w panelu admina!
+        </div>
+    }
+</div>

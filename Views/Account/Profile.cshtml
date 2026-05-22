@@ -1,0 +1,159 @@
+@model meow.Models.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Moje Konto";
+}
+
+<div class="container mt-4">
+    <h2>Witaj, @Model.CustomerName!</h2>
+    <p class="text-muted">Zarządzaj swoimi wypożyczeniami i zamówieniami w jednym miejscu.</p>
+
+    <hr class="my-4" />
+
+    @if (Model.TotalFinesAmount > 0)
+    {
+        <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 20px; border-radius: 6px; margin-bottom: 30px; font-family: sans-serif;">
+            <h3 style="color: #991b1b; margin: 0 0 10px 0; font-size: 18px;">⚠️ Masz nieopłacone naliczone opłaty (kary)!</h3>
+            <p style="color: #7f1d1d; font-size: 14px; margin: 0 0 15px 0;">
+                Łączna kwota do uregulowania w kasie biblioteki  wynosi: <strong style="font-size: 16px;">@Model.TotalFinesAmount.ToString("F2") zł</strong>
+            </p>
+        
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #374151;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #fee2e2; text-align: left;">
+                        <th style="padding: 8px 0; color: #991b1b;">Tytuł książki</th>
+                        <th style="padding: 8px 0; color: #991b1b; text-align: right;">Kwota opłaty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var fine in Model.Fines)
+                    {
+                        <tr style="border-bottom: 1px solid #fef2f2;">
+                            <td style="padding: 8px 0; font-style: italic;">@fine.BookTitle</td>
+                            <td style="padding: 8px 0; text-align: right; font-weight: bold; color: #b91c1c;">@fine.Amount.ToString("F2") zł</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <hr class="my-4" />
+    }
+
+    <h3 class="mb-3">📚 Twoje wypożyczenia z biblioteki</h3>
+    @if (Model.Rentals != null && Model.Rentals.Any())
+    {
+        <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; margin-bottom: 30px;">
+            <thead>
+                <tr style="background-color: #234465; color: white; text-align: left;">
+                    <th style="padding: 12px 15px;">ID</th>
+                    <th style="padding: 12px 15px;">Tytuł książki</th>
+                    <th style="padding: 12px 15px;">Data wypożyczenia</th>
+                    <th style="padding: 12px 15px;">Data zwrotu / Czas pozostały</th>
+                    <th style="padding: 12px 15px;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rental in Model.Rentals)
+                {
+                    <tr style="border-bottom: 1px solid #eef2f5; font-size: 14px;">
+                        <td style="padding: 12px 15px; font-weight: bold; color: #234465;">@rental.Id</td>
+                        <td style="padding: 12px 15px; font-weight: 500;">@rental.BookTitle</td>
+                        <td style="padding: 12px 15px;">@rental.RentalDate</td>
+                        <td style="padding: 12px 15px; font-weight: 500;">@rental.ReturnDate</td>
+                        <td style="padding: 12px 15px;">
+                            <span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; background-color: @(rental.Status == "Rozliczone" ? "#2ecc71" : (rental.Status == "Zaległość" ? "#e74c3c" : "#f39c12")); color: white;">
+                                @rental.Status
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div style="background-color: #d9edf7; color: #31708f; padding: 15px; border-radius: 4px; margin-bottom: 30px; font-size: 14px;">
+            Nie masz jeszcze żadnych wypożyczonych książek. 🐾
+        </div>
+    }
+
+    <hr class="my-5" />
+
+    <h3 class="mb-3">📦 Statusy Twoich paczek ze sklepu</h3>
+    @if (Model.Packages != null && Model.Packages.Any())
+    {
+        <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden;">
+            <thead>
+                <tr style="background-color: #234465; color: white; text-align: left;">
+                    <th style="padding: 12px 15px;">Numer</th>
+                    <th style="padding: 12px 15px;">Data złożenia</th>
+                    <th style="padding: 12px 15px;">Numer śledzenia</th>
+                    <th style="padding: 12px 15px;">Wartość</th>
+                    <th style="padding: 12px 15px;">Status</th>
+                    <th style="padding: 12px 15px; text-align: center;">Akcja</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var package in Model.Packages)
+                {
+                    <tr style="border-bottom: 1px solid #eef2f5; font-size: 14px;">
+                        <td style="padding: 12px 15px; font-weight: bold; color: #234465;">#@package.OrderId</td>
+                        <td style="padding: 12px 15px;">@package.OrderDate</td>
+                        <td style="padding: 12px 15px;"><code style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; color: #334155;">@package.TrackingNumber</code></td>
+                        <td style="padding: 12px 15px; font-weight: bold; color: #e67e22;">@package.TotalPrice.ToString("F2") zł</td>
+                        <td style="padding: 12px 15px;">
+                            <span style="background-color: #3498db; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">@package.Status</span>
+                        </td>
+                        <td style="padding: 12px 15px; text-align: center;">
+                            <button class="btn-szczegoly" onclick="toggleDetails('order-@package.OrderId')" style="background-color: #e67e22; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                                SZCZEGÓŁY ▾
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr id="order-@package.OrderId" style="display: none; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                        <td colspan="6" style="padding: 20px 30px;">
+                            <h4 style="margin: 0 0 15px 0; color: #234465; font-size: 15px; border-bottom: 2px solid #cbd5e1; padding-bottom: 5px;">Zakupione produkty w tej paczce:</h4>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                @foreach (var item in package.Items)
+                                {
+                                    <div style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 12px 20px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); border-left: 4px solid #234465;">
+                                        <div style="display: flex; align-items: center; gap: 15px;">
+                                            <img src="@item.ImageUrl" alt="Okładka" style="width: 45px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0;" />
+                                            <div>
+                                                <div style="font-weight: bold; color: #1e293b; font-size: 14px;">@item.Title</div>
+                                                <div style="font-size: 12px; color: #64748b;">autor: @item.Author</div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 40px; font-size: 14px; font-weight: 500;">
+                                            <div style="color: #64748b;">Ilość: <strong style="color: #1e293b;">@item.Quantity szt.</strong></div>
+                                            <div style="color: #64748b;">Cena: <strong style="color: #e67e22;">@item.Price.ToString("F2") zł</strong></div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div style="background-color: #d9edf7; color: #31708f; padding: 15px; border-radius: 4px; font-size: 14px;">
+            Nie masz obecnie żadnych zamówień w sklepie. 🐾
+        </div>
+    }
+</div>
+
+<script>
+    function toggleDetails(rowId) {
+        var row = document.getElementById(rowId);
+        if (row.style.display === "none" || row.style.display === "") {
+            row.style.display = "table-row";
+        } else {
+            row.style.display = "none";
+        }
+    }
+</script>

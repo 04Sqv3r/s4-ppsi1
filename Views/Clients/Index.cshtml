@@ -1,0 +1,10 @@
+@model IEnumerable<meow.Models.Klient>
+@{ ViewData["Title"] = "Lista Klientów"; }
+<h2>Klienci oraz Czytelnicy platformy </h2>
+<table>
+    <tr><th>ID</th><th>Klient (Nazwisko, Imię)</th><th>Adres E-mail</th><th>Telefon</th></tr>
+    @foreach (var k in Model)
+    {
+        <tr><td>@k.IdKlienta</td><td>@k.Nazwisko, @k.Imie</td><td>@k.Email</td><td>@k.Telefon</td></tr>
+    }
+</table>
