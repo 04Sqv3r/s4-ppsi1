@@ -1,0 +1,287 @@
+@{ ViewData["Title"] = "Dodaj Produkt"; }
+<style>
+    .books-container {
+        max-width: 650px;
+        margin: 20px auto;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-top: 5px solid #234465;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .books-container h2 {
+        color: #234465;
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .form-section {
+        background: #f8fafc;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border-left: 4px solid #234465;
+    }
+    .shop-section {
+        border-left-color: #e67e22;
+    }
+    .form-section h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #444;
+        font-size: 13px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: inherit;
+    }
+    .form-control:focus {
+        border-color: #234465;
+        outline: none;
+    }
+    .btn-submit {
+        background-color: #234465;
+        color: white;
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+        transition: background-color 0.2s;
+    }
+    .btn-submit:hover {
+        background-color: #1a3047;
+    }
+</style>
+
+<div class="books-container">
+    <h2>Dodaj nową książkę / produkt do </h2>
+
+    <form action="/Books/Create" method="post" enctype="multipart/form-data">
+        
+        <div class="form-section">
+            <h3>📖 Informacje ogólne</h3>
+            <div class="form-group">
+                <label>Tytuł utworu</label>
+                <input type="text" name="tytul" class="form-control" required placeholder="np. Wiedźmin: Ostatnie życzenie">
+            </div>
+            <div class="form-group">
+                <label>Autor / Twórca</label>
+                <input type="text" name="autor" class="form-control" required placeholder="np. Andrzej Sapkowski">
+            </div>
+            
+            <div class="form-group">
+                <label>Opis / streszczenie utworu (a'la Empik)</label>
+                <textarea name="opis" class="form-control" rows="5" placeholder="Wklej bogaty opis książki, który wyświetli się na karcie produktu klienta..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Zdjęcie okładki (JPG / PNG)</label>
+                <input type="file" name="zdjecieOkładki" class="form-control" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>Kategoria literacka</label>
+                <select name="gatunek" class="form-control" required>
+                    <option value="" disabled selected>-- Wybierz kategorię z listy --</option>
+                    
+                    <optgroup label="Polecane">
+                        <option value="Biografia">Biografie</option>
+                        <option value="Biznes">Biznes</option>
+                        <option value="Ezoteryka i parapsychologia">Ezoteryka i parapsychologia</option>
+                        <option value="Fantasy">Fantastyka</option>
+                        <option value="Historia">Historia</option>
+                        <option value="Komiksy, Mangy">Komiksy</option>
+                        <option value="Kryminał">Kryminał, sensacja, thriller</option>
+                        <option value="Kuchnia i diety">Kuchnia i diety</option>
+                    </optgroup>
+
+                    <optgroup label="Kultura i sztuka">
+                        <option value="Popularnonaukowa">Literatura faktu, reportaż</option>
+                        <option value="Literatura obcojęzyczna">Literatura obcojęzyczna</option>
+                        <option value="Literatura obyczajowa">Literatura obyczajowa</option>
+                        <option value="Powieść">Literatura piękna</option>
+                        <option value="Nauka języków">Nauka języków</option>
+                        <option value="Nauki humanistyczne">Nauki humanistyczne</option>
+                        <option value="Naukowe">Nauki ścisłe, medycyna</option>
+                        <option value="Podręczniki akademickie">Podręczniki akademickie</option>
+                        <option value="Podróże i turystyka">Podróże i turystyka</option>
+                        <option value="Poezja">Poezja i dramat</option>
+                        <option value="Poradniki">Poradniki</option>
+                        <option value="Prawo">Prawo</option>
+                        <option value="Religia">Religia</option>
+                        <option value="Sport">Sport</option>
+                    </optgroup>
+
+                    <optgroup label="Książki dla dzieci">
+                        <option value="Wiek-0-2">0-2 lat</option>
+                        <option value="Wiek-3-5">3-5 lat</option>
+                        <option value="Wiek-6-8">6-8 lat</option>
+                        <option value="Wiek-9-12">9-12 lat</option>
+                    </optgroup>
+
+                    <optgroup label="Rozwój osobisty">
+                        <option value="Emocje">Emocje i uczucia</option>
+                        <option value="Kariera">Kariera i sukces</option>
+                        <option value="Psychologia">Psychologia i motywacja</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Rok wydania</label>
+                <input type="number" name="rokWydania" class="form-control" value="2026" min="1000" max="2026">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>📋 Specyfikacja techniczna wydania</h3>
+            <div class="form-group">
+                <label>Tytuł originalny</label>
+                <input type="text" name="tytulOryginalny" class="form-control" placeholder="np. The Goal">
+            </div>
+            <div class="form-group">
+                <label>Seria wydawnicza</label>
+                <input type="text" name="seria" class="form-control" placeholder="np. Off-Campus">
+            </div>
+            <div class="form-group">
+                <label>Wydawnictwo</label>
+                <input type="text" name="wydawnictwo" class="form-control" placeholder="np. Wydawnictwo Zysk i S-ka">
+            </div>
+            <div class="form-group">
+                <label>Tłumaczenie (Imię i nazwisko tłumacza)</label>
+                <input type="text" name="tlumaczenie" class="form-control" placeholder="np. Mackiewicz Anna">
+            </div>
+            <div class="form-group">
+                <label>Język wydania</label>
+                <input type="text" name="jezykWydania" class="form-control" value="polski">
+            </div>
+            <div class="form-group">
+                <label>Język oryginału</label>
+                <input type="text" name="jezykOryginalu" class="form-control" placeholder="np. angielski">
+            </div>
+            <div class="form-group">
+                <label>Liczba stron</label>
+                <input type="number" name="liczbaStron" class="form-control" placeholder="432">
+            </div>
+            <div class="form-group">
+                <label>Numer wydania</label>
+                <input type="text" name="numerWydania" class="form-control" value="I">
+            </div>
+            <div class="form-group">
+                <label>Typ okładki</label>
+                <input type="text" name="okladkaTyp" class="form-control" placeholder="np. miękka / twarda">
+            </div>
+            <div class="form-group">
+                <label>Data premiery</label>
+                <input type="date" name="dataPremiery" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Data wydania</label>
+                <input type="date" name="dataWydania" class="form-control">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Wysokość [mm]</label>
+                    <input type="number" name="wysokoscMm" class="form-control" placeholder="200">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Głębokość [mm]</label>
+                    <input type="number" name="glebokoscMm" class="form-control" placeholder="15">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Szerokość [mm]</label>
+                    <input type="number" name="szerokoscMm" class="form-control" placeholder="140">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Numer EAN / ISBN</label>
+                <input type="text" name="ean" class="form-control" placeholder="9788383353708">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>🏢 Moduł Biblioteki (Wypożyczenia)</h3>
+            <div class="form-group">
+                <label>Liczba egzemplarzy do wypożyczeń</label>
+                <input type="number" name="iloscBiblioteka" id="ilosc" class="form-control" min="0" value="1" oninput="generujStany(this.value)" required>
+            </div>
+            <div id="stanyEgzemplarzy"></div>
+        </div>
+
+        <div class="form-section shop-section">
+            <h3 style="color:#e67e22;">🛒 Moduł Sklepu (Sprzedaż)</h3>
+            
+            <div class="form-group">
+                <label>Cena okładkowa / sugerowana wydawcy (PLN)</label>
+                <input type="number" name="cenaOkladkowa" step="0.01" min="0" class="form-control" placeholder="np. 59.99">
+            </div>
+
+            <div class="form-group">
+                <label>Cena detaliczna sprzedaży w  (PLN)</label>
+                <input type="number" name="cena" step="0.01" min="0" class="form-control" placeholder="np. 44.99 (0 = brak w sklepie)">
+            </div>
+
+            <div class="form-group">
+                <label>Ilość sztuk na magazynie sklepu</label>
+                <input type="number" name="iloscDoSprzedazy" class="form-control" min="0" value="0" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Wprowadź produkt do systemu  🐾</button>
+    </form>
+</div>
+
+<script>
+    function generujStany(ilosc){
+        const k = document.getElementById('stanyEgzemplarzy');
+        k.innerHTML = '';
+        if(ilosc == 0 || ilosc == '') return;
+
+        const stany = ["idealny", "bardzo dobry", "dobry", "zużyty", "zniszczony"];
+        for(let i=1; i<=ilosc; i++){
+            let l = document.createElement('label');
+            l.innerText = 'Ocena techniczna sztuki #' + i;
+            l.style.display = "block";
+            l.style.marginTop = "10px";
+            l.style.fontWeight = "600";
+            l.style.fontSize = "12px";
+            l.style.color = "#555";
+            let s = document.createElement('select');
+            s.name = 'stany';
+            s.className = 'form-control';
+            s.style.marginTop = "4px";
+            stany.forEach(st => {
+                let o = document.createElement('option');
+                o.value = st;
+                o.innerText = st.charAt(0).toUpperCase() + st.slice(1);
+                s.appendChild(o);
+            });
+            k.appendChild(l);
+            k.appendChild(s);
+        }
+    }
+    generujStany(1);
+</script>

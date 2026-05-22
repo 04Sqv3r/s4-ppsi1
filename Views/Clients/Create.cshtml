@@ -1,0 +1,29 @@
+@model meow.Models.Klient
+@{ ViewData["Title"] = "Dodaj Klienta"; }
+<h2>Rejestracja kartoteki profilu klienta</h2>
+
+<form action="/Clients/Create" method="post" onsubmit="return validateForm()">
+    <label>Imię</label>
+    <input type="text" name="imie" id="imie" required oninput="this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '')">
+
+    <label>Nazwisko</label>
+    <input type="text" name="nazwisko" id="nazwisko" required oninput="this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '')">
+
+    <label>E-mail kontaktowy</label>
+    <input type="email" name="email" required>
+
+    <label>Telefon komórkowy</label>
+    <input type="text" name="telefon" id="telefon" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+
+    <button type="submit">Utwórz konto klienta</button>
+</form>
+
+<script>
+    function validateForm() {
+        var imie = document.getElementById('imie').value;
+        var nazwisko = document.getElementById('nazwisko').value;
+        if (imie.length < 2) { alert('Imię musi zawierać min. 2 znaki!'); return false; }
+        if (nazwisko.length < 2) { alert('Nazwisko musi zawierać min. 2 znaki!'); return false; }
+        return true;
+    }
+</script>

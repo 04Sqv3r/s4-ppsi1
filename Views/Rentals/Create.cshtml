@@ -1,0 +1,58 @@
+@using meow.Models
+@{
+    ViewData["Title"] = "Wypożycz Książkę";
+}
+
+<h2>Panel rejestracji wypożyczenia</h2>
+
+@if (TempData["Message"] != null)
+{
+    var msgType = TempData["MessageType"]?.ToString();
+    var bgColor = msgType == "success" ? "#dcfce7" : "#fee2e2";
+    var textColor = msgType == "success" ? "#15803d" : "#ef4444";
+    
+    <div style="padding: 12px; background: @bgColor; color: @textColor; border-radius: 4px; margin: 20px 0; font-weight: 500;">
+        @TempData["Message"]
+    </div>
+}
+
+<form action="/Rentals/Create" method="post" style="max-width: 500px; display: flex; flex-direction: column; gap: 15px;">
+    <div>
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Wybierz aktywnego klienta</label>
+        <select name="id_klient" style="width: 100%; padding: 8px;" required>
+            <option value="">-- Wybierz profil --</option>
+            @if (ViewBag.Klienci != null)
+            {
+                foreach (var k in (List<Klient>)ViewBag.Klienci)
+                {
+                    <option value="@k.IdKlienta">@k.Nazwisko @k.Imie</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div>
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Wybierz wolny fizyczny egzemplarz</label>
+        <select name="id_egzemplarz" style="width: 100%; padding: 8px;" required>
+            <option value="">-- Wybierz pozycję --</option>
+            @if (ViewBag.DostepneEgzemplarze != null)
+            {
+                foreach (var e in (List<Egzemplarz>)ViewBag.DostepneEgzemplarze)
+                {
+                    <option value="@e.IdEgzemplarza">
+                        @e.Book?.Tytul - [@e.Stan] (@e.NumerInwentarzowy)
+                    </option>
+                }
+            }
+        </select>
+    </div>
+
+    <div>
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Data operacji wygenerowania</label>
+        <input type="date" name="data_wypozyczenia" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" style="width: 100%; padding: 8px;" required>
+    </div>
+
+    <button type="submit" style="background: #234465; color: white; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+        Zatwierdź wydanie książki
+    </button>
+</form>
