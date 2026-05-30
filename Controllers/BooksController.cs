@@ -7,6 +7,8 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using meow.Services;
+using Qdrant.Client.Grpc;
 
 namespace meow.Controllers
 {[MeowAuthorize("Admin")]
@@ -14,6 +16,7 @@ namespace meow.Controllers
     {
         private readonly LibraryDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly VectorSearchService _vectorService;
 
      
         private readonly string[] _wszystkieGatunki = new[] { 
@@ -25,11 +28,13 @@ namespace meow.Controllers
             "Wiek-0-2", "Wiek-3-5", "Wiek-6-8", "Wiek-9-12", "Emocje", "Kariera", "Psychologia"
         };
 
-        public BooksController(LibraryDbContext context, IWebHostEnvironment webHostEnvironment) 
-        { 
-            _context = context; 
-            _webHostEnvironment = webHostEnvironment;
-        }
+        public BooksController(LibraryDbContext context, IWebHostEnvironment webHostEnvironment, VectorSearchService vectorService)
+{
+    _context = context;
+    _webHostEnvironment = webHostEnvironment;
+    _vectorService = vectorService;
+}
+
 
         // ==========================================================
         // 1. WIDOK GŁÓWNY PANELU ADMINISTRATORA
@@ -38,7 +43,8 @@ namespace meow.Controllers
         {
             if (HttpContext.Session.GetString("User") == null) return RedirectToAction("Login", "Account");
 
-            var books = _context.Books.Include(b => b.Egzemplarze).ToList();
+            var testVector = _vectorService.GenerateVector("test");
+            Console.WriteLine($"Utworzono wektor! Rozmiar: {testVector.Length}");
             
             ViewBag.AktywneWypozyczenia = _context.Wypozyczenia
                 .Where(w => w.DataZwrotu == null && w.IdEgzemplarz != null)
@@ -47,7 +53,9 @@ namespace meow.Controllers
 
             ViewBag.Gatunki = _wszystkieGatunki;
             ViewBag.Stany = new[] { "idealny", "bardzo dobry", "dobry", "zużyty", "zniszczony" };
-
+            var books = _context.Books
+                .Include(b => b.Egzemplarze)
+                .ToList();
             return View(books);
         }
 
@@ -81,7 +89,7 @@ namespace meow.Controllers
         }
         [HttpPost]
         [MeowAuthorize]
-        public IActionResult Create(Book book, int ilosc, string[] stany, IFormFile zdjecieOkładki)
+        public async Task<IActionResult> Create(Book book, int ilosc, string[] stany, IFormFile zdjecieOkładki)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -107,6 +115,8 @@ namespace meow.Controllers
 
                 _context.Books.Add(book);
                 _context.SaveChanges();
+
+                await _vectorService.UpsertBook(book.Id, book.Tytul, book.Opis ?? "");
 
                 if (ilosc > 0)
                 {
