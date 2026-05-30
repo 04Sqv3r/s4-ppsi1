@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using meow.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddSession(options => {
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddSingleton<VectorSearchService>();
 var app = builder.Build();
 
 
