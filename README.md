@@ -12,28 +12,28 @@ docker compose up --build
 - Swagger API: http://localhost:5000/swagger
 - MySQL: port 3307 | Redis: port 6379
 
-## Zagadnienia projektowe (20/20)
+## Zagadnienia projektowe
 
-| Zagadnienie | Implementacja |
-|-------------|---------------|
-| MVC | ASP.NET Core MVC |
-| Framework CSS | Bootstrap 5 |
-| Baza danych | MySQL + EF Core |
-| Cache | Redis (`BookCatalogCacheService`) |
-| Dependency manager | NuGet |
-| HTML / CSS / JS | Widoki Razor + własne style + skrypty |
-| Routing | Konwencja `{controller}/{action}/{id?}` |
-| ORM | Entity Framework Core |
-| Uwierzytelnianie | Sesje + BCrypt + JWT API |
-| Lokalizacja | PL/EN — `IStringLocalizer`, przełącznik w menu |
-| Mailing | MailKit — potwierdzenie zamówienia (`EmailService`) |
-| Formularze | Rejestracja, checkout, panel admina |
-| Interakcje async | Live search — `fetch` → `/api/books` |
-| Konsumpcja API | Ollama (AI) |
-| Publikacja API | REST + Swagger `/swagger` |
-| RWD | `responsive.css` + media queries |
-| Logger | `ILogger` + `appsettings.json` |
-| Deployment | Docker + `DEPLOY.md` + CI GitHub Actions |
+| Zagadnienie | Status | Implementacja |
+|-------------|--------|---------------|
+| MVC | ✅ | ASP.NET Core MVC |
+| Framework CSS | ✅ | Bootstrap 5 |
+| Baza danych | ✅ | MySQL + EF Core |
+| Cache | ✅ | Redis (`BookCatalogCacheService`) |
+| Dependency manager | ✅ | NuGet |
+| HTML / CSS / JS | ✅ | Widoki Razor + własne style + skrypty |
+| Routing | ✅ | Konwencja `{controller}/{action}/{id?}` |
+| ORM | ✅ | Entity Framework Core |
+| Uwierzytelnianie | ✅ | Sesje + BCrypt + JWT API |
+| Lokalizacja | 🟡 | PL/EN — większość widoków; część pól admina nadal po polsku |
+| Mailing | 🟡 | MailKit (`EmailService`) — bez SMTP loguje w konsoli |
+| Formularze | ✅ | Rejestracja, checkout, panel admina |
+| Interakcje async | ✅ | Live search — `fetch` → `/api/books` |
+| Konsumpcja API | 🔜 | Szkic `AITest` → Ollama (wymaga osobnej instalacji, nie ma w `docker-compose`) |
+| Publikacja API | ✅ | REST + Swagger `/swagger` |
+| RWD | ✅ | `responsive.css` + media queries |
+| Logger | ✅ | `ILogger` + `appsettings.json` |
+| Deployment | 🟡 | Docker + `DEPLOY.md` + CI — hosting jeszcze do wdrożenia |
 
 ## REST API
 
