@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Http;
-using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
+using meow.Resources;
 
 namespace meow.Models
 {
@@ -10,13 +12,11 @@ namespace meow.Models
     {
         private readonly string? _wymaganaRola;
 
-        // Konstruktor bez parametrów - dla zwykłego zalogowania
         public MeowAuthorizeAttribute()
         {
             _wymaganaRola = null;
         }
 
-        // Konstruktor z parametrem - dla konkretnej roli, np. [MeowAuthorize("Admin")]
         public MeowAuthorizeAttribute(string wymaganaRola)
         {
             _wymaganaRola = wymaganaRola;
@@ -28,21 +28,19 @@ namespace meow.Models
             var uzytkownik = session.GetString("User");
             var rolaUzytkownika = session.GetString("UserRole");
 
-            // 1. Brak zalogowania -> idziesz do ekranu logowania
             if (string.IsNullOrEmpty(uzytkownik))
             {
                 context.Result = new RedirectToActionResult("Login", "Account", null);
                 return;
             }
 
-            // 2. Jesteś zalogowany, ale sprawdzamy rolę (np. szukamy Admina, a Ty jesteś Klientem)
             if (!string.IsNullOrEmpty(_wymaganaRola) && rolaUzytkownika != _wymaganaRola)
             {
-                // Tutaj możemy bezpiecznie użyć standardowego TempData, bo sesja działa!
                 var controller = context.Controller as Controller;
                 if (controller != null)
                 {
-                    controller.TempData["Message"] = "Brak uprawnień do wyświetlenia tej sekcji! 🐾";
+                    var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<SharedResources>>();
+                    controller.TempData["Message"] = localizer["Msg_NoPermission"].Value;
                     controller.TempData["MessageType"] = "error";
                 }
 

@@ -1,5 +1,5 @@
 @model IEnumerable<meow.Models.Book>
-@{ ViewData["Title"] = "Zarządzanie asortymentem"; }
+@{ ViewData["Title"] = Localizer["Books_IndexTitle"]; }
 
 <style>
     .admin-panel { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 20px; font-family: sans-serif; }
@@ -19,7 +19,6 @@
     .btn-delete { background: #e74c3c; color: white; }
     .btn-delete:hover { background: #c0392b; }
     
-    /* Style dla rozwijanej sekcji egzemplarzy biblioteki */
     .egzemplarze-row { background: #f8fafc; display: none; }
     .egzemplarze-box { padding: 20px; border: 1px solid #e2e8f0; border-radius: 6px; margin: 10px 0; background: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
     .egz-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f1f5f9; }
@@ -31,8 +30,8 @@
 
 <div class="admin-panel">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="color: #234465; margin: 0; font-weight: 700;">🐾 Panel Asortymentu </h2>
-        <a href="/Books/Create" style="background: #27ae60; color: white; padding: 10px 18px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 14px; transition: background 0.2s;">➕ Dodaj nowy produkt</a>
+        <h2 style="color: #234465; margin: 0; font-weight: 700;">@Localizer["Books_PanelTitle"]</h2>
+        <a href="/Books/Create" style="background: #27ae60; color: white; padding: 10px 18px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 14px; transition: background 0.2s;">@Localizer["Books_AddNew"]</a>
     </div>
 
     @if (TempData["Message"] != null)
@@ -45,12 +44,12 @@
     <table class="admin-table">
         <thead>
             <tr>
-                <th>Okładka</th>
-                <th>Tytuł / Autor</th>
-                <th>Gatunek</th>
-                <th>Magazyn E-Sklep</th>
-                <th>Wypożyczalnia</th>
-                <th style="text-align: center;">Akcje</th>
+                <th>@Localizer["Books_ColCover"]</th>
+                <th>@Localizer["Books_ColTitleAuthor"]</th>
+                <th>@Localizer["Books_ColGenre"]</th>
+                <th>@Localizer["Books_ColShop"]</th>
+                <th>@Localizer["Books_ColLibrary"]</th>
+                <th style="text-align: center;">@Localizer["Books_ColActions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -64,7 +63,7 @@
                         }
                         else
                         {
-                            <div class="thumb" style="display:flex; align-items:center; justify-content:center; font-size:9px; color:#999; text-align:center;">Brak okładki</div>
+                            <div class="thumb" style="display:flex; align-items:center; justify-content:center; font-size:9px; color:#999; text-align:center;">@Localizer["Books_NoCover"]</div>
                         }
                     </td>
                     <td>
@@ -74,27 +73,27 @@
                     <td><span style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; color: #475569; font-size: 13px;">@book.Gatunek</span></td>
                     <td>
                         <span class="badge badge-shop">
-                            @(book.Cena > 0 ? $"{book.Cena.Value.ToString("F2")} zł" : "0.00 zł") — @book.IloscDoSprzedazy szt.
+                            @(book.Cena > 0 ? $"{book.Cena.Value.ToString("F2")} {Localizer["Common_Currency"]}" : $"0.00 {Localizer["Common_Currency"]}") — @book.IloscDoSprzedazy @Localizer["Common_Pcs"]
                         </span>
                     </td>
                     <td>
                         <span class="badge badge-lib" onclick="toggleEgzemplarze(@book.Id)">
-                            📚 @book.IloscEgzemplarzy szt. (zarządzaj ↓)
+                            📚 @book.IloscEgzemplarzy @Localizer["Common_Pcs"] @Localizer["Books_ManageCopies"]
                         </span>
                     </td>
                     <td style="text-align: center;">
-                        <a href="/Books/Edit/@book.Id" class="btn-action btn-edit">⚙ Edytuj produkt</a>
+                        <a href="/Books/Edit/@book.Id" class="btn-action btn-edit">@Localizer["Books_EditProduct"]</a>
                     </td>
                 </tr>
 
                 <tr id="egz-row-@book.Id" class="egzemplarze-row">
                     <td colspan="6">
                         <div class="egzemplarze-box">
-                            <h4 style="margin-top: 0; margin-bottom: 12px; color: #234465; font-size: 14px;">📋 Fizyczne egzemplarze w bibliotece dla: <em>"@book.Tytul"</em></h4>
+                            <h4 style="margin-top: 0; margin-bottom: 12px; color: #234465; font-size: 14px;">@Localizer["Books_CopiesFor"] <em>"@book.Tytul"</em></h4>
                             
                             @if (!book.Egzemplarze.Any())
                             {
-                                <p style="color: #94a3b8; font-size: 13px; margin: 0;">Brak zarejestrowanych sztuk w systemie wypożyczalni dla tej książki.</p>
+                                <p style="color: #94a3b8; font-size: 13px; margin: 0;">@Localizer["Books_NoCopies"]</p>
                             }
                             else
                             {
@@ -104,14 +103,14 @@
                                     
                                     <div class="egz-item">
                                         <div class="egz-info">
-                                            Kod: <strong>@egz.NumerInwentarzowy</strong> 
+                                            @Localizer["Books_CopyCode"] <strong>@egz.NumerInwentarzowy</strong> 
                                             @if (czyWypozyczony)
                                             {
-                                                <span style="color: #ef4444; font-weight: bold; margin-left: 10px;">🔴 Aktualnie wypożyczona</span>
+                                                <span style="color: #ef4444; font-weight: bold; margin-left: 10px;">@Localizer["Books_CopyBorrowed"]</span>
                                             }
                                             else
                                             {
-                                                <span style="color: #10b981; font-weight: bold; margin-left: 10px;">🟢 Na półce</span>
+                                                <span style="color: #10b981; font-weight: bold; margin-left: 10px;">@Localizer["Books_CopyOnShelf"]</span>
                                             }
                                         </div>
 
@@ -123,17 +122,17 @@
                                                     {
                                                         foreach (var st in ViewBag.Stany)
                                                         {
-                                                            <option value="@st" selected="@(st == egz.Stan ? "selected" : null)">@st</option>
+                                                            <option value="@st" selected="@(st == egz.Stan ? "selected" : null)">@meow.Services.LocalizationHelper.CopyCondition(Localizer, st)</option>
                                                         }
                                                     }
                                                 </select>
-                                                <button type="submit" class="btn-action btn-save">Zapisz stan</button>
+                                                <button type="submit" class="btn-action btn-save">@Localizer["Books_SaveState"]</button>
                                             </form>
 
                                             <a href="/Books/UsunEgzemplarz/@egz.IdEgzemplarza" 
                                                class="btn-action btn-delete" 
-                                               onclick="return confirm('Czy na pewno chcesz usunąć ten fizyczny egzemplarz biblioteczny?');">
-                                                Usuń
+                                               onclick="return confirm('@Localizer["Books_DeleteCopyConfirm"]');">
+                                                @Localizer["Cart_Remove"]
                                             </a>
                                         </div>
                                     </div>
@@ -148,7 +147,6 @@
 </div>
 
 <script>
-    // Skrypt sterujący rozwijaniem poszczególnych zasobów bibliotecznych
     function toggleEgzemplarze(bookId) {
         var row = document.getElementById("egz-row-" + bookId);
         if (row.style.display === "table-row") {

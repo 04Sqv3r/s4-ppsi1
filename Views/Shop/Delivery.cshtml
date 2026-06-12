@@ -1,5 +1,6 @@
 @{
-    ViewData["Title"] = "Dostawa i płatność";
+    ViewData["Title"] = Localizer["Checkout_Title"];
+    var currency = Localizer["Common_Currency"].Value;
 }
 
 <style>
@@ -96,10 +97,10 @@
 </style>
 
 <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; font-size: 14px; color: #94a3b8; font-weight: 500; margin-top: 10px;">
-    <span style="color: #64748b;">Koszyk</span> &nbsp;➔&nbsp; 
-    <span style="color: #64748b;">Kasa (Adres)</span> &nbsp;➔&nbsp; 
-    <span style="color: #ff5a00; font-weight: bold; border-bottom: 2px solid #ff5a00; padding-bottom: 15px;">Dostawa i Płatność</span> &nbsp;➔&nbsp; 
-    <span>Gotowe</span>
+    <span style="color: #64748b;">@Localizer["Checkout_StepCart"]</span> &nbsp;➔&nbsp; 
+    <span style="color: #64748b;">@Localizer["Delivery_StepAddress"]</span> &nbsp;➔&nbsp; 
+    <span style="color: #ff5a00; font-weight: bold; border-bottom: 2px solid #ff5a00; padding-bottom: 15px;">@Localizer["Delivery_StepPayment"]</span> &nbsp;➔&nbsp; 
+    <span>@Localizer["Checkout_StepDone"]</span>
 </div>
 
 <form action="/Shop/FinalizeOrder" method="post" id="checkoutForm">
@@ -112,63 +113,63 @@
         <div class="main-section">
             
             <div class="checkout-block">
-                <h2 style="font-size: 20px; color: #1e293b; margin-top: 0; margin-bottom: 20px; font-weight: 700;">1. Wybierz sposób dostawy</h2>
+                <h2 style="font-size: 20px; color: #1e293b; margin-top: 0; margin-bottom: 20px; font-weight: 700;">@Localizer["Delivery_SelectMethod"]</h2>
 
                 <div class="selection-tile delivery-tile selected" onclick="selectDelivery('Dostawa do salonu ', 0.00, this)">
                     <div>
                         <input type="radio" checked name="radioDelivery" style="margin-right: 12px; accent-color: #ff5a00;">
-                        <span style="font-weight: 600; color: #1e293b;">Dostawa do salonu stacjonarnego </span>
+                        <span style="font-weight: 600; color: #1e293b;">@Localizer["Delivery_StorePickup"]</span>
                     </div>
-                    <div><span style="font-weight: bold; color: #16a34a;">0,00 zł</span></div>
+                    <div><span style="font-weight: bold; color: #16a34a;">0,00 @currency</span></div>
                 </div>
 
                 <div class="selection-tile delivery-tile" onclick="selectDelivery('Paczkomaty InPost / Punkty Żabka', 8.99, this)">
                     <div>
                         <input type="radio" name="radioDelivery" style="margin-right: 12px; accent-color: #ff5a00;">
-                        <span style="font-weight: 600; color: #1e293b;">Automaty paczkowe i punkty odbioru (InPost, Żabka)</span>
+                        <span style="font-weight: 600; color: #1e293b;">@Localizer["Delivery_ParcelLocker"]</span>
                     </div>
-                    <div><span style="font-weight: bold; color: #1e293b;">8,99 zł</span></div>
+                    <div><span style="font-weight: bold; color: #1e293b;">8,99 @currency</span></div>
                 </div>
 
                 <div class="selection-tile delivery-tile" onclick="selectDelivery('Kurier DPD', 15.00, this)">
                     <div>
                         <input type="radio" name="radioDelivery" style="margin-right: 12px; accent-color: #ff5a00;">
-                        <span style="font-weight: 600; color: #1e293b;">Przesyłka kurierska - DPD szybka dostawa</span>
+                        <span style="font-weight: 600; color: #1e293b;">@Localizer["Delivery_Courier"]</span>
                     </div>
-                    <div><span style="font-weight: bold; color: #1e293b;">15,00 zł</span></div>
+                    <div><span style="font-weight: bold; color: #1e293b;">15,00 @currency</span></div>
                 </div>
             </div>
 
             <div class="checkout-block">
-                <h2 style="font-size: 20px; color: #1e293b; margin-top: 0; margin-bottom: 20px; font-weight: 700;">2. Wybierz metodę płatności</h2>
+                <h2 style="font-size: 20px; color: #1e293b; margin-top: 0; margin-bottom: 20px; font-weight: 700;">@Localizer["Delivery_SelectPayment"]</h2>
 
                 <div class="selection-tile payment-tile selected" onclick="selectPayment('BLIK', this)">
                     <div>
                         <input type="radio" checked name="radioPayment" style="margin-right: 12px; accent-color: #ff5a00;">
-                        <span style="font-weight: 600; color: #1e293b;">Szybka płatność BLIK</span>
+                        <span style="font-weight: 600; color: #1e293b;">@Localizer["Delivery_Blik"]</span>
                     </div>
-                    <div><span style="font-size: 12px; color: #64748b; font-weight: bold;">Telefonem</span></div>
+                    <div><span style="font-size: 12px; color: #64748b; font-weight: bold;">@Localizer["Delivery_BlikPhone"]</span></div>
                 </div>
 
                 <div class="blik-input-container" id="blikField">
-                    <label style="font-size: 13px; color: #475569; display: block; margin-bottom: 8px; font-weight: 600;">Wpisz 6-cyfrowy kod BLIK:</label>
+                    <label style="font-size: 13px; color: #475569; display: block; margin-bottom: 8px; font-weight: 600;">@Localizer["Delivery_BlikCode"]</label>
                     <input type="text" name="kodBlik" placeholder="000-000" maxlength="6" style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 16px; letter-spacing: 3px; font-weight: bold; width: 120px; text-align: center;" />
                 </div>
 
                 <div class="selection-tile payment-tile" style="margin-top: 12px;" onclick="selectPayment('Karta płatnicza', this)">
                     <div>
                         <input type="radio" name="radioPayment" style="margin-right: 12px; accent-color: #ff5a00;">
-                        <span style="font-weight: 600; color: #1e293b;">Karta kredytowa / debetowa (Visa, Mastercard)</span>
+                        <span style="font-weight: 600; color: #1e293b;">@Localizer["Delivery_Card"]</span>
                     </div>
-                    <div><span style="font-size: 12px; color: #64748b;">Online</span></div>
+                    <div><span style="font-size: 12px; color: #64748b;">@Localizer["Delivery_CardOnline"]</span></div>
                 </div>
 
                 <div class="selection-tile payment-tile" onclick="selectPayment('Za pobraniem', this)">
                     <div>
                         <input type="radio" name="radioPayment" style="margin-right: 12px; accent-color: #ff5a00;">
-                        <span style="font-weight: 600; color: #1e293b;">Płatność przy odbiorze (Za pobraniem)</span>
+                        <span style="font-weight: 600; color: #1e293b;">@Localizer["Delivery_COD"]</span>
                     </div>
-                    <div><span style="font-size: 12px; color: #64748b;">U kuriera</span></div>
+                    <div><span style="font-size: 12px; color: #64748b;">@Localizer["Delivery_CODCourier"]</span></div>
                 </div>
             </div>
 
@@ -177,25 +178,25 @@
         <div class="summary-section">
             <div class="summary-box">
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
-                    <span style="font-size: 18px; font-weight: 700; color: #1e293b;">Do zapłaty</span>
-                    <span style="font-size: 24px; font-weight: 700; color: #1e293b;" id="textTotal">@(((decimal)ViewBag.WartoscKoszyka).ToString("F2")) zł</span>
+                    <span style="font-size: 18px; font-weight: 700; color: #1e293b;">@Localizer["Delivery_Total"]</span>
+                    <span style="font-size: 24px; font-weight: 700; color: #1e293b;" id="textTotal">@(((decimal)ViewBag.WartoscKoszyka).ToString("F2")) @currency</span>
                 </div>
 
                 <div class="summary-row">
-                    <span>Wartość produktów</span>
-                    <span>@(((decimal)ViewBag.WartoscProduktow).ToString("F2")) zł</span>
+                    <span>@Localizer["Checkout_ProductsValue"]</span>
+                    <span>@(((decimal)ViewBag.WartoscProduktow).ToString("F2")) @currency</span>
                 </div>
                 <div class="summary-row" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
-                    <span>Koszt dostawy</span>
-                    <span id="textDeliveryCost" style="color: #16a34a; font-weight: 600;">0,00 zł</span>
+                    <span>@Localizer["Checkout_DeliveryCost"]</span>
+                    <span id="textDeliveryCost" style="color: #16a34a; font-weight: 600;">0,00 @currency</span>
                 </div>
 
                 <button type="submit" class="btn-finalize">
-                    Złóż zamówienie i zapłać 🐾
+                    @Localizer["Delivery_Submit"]
                 </button>
 
                 <p style="font-size: 11px; color: #94a3b8; line-height: 1.5; margin-top: 15px; text-align: center;">
-                    Klikając przycisk zatwierdzasz operację. Dane zostaną przetworzone, a stany magazynowe w bazie zostaną automatycznie zaktualizowane.
+                    @Localizer["Delivery_Disclaimer"]
                 </p>
             </div>
         </div>
@@ -204,10 +205,9 @@
 </form>
 
 <script>
-    // Cena bazowa pobrana z ViewBag
     var baseProductPrice = parseFloat("@((decimal)ViewBag.WartoscProduktow)".replace(',', '.'));
+    var currencyLabel = '@currency';
 
-    // Funkcja zarządzania kafelkami DOSTAWY
     function selectDelivery(methodName, cost, element) {
         var tiles = document.querySelectorAll('.delivery-tile');
         tiles.forEach(function(tile) {
@@ -223,18 +223,17 @@
 
         var textDeliveryCost = document.getElementById('textDeliveryCost');
         if (cost === 0) {
-            textDeliveryCost.innerText = "0,00 zł";
+            textDeliveryCost.innerText = "0,00 " + currencyLabel;
             textDeliveryCost.style.color = "#16a34a";
         } else {
-            textDeliveryCost.innerText = cost.toFixed(2).replace('.', ',') + " zł";
+            textDeliveryCost.innerText = cost.toFixed(2).replace('.', ',') + " " + currencyLabel;
             textDeliveryCost.style.color = "#1e293b";
         }
 
         var newTotal = baseProductPrice + cost;
-        document.getElementById('textTotal').innerText = newTotal.toFixed(2).replace('.', ',') + " zł";
+        document.getElementById('textTotal').innerText = newTotal.toFixed(2).replace('.', ',') + " " + currencyLabel;
     }
 
-    // Funkcja zarządzania kafelkami PŁATNOŚCI
     function selectPayment(paymentName, element) {
         var tiles = document.querySelectorAll('.payment-tile');
         tiles.forEach(function(tile) {
@@ -247,7 +246,6 @@
 
         document.getElementById('hiddenPayment').value = paymentName;
 
-        // Pokazywanie pola BLIK tylko gdy wybrano BLIK
         var blikField = document.getElementById('blikField');
         if (paymentName === 'BLIK') {
             blikField.style.display = 'block';

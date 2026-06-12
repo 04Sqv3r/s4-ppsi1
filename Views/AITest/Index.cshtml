@@ -1,15 +1,15 @@
-@{ ViewBag.Title = "AI Test"; }
+@{ ViewBag.Title = Localizer["AITest_Heading"]; }
 
-<h2>Test AI Asystenta</h2>
+<h2>@Localizer["AITest_Heading"]</h2>
 
 <form action="/AITest/Ask" method="post">
-    <textarea name="prompt" rows="3" cols="50" placeholder="Zadaj pytanie...">@ViewBag.LastPrompt</textarea>
+    <textarea name="prompt" rows="3" cols="50" placeholder="@Localizer["AITest_Placeholder"]">@ViewBag.LastPrompt</textarea>
     <br />
-    <button type="submit">Wyślij do Mistral</button>
+    <button type="submit">@Localizer["AITest_Submit"]</button>
 </form>
 
 <hr/>
-<h3>Odpowiedź AI:</h3>
+<h3>@Localizer["AITest_Response"]</h3>
 <div style="border: 1px solid #ccc; padding: 10px;">
     @ViewBag.AIResponse
 </div>

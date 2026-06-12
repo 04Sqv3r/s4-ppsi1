@@ -1,5 +1,5 @@
 @model meow.Models.Book
-@{ ViewData["Title"] = "Edytuj Produkt"; }
+@{ ViewData["Title"] = Localizer["BooksEdit_Title"].Value; }
 
 <style>
     .books-container {
@@ -93,84 +93,84 @@
 </style>
 
 <div class="books-container">
-    <h2>Modyfikacja zasobu #@Model.Id 🐾</h2>
+    <h2>@string.Format(Localizer["BooksEdit_Heading"].Value, Model.Id) 🐾</h2>
 
     <form action="/Books/Edit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="Id" value="@Model.Id" />
 
         <div class="form-section">
-            <h3>📖 Informacje wydawnicze</h3>
+            <h3>@Localizer["BooksEdit_SectionPub"]</h3>
             
             <div class="form-group">
-                <label>Tytuł utworu</label>
+                <label>@Localizer["BooksEdit_LabelTitle"]</label>
                 <input type="text" name="Tytul" class="form-control" value="@Model.Tytul" required>
             </div>
 
             <div class="form-group">
-                <label>Autor / Pisarz</label>
+                <label>@Localizer["BooksEdit_LabelAuthor"]</label>
                 <input type="text" name="Autor" class="form-control" value="@Model.Autor" required>
             </div>
 
             <div class="form-group">
-                <label>Kategoria / Gatunek</label>
+                <label>@Localizer["BooksEdit_LabelGenre"]</label>
                 <input type="text" name="Gatunek" class="form-control" value="@Model.Gatunek" required>
             </div>
 
             <div class="form-group">
-                <label>Rok wydania</label>
+                <label>@Localizer["BooksEdit_LabelYear"]</label>
                 <input type="number" name="RokWydania" class="form-control" value="@Model.RokWydania" min="1000" max="@DateTime.Now.Year" required>
             </div>
 
             <div class="form-group">
-                <label>Wydawnictwo</label>
+                <label>@Localizer["BooksEdit_LabelPublisher"]</label>
                 <input type="text" name="Wydawnictwo" class="form-control" value="@Model.Wydawnictwo">
             </div>
 
             <div class="form-group">
-                <label>Numer EAN (13 cyfr)</label>
+                <label>@Localizer["BooksEdit_LabelEan"]</label>
                 <input type="text" name="EAN" class="form-control" value="@Model.EAN" maxlength="13" pattern="[0-9]{13}">
             </div>
 
             <div class="form-group">
-                <label>Opis / Recenzja wydawcy</label>
+                <label>@Localizer["BooksEdit_LabelDesc"]</label>
                 <textarea name="opis" class="form-control" rows="5">@Model.Opis</textarea>
             </div>
 
             <div class="form-group">
-                <label>Zmień grafikę okładki (Pozostaw puste, aby zachować obecną)</label>
+                <label>@Localizer["BooksEdit_LabelCover"]</label>
                 <input type="file" name="noweZdjecie" class="form-control" accept="image/*">
                 
                 @if (!string.IsNullOrEmpty(Model.ImageUrl))
                 {
-                    <label style="margin-top:15px; font-size:11px; color:#777;">Aktualna okładka:</label>
-                    <img src="@Model.ImageUrl" class="current-cover" alt="Aktualna okładka" />
+                    <label style="margin-top:15px; font-size:11px; color:#777;">@Localizer["BooksEdit_CurrentCover"]</label>
+                    <img src="@Model.ImageUrl" class="current-cover" alt="@Localizer["BooksEdit_CurrentCover"]" />
                 }
             </div>
         </div>
 
         <div class="form-section shop-section">
-            <h3>🛒 Zarządzanie sprzedażą</h3>
+            <h3>@Localizer["BooksEdit_SectionShop"]</h3>
             
             <div class="form-group">
-                <label>Cena okładkowa / sugerowana wydawcy (PLN)</label>
+                <label>@Localizer["BooksEdit_LabelCoverPrice"]</label>
                 <input type="text" name="cenaOkladkaPub" class="form-control" 
                        value="@Model.CenaOkladkowa?.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)">
             </div>
 
             <div class="form-group">
-                <label>Cena detaliczna sprzedaży (PLN)</label>
+                <label>@Localizer["BooksEdit_LabelRetailPrice"]</label>
                 <input type="text" name="cenaSklep" class="form-control" 
                        value="@Model.Cena?.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)">
             </div>
             
             <div class="form-group">
-                <label>Stan magazynowy e-sklepu (Dostępne sztuki)</label>
+                <label>@Localizer["BooksEdit_LabelStock"]</label>
                 <input type="number" name="IloscDoSprzedazy" class="form-control" value="@Model.IloscDoSprzedazy" min="0" required>
             </div>
         </div>
 
-        <button type="submit" class="btn-submit">Zatwierdź zmiany w bazie 🐾</button>
+        <button type="submit" class="btn-submit">@Localizer["BooksEdit_Submit"]</button>
     </form>
 
-    <a href="/Books/Index" class="back-link">Anuluj zmiany i wróć</a>
+    <a href="/Books/Index" class="back-link">@Localizer["BooksEdit_Cancel"]</a>
 </div>

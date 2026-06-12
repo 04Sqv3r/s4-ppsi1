@@ -4,11 +4,11 @@
 @model meow.Models.RegisterViewModel
 
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rejestracja Nowego Konta</title>
+    <title>@Localizer["Register_Title"]</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -150,8 +150,9 @@
 </head>
 <body>
 <div class="box">
-    <div class="logo-area"> E-Księgarnia 🐾</div>
-    <div class="subtitle">Załóż darmowe konto klienta</div>
+    @await Html.PartialAsync("_LanguageSwitch")
+    <div class="logo-area">@Localizer["Nav_LogoShop"] 🐾</div>
+    <div class="subtitle">@Localizer["Register_Subtitle"]</div>
     
     @if (ViewBag.Error != null) { 
         <div class="alert-message error-style">@ViewBag.Error</div> 
@@ -169,48 +170,57 @@
     <form action="/Account/Register" method="post" onsubmit="return validateForm()">
         @Html.AntiForgeryToken()
         
-        <div class="section-title">Dane logowania</div>
+        <div class="section-title">@Localizer["Register_SectionLogin"]</div>
         
-        <label for="login">Login / Nazwa użytkownika</label>
-        <input type="text" name="login" id="login" placeholder="Min. 4 znaki" required minlength="4">
+        <label for="login">@Localizer["Register_LabelLogin"]</label>
+        <input type="text" name="login" id="login" placeholder="@Localizer["Register_PlaceholderLoginMin"]" required minlength="4">
         
-        <label for="haslo">Hasło dostępu</label>
-        <input type="password" name="haslo" id="haslo" placeholder="Min. 6 znaków" required onkeyup="checkPasswordStrength()">
+        <label for="haslo">@Localizer["Register_LabelPassword"]</label>
+        <input type="password" name="haslo" id="haslo" placeholder="@Localizer["Register_PlaceholderPasswordMin"]" required onkeyup="checkPasswordStrength()">
         <div id="password-status" class="password-strength"></div>
 
-        <div class="section-title">Informacje o profilu</div>
+        <div class="section-title">@Localizer["Register_SectionProfile"]</div>
 
         <div class="row">
             <div class="col">
-                <label for="imie">Imię</label>
-                <input type="text" name="imie" id="imie" placeholder="Imię" required>
+                <label for="imie">@Localizer["Register_LabelFirstName"]</label>
+                <input type="text" name="imie" id="imie" placeholder="@Localizer["Register_LabelFirstName"]" required>
             </div>
             <div class="col">
-                <label for="nazwisko">Nazwisko</label>
-                <input type="text" name="nazwisko" id="nazwisko" placeholder="Nazwisko" required>
+                <label for="nazwisko">@Localizer["Register_LabelLastName"]</label>
+                <input type="text" name="nazwisko" id="nazwisko" placeholder="@Localizer["Register_LabelLastName"]" required>
             </div>
         </div>
 
-        <label for="email">E-mail kontaktowy</label>
-        <input type="email" name="email" id="email" placeholder="np. nazwa@domena.pl" required>
+        <label for="email">@Localizer["Register_LabelEmail"]</label>
+        <input type="email" name="email" id="email" placeholder="@Localizer["Register_PlaceholderEmail"]" required>
 
-        <label for="telefon">Telefon komórkowy (opcjonalnie)</label>
-        <input type="text" name="telefon" id="telefon" placeholder="np. 500600700" maxlength="9">
+        <label for="telefon">@Localizer["Register_LabelPhone"]</label>
+        <input type="text" name="telefon" id="telefon" placeholder="@Localizer["Register_PlaceholderPhone"]" maxlength="9">
 
-        <button type="submit">Zarejestruj się i utwórz profil</button>
+        <button type="submit">@Localizer["Register_Submit"]</button>
     </form>
     
     <div class="nav-links">
-        <a href="/Account/Login">Masz już konto? Zaloguj się</a>
+        <a href="/Account/Login">@Localizer["Register_HasAccount"]</a>
     </div>
 
     <a href="/Shop" class="back-home-btn">
-         🏠 Wróć do przeglądania książek
+         🏠 @Localizer["Register_BackShop"]
     </a>
 </div>
 
 <script>
-    // Automatyczne czyszczenie pól z niedozwolonych znaków w czasie rzeczywistym
+    var messages = {
+        passwordTooShort: '@Localizer["Register_PasswordTooShort"]',
+        passwordStrong: '@Localizer["Register_PasswordStrong"]',
+        passwordMedium: '@Localizer["Register_PasswordMedium"]',
+        validationFirstName: '@Localizer["Register_ValidationFirstName"]',
+        validationLastName: '@Localizer["Register_ValidationLastName"]',
+        validationPassword: '@Localizer["Register_ValidationPassword"]',
+        validationPhone: '@Localizer["Register_ValidationPhone"]'
+    };
+
     document.getElementById('imie').addEventListener('input', function() {
         this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '');
     });
@@ -234,13 +244,13 @@
         }
         
         if (password.length < 6) {
-            status.innerHTML = "❌ Za krótkie (min. 6 znaków)";
+            status.innerHTML = messages.passwordTooShort;
             status.style.color = "#ef4444";
         } else if (password.match(/[A-Z]/) && password.match(/[0-9]/)) {
-            status.innerHTML = "✔ Silne hasło";
+            status.innerHTML = messages.passwordStrong;
             status.style.color = "#16a34a";
         } else {
-            status.innerHTML = "⚠ Średnie (dodaj wielką literę i cyfrę)";
+            status.innerHTML = messages.passwordMedium;
             status.style.color = "#ea580c";
         }
     }
@@ -252,12 +262,12 @@
         var telefon = document.getElementById('telefon').value;
         var haslo = document.getElementById('haslo').value;
 
-        if (imie.length < 2) { alert('Imię musi zawierać min. 2 znaki!'); return false; }
-        if (nazwisko.length < 2) { alert('Nazwisko musi zawierać min. 2 znaki!'); return false; }
-        if (haslo.length < 6) { alert('Hasło jest za krótkie!'); return false; }
+        if (imie.length < 2) { alert(messages.validationFirstName); return false; }
+        if (nazwisko.length < 2) { alert(messages.validationLastName); return false; }
+        if (haslo.length < 6) { alert(messages.validationPassword); return false; }
         
         if (telefon.length > 0 && telefon.length !== 9) { 
-            alert('Numer telefonu musi składać się dokładnie z 9 cyfr!'); 
+            alert(messages.validationPhone); 
             return false; 
         }
         return true;

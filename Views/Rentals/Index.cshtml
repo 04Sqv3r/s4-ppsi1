@@ -1,23 +1,23 @@
 @model IEnumerable<meow.Models.Wypozyczenie>
-    @{ ViewData["Title"] = "Raport finansowy"; }
-    <h2>Rejestr rozliczeń finansowych oraz windykacji opóźnień</h2>
+    @{ ViewData["Title"] = Localizer["RentalsIndex_Title"].Value; }
+    <h2>@Localizer["RentalsIndex_Title"]</h2>
 
     <form method="get" action="/Reports/Index" style="background:#eee; padding:15px; border-radius:4px; display:flex; gap:15px; align-items:flex-end;">
         <div>
-            <label style="margin-top:0;">Od dnia:</label>
+            <label style="margin-top:0;">@Localizer["RentalsIndex_From"]</label>
             <input type="date" name="data_od" value="@ViewBag.DataOd" style="width:auto;">
         </div>
         <div>
-            <label style="margin-top:0;">Do dnia:</label>
+            <label style="margin-top:0;">@Localizer["RentalsIndex_To"]</label>
             <input type="date" name="data_do" value="@ViewBag.DataDo" style="width:auto;">
         </div>
-        <button type="submit" style="margin-top:0;">Generuj wykaz finansowy</button>
+        <button type="submit" style="margin-top:0;">@Localizer["RentalsIndex_Generate"]</button>
     </form>
 
     <table>
         <thead>
         <tr>
-            <th>Klient</th>
+            <th>@Localizer["Rentals_ColReader"]</th>
             <th>Tytuł oraz kod</th>
             <th>Data wydania</th>
             <th>Faktyczny Zwrot</th>
@@ -58,7 +58,7 @@
         }
         else
         {
-        <tr><td colspan="7" style="text-align:center; padding:30px;">Brak wpisów dla wybranego przedziału czasowego.</td></tr>
+        <tr><td colspan="7" style="text-align:center; padding:30px;">@Localizer["RentalsIndex_NoEntries"]</td></tr>
         }
         </tbody>
     </table>

@@ -1,4 +1,4 @@
-@{ ViewData["Title"] = "Dodaj Produkt"; }
+@{ ViewData["Title"] = Localizer["BooksCreate_Title"].Value; }
 <style>
     .books-container {
         max-width: 650px;
@@ -77,12 +77,12 @@
 </style>
 
 <div class="books-container">
-    <h2>Dodaj nową książkę / produkt do </h2>
+    <h2>@Localizer["BooksCreate_Heading"] 🐾</h2>
 
     <form action="/Books/Create" method="post" enctype="multipart/form-data">
         
         <div class="form-section">
-            <h3>📖 Informacje ogólne</h3>
+            <h3>@Localizer["BooksCreate_SectionGeneral"]</h3>
             <div class="form-group">
                 <label>Tytuł utworu</label>
                 <input type="text" name="tytul" class="form-control" required placeholder="np. Wiedźmin: Ostatnie życzenie">
@@ -105,7 +105,7 @@
             <div class="form-group">
                 <label>Kategoria literacka</label>
                 <select name="gatunek" class="form-control" required>
-                    <option value="" disabled selected>-- Wybierz kategorię z listy --</option>
+                    <option value="" disabled selected>@Localizer["BooksCreate_GenrePlaceholder"]</option>
                     
                     <optgroup label="Polecane">
                         <option value="Biografia">Biografie</option>
@@ -157,7 +157,7 @@
         </div>
 
         <div class="form-section">
-            <h3>📋 Specyfikacja techniczna wydania</h3>
+            <h3>@Localizer["BooksCreate_SectionTechnical"]</h3>
             <div class="form-group">
                 <label>Tytuł originalny</label>
                 <input type="text" name="tytulOryginalny" class="form-control" placeholder="np. The Goal">
@@ -223,7 +223,7 @@
         </div>
 
         <div class="form-section">
-            <h3>🏢 Moduł Biblioteki (Wypożyczenia)</h3>
+            <h3>@Localizer["BooksCreate_SectionLibrary"]</h3>
             <div class="form-group">
                 <label>Liczba egzemplarzy do wypożyczeń</label>
                 <input type="number" name="iloscBiblioteka" id="ilosc" class="form-control" min="0" value="1" oninput="generujStany(this.value)" required>
@@ -232,7 +232,7 @@
         </div>
 
         <div class="form-section shop-section">
-            <h3 style="color:#e67e22;">🛒 Moduł Sklepu (Sprzedaż)</h3>
+            <h3 style="color:#e67e22;">@Localizer["BooksCreate_SectionShop"]</h3>
             
             <div class="form-group">
                 <label>Cena okładkowa / sugerowana wydawcy (PLN)</label>
@@ -250,7 +250,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn-submit">Wprowadź produkt do systemu  🐾</button>
+        <button type="submit" class="btn-submit">@Localizer["BooksCreate_Submit"]</button>
     </form>
 </div>
 

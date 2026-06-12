@@ -1,6 +1,6 @@
 @model IEnumerable<meow.Models.Wypozyczenie>
 @{
-    ViewData["Title"] = "Panel Zamówień Sklepu";
+    ViewData["Title"] = Localizer["RentalsOrders_Title"].Value;
 }
 
 <style>
@@ -16,8 +16,8 @@
 </style>
 
 <div class="orders-box">
-    <h2 style="color: #234465; font-size: 26px; font-weight: bold; margin-top: 0; margin-bottom: 5px;">📦 Panel Zamówień e-Księgarni </h2>
-    <p style="color: #64748b; margin-bottom: 25px; font-size: 14px;">Zarządzaj przesyłkami i zatwierdzaj nadania paczek do kurierów.</p>
+    <h2 style="color: #234465; font-size: 26px; font-weight: bold; margin-top: 0; margin-bottom: 5px;">📦 @Localizer["RentalsOrders_Title"]</h2>
+    <p style="color: #64748b; margin-bottom: 25px; font-size: 14px;">@Localizer["RentalsOrders_Desc"]</p>
 
     @if (TempData["Message"] != null)
     {
@@ -82,7 +82,7 @@
             }
             else
             {
-                <tr><td colspan="6" style="text-align: center; padding: 30px; color: #94a3b8;">Brak oczekujących zamówień wysyłkowych.</td></tr>
+                <tr><td colspan="6" style="text-align: center; padding: 30px; color: #94a3b8;">@Localizer["RentalsOrders_NoOrders"]</td></tr>
             }
         </tbody>
     </table>

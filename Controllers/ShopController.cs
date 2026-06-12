@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using meow.Models;
+using meow.Resources;
+using meow.Services;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -12,10 +15,20 @@ namespace meow.Controllers
     public class ShopController : Controller
     {
         private readonly LibraryDbContext _context;
+        private readonly EmailService _emailService;
+        private readonly ILogger<ShopController> _logger;
+        private readonly IStringLocalizer<SharedResources> _localizer;
 
-        public ShopController(LibraryDbContext context)
+        public ShopController(
+            LibraryDbContext context,
+            EmailService emailService,
+            ILogger<ShopController> logger,
+            IStringLocalizer<SharedResources> localizer)
         {
             _context = context;
+            _emailService = emailService;
+            _logger = logger;
+            _localizer = localizer;
         }
 
         // ==========================================================
@@ -35,13 +48,13 @@ namespace meow.Controllers
             if (!string.IsNullOrEmpty(gatunek))
             {
                 query = query.Where(b => b.Gatunek == gatunek);
-                ViewBag.WybranyGatunek = $"Książki z kategorii: {gatunek}";
+                ViewBag.WybranyGatunek = _localizer["Shop_Category", gatunek].Value;
             }
             else
             {
                 ViewBag.WybranyGatunek = string.IsNullOrEmpty(fraza)
-                    ? "Wszystkie pozycje w e-księgarni meow 🐾"
-                    : $"Wyniki wyszukiwania dla frazy: „{fraza}”";
+                    ? _localizer["Shop_AllBooks"].Value
+                    : _localizer["Shop_SearchResults", fraza].Value;
             }
 
             switch (sortowanie)
@@ -97,7 +110,7 @@ namespace meow.Controllers
             var book = _context.Books.FirstOrDefault(b => b.Id == bookId);
             if (book == null || book.Cena == 0 || book.IloscDoSprzedazy <= 0)
             {
-                TempData["Message"] = "Niestety, ten produkt nie jest obecnie dostępny w sprzedaży.";
+                TempData["Message"] = _localizer["Msg_ProductUnavailable"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Index");
             }
@@ -109,8 +122,7 @@ namespace meow.Controllers
 
             if (cartItems.Count(id => id == bookId) >= book.IloscDoSprzedazy)
             {
-                TempData["Message"] =
-                    $"Osiągnięto limit! W magazynie meow mamy już tylko {book.IloscDoSprzedazy} szt. tego produktu.";
+                TempData["Message"] = string.Format(_localizer["Msg_CartLimit"].Value, book.IloscDoSprzedazy);
                 TempData["MessageType"] = "warning";
                 return RedirectToAction("Details", new { id = bookId });
             }
@@ -118,7 +130,7 @@ namespace meow.Controllers
             cartItems.Add(bookId);
             HttpContext.Session.SetString("Koszyk", string.Join(",", cartItems));
 
-            TempData["Message"] = $"Pomyślnie dodano „{book.Tytul}” do Twojego koszyka! 🐾";
+            TempData["Message"] = string.Format(_localizer["Msg_AddedToCart"].Value, book.Tytul);
             TempData["MessageType"] = "success";
             return RedirectToAction("Details", new { id = bookId });
         }
@@ -160,8 +172,7 @@ namespace meow.Controllers
 
             if (dokonanoKorekty)
             {
-                TempData["Message"] =
-                    "Automatyczna korekta: Niektóre produkty w koszyku zostały wyprzedane lub ich ilość w magazynie uległa zmianie. 🐾";
+                TempData["Message"] = _localizer["Msg_CartAutoFix"].Value;
                 TempData["MessageType"] = "warning";
                 HttpContext.Session.SetString("Koszyk", string.Join(",", zaktualizowanyKoszyk));
                 bookIds = zaktualizowanyKoszyk;
@@ -197,7 +208,7 @@ namespace meow.Controllers
                 else HttpContext.Session.Remove("Koszyk");
             }
 
-            TempData["Message"] = "Zaktualizowano zawartość koszyka.";
+            TempData["Message"] = _localizer["Msg_CartUpdated"].Value;
             TempData["MessageType"] = "success";
             return RedirectToAction("Cart");
         }
@@ -277,7 +288,7 @@ namespace meow.Controllers
         // 8. OSTATECZNE FINALIZOWANIE ZAMÓWIENIA 
         // ==========================================================
         [HttpPost]
-        public IActionResult FinalizeOrder(string metodaDostawy, decimal kosztDostawy, string metodaPlatnosci,
+        public async Task<IActionResult> FinalizeOrder(string metodaDostawy, decimal kosztDostawy, string metodaPlatnosci,
             string? kodBlik)
         {
             var sessionUser = HttpContext.Session.GetString("User");
@@ -286,7 +297,7 @@ namespace meow.Controllers
             // 1. BEZPIECZEŃSTWO: Jeśli użytkownik nie jest zalogowany, nie pozwalamy na finalizację
             if (string.IsNullOrEmpty(sessionUser) || !sessionClientId.HasValue)
             {
-                TempData["Message"] = "Musisz być zalogowany, aby sfinalizować zamówienie.";
+                TempData["Message"] = _localizer["Msg_LoginRequired"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Login", "Account");
             }
@@ -297,7 +308,7 @@ namespace meow.Controllers
             var cartString = HttpContext.Session.GetString("Koszyk") ?? "";
             if (string.IsNullOrEmpty(cartString))
             {
-                TempData["Message"] = "Twój koszyk był pusty lub zamówienie zostało już przetworzone.";
+                TempData["Message"] = _localizer["Msg_CartEmpty"].Value;
                 TempData["MessageType"] = "warning";
                 return RedirectToAction("Index", "Home");
             }
@@ -311,11 +322,8 @@ namespace meow.Controllers
             {
                 Random random = new Random();
 
-                // Generujemy JEDEN wspólny numer paczki dla CAŁEGO zamówienia
                 string wspólnyNumerPaczki = "MEOW-" + random.Next(100000000, 999999999).ToString();
-
-                // Opcjonalnie: Tutaj możesz wyciągnąć zapisany adres z sesji, jeśli Twoja tabela Zamowienie go obsługuje:
-                // string? adres = HttpContext.Session.GetString("AdresDostawy");
+                var pozycjeDoMaila = new List<string>();
 
                 foreach (var kp in zakupioneGrupy)
                 {
@@ -324,8 +332,7 @@ namespace meow.Controllers
                     {
                         if (ksiazka.IloscDoSprzedazy < kp.Value)
                         {
-                            TempData["Message"] =
-                                $"Przepraszamy, produkt „{ksiazka.Tytul}” wyprzedał się w międzyczasie.";
+                            TempData["Message"] = string.Format(_localizer["Msg_ProductSoldOut"].Value, ksiazka.Tytul);
                             TempData["MessageType"] = "error";
                             transaction.Rollback();
                             return RedirectToAction("Cart");
@@ -345,23 +352,41 @@ namespace meow.Controllers
                             };
                             _context.Zamowienia.Add(noweZamowienie);
                         }
+
+                        pozycjeDoMaila.Add($"„{ksiazka.Tytul}” × {kp.Value} szt.");
                     }
                 }
 
                 _context.SaveChanges();
                 transaction.Commit();
 
-                // Czyszczenie danych po udanej transakcji
+                var klient = _context.Klienci.FirstOrDefault(k => k.IdKlienta == finalKlientId);
+                if (klient != null && !string.IsNullOrEmpty(klient.Email))
+                {
+                    try
+                    {
+                        await _emailService.SendOrderConfirmationAsync(
+                            klient.Email,
+                            $"{klient.Imie} {klient.Nazwisko}",
+                            wspólnyNumerPaczki,
+                            pozycjeDoMaila);
+                    }
+                    catch (Exception mailEx)
+                    {
+                        _logger.LogWarning(mailEx, "Zamówienie zapisane, ale e-mail nie został wysłany.");
+                    }
+                }
+
                 HttpContext.Session.Remove("Koszyk");
                 HttpContext.Session.Remove("AdresDostawy");
 
-                TempData["Message"] = "🐾 Sukces! Zamówienie zostało pomyślnie złożone w sklepie meow.";
+                TempData["Message"] = _localizer["Msg_OrderSuccess"].Value;
                 TempData["MessageType"] = "success";
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                TempData["Message"] = "Błąd systemu zamówień: " + ex.Message;
+                TempData["Message"] = string.Format(_localizer["Msg_OrderError"].Value, ex.Message);
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Cart");
             }

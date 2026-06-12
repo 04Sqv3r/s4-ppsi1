@@ -1,0 +1,15 @@
+services:
+  meow_app:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
+    restart: always
+
+  meow_db:
+    restart: always
+
+  meow_redis:
+    restart: always
+
+  meow_vector_db:
+    restart: always

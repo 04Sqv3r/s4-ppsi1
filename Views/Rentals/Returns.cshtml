@@ -1,11 +1,9 @@
 @model IEnumerable<meow.Models.Wypozyczenie>
 @{
-ViewData["Title"] = "Zarządzanie Zamówieniami i Wypożyczeniami";
+ViewData["Title"] = Localizer["Rentals_Title"];
 
-// Filtrowanie rezerwacji bibliotecznych oczekujących na półce
 var rezerwacje = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && w.DataPlanowanegoZwrotu <= w.DataWypozyczenia.AddDays(3)).ToList();
 
-// Filtrowanie aktywnych wypożyczeń – książki realnie przebywające w domach czytelników
 var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && w.DataPlanowanegoZwrotu > w.DataWypozyczenia.AddDays(3)).ToList();
 }
 
@@ -29,8 +27,8 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
 
 <div class="rentals-box">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h2 style="color: #234465; font-size: 26px; font-weight: bold; margin: 0;">📋 Zarządzanie Zamówieniami i Wypożyczeniami</h2>
-        <a href="/Rentals/Create" style="background: #f1c40f; color: #234465; text-decoration: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; font-size: 14px;">+ Nowe Wydanie</a>
+        <h2 style="color: #234465; font-size: 26px; font-weight: bold; margin: 0;">@Localizer["Rentals_Title"]</h2>
+        <a href="/Rentals/Create" style="background: #f1c40f; color: #234465; text-decoration: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; font-size: 14px;">@Localizer["Rentals_NewIssue"]</a>
     </div>
 
     @if (TempData["Message"] != null)
@@ -43,16 +41,16 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
     </div>
     }
 
-    <h3 style="color: #e67e22; font-size: 18px; margin-top: 25px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">🛍️ Rezerwacje do odebrania w salonie</h3>
+    <h3 style="color: #e67e22; font-size: 18px; margin-top: 25px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">@Localizer["Rentals_ReservationsTitle"]</h3>
     <table class="r-table">
         <thead>
         <tr>
-            <th>Czytelnik</th>
-            <th>Książka</th>
-            <th style="text-align: center;">Kod Inwentarzowy</th>
-            <th>Data rezerwacji</th>
-            <th>Ostateczny termin odbioru</th>
-            <th style="text-align: center;">Status akcji</th>
+            <th>@Localizer["Rentals_ColReader"]</th>
+            <th>@Localizer["Rentals_ColBook"]</th>
+            <th style="text-align: center;">@Localizer["Rentals_ColInventory"]</th>
+            <th>@Localizer["Rentals_ColReserveDate"]</th>
+            <th>@Localizer["Rentals_ColPickupDeadline"]</th>
+            <th style="text-align: center;">@Localizer["Rentals_ColActionStatus"]</th>
         </tr>
         </thead>
         <tbody>
@@ -61,19 +59,19 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
         foreach (var item in rezerwacje)
         {
         <tr>
-            <td style="font-weight: 600; color: #334155;">@(item.Klient != null ? $"{item.Klient.Nazwisko} {item.Klient.Imie}" : "Klient")</td>
-            <td>@(item.Egzemplarz?.Book?.Tytul ?? "Brak danych")</td>
+            <td style="font-weight: 600; color: #334155;">@(item.Klient != null ? $"{item.Klient.Nazwisko} {item.Klient.Imie}" : Localizer["Rentals_FallbackClient"].Value)</td>
+            <td>@(item.Egzemplarz?.Book?.Tytul ?? Localizer["Common_NoData"].Value)</td>
             <td style="text-align: center; font-family: monospace; font-weight: bold;">#@(item.Egzemplarz?.NumerInwentarzowy ?? "-")</td>
             <td>@item.DataWypozyczenia.ToString("dd.MM.yyyy")</td>
             <td>
                         <span style="@(DateTime.Today > item.DataPlanowanegoZwrotu ? "color: #ef4444; font-weight: bold;" : "color: #e67e22; font-weight: bold;")">
-                            @item.DataPlanowanegoZwrotu.ToString("dd.MM.yyyy") (Zarezerwowana)
+                            @item.DataPlanowanegoZwrotu.ToString("dd.MM.yyyy") @Localizer["Rentals_Reserved"]
                         </span>
             </td>
             <td style="text-align: center;">
                 <form action="/Rentals/ZatwierdzOdbior" method="post" style="margin: 0;">
                     <input type="hidden" name="id_wypozyczenie" value="@item.IdWypozyczenie" />
-                    <button type="submit" class="btn-deliver">➔ Wydaj klientowi książkę</button>
+                    <button type="submit" class="btn-deliver">@Localizer["Rentals_IssueBtn"]</button>
                 </form>
             </td>
         </tr>
@@ -81,21 +79,21 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
         }
         else
         {
-        <tr><td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">Brak nowych rezerwacji oczekujących na półce rezerwacji. 🐾</td></tr>
+        <tr><td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">@Localizer["Rentals_NoReservations"]</td></tr>
         }
         </tbody>
     </table>
 
-    <h3 style="color: #ff5a00; font-size: 18px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">📦 Historia zamówień internetowych (Wysyłka e-Sklep)</h3>
+    <h3 style="color: #ff5a00; font-size: 18px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">@Localizer["Rentals_ShopOrdersTitle"]</h3>
     <table class="r-table">
         <thead>
         <tr>
-            <th>Klient Zamawiający</th>
-            <th>Kontakt Klienta</th>
-            <th>Data Złożenia</th>
-            <th>Wartość</th>
-            <th>Status Przesyłki</th>
-            <th style="text-align: center;">Ekspedycja / Akcja</th>
+            <th>@Localizer["Rentals_ColCustomer"]</th>
+            <th>@Localizer["Rentals_ColContact"]</th>
+            <th>@Localizer["Rentals_ColOrderDate"]</th>
+            <th>@Localizer["Profile_ColValue"]</th>
+            <th>@Localizer["Rentals_ColShipmentStatus"]</th>
+            <th style="text-align: center;">@Localizer["Rentals_ColExpedition"]</th>
         </tr>
         </thead>
         <tbody>
@@ -110,33 +108,33 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
                 📞 @order.KlientTelefon
             </td>
             <td>@order.DataZlozenia</td>
-            <td style="font-weight: bold; color: #234465;">@order.WartoscZamowienia.ToString("F2") zł</td>
+            <td style="font-weight: bold; color: #234465;">@order.WartoscZamowienia.ToString("F2") @Localizer["Common_Currency"]</td>
             <td>
                 @if (order.Status == "W przygotowaniu" || order.Status == "Nowe")
                 {
-                <span class="badge badge-progress">⏳ @order.Status</span>
+                <span class="badge badge-progress">⏳ @meow.Services.LocalizationHelper.OrderStatus(Localizer, order.Status)</span>
                 }
                 else
                 {
-                <span class="badge badge-success">🚀 @order.Status</span>
+                <span class="badge badge-success">🚀 @meow.Services.LocalizationHelper.OrderStatus(Localizer, order.Status)</span>
                 }
             </td>
             <td style="text-align: center;">
                 <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
                     <button type="button" class="btn-details-admin" onclick="toggleAdminOrder('admin-order-@order.OrderId')">
-                        SKŁAD ▾
+                        @Localizer["Rentals_BtnContents"]
                     </button>
 
                     @if (order.Status == "W przygotowaniu" || order.Status == "Nowe")
                     {
                     <form action="/Rentals/ZatwierdzWysylke" method="post" style="margin: 0;">
                         <input type="hidden" name="trackingNumber" value="@order.TrackingNumber" />
-                        <button type="submit" class="btn-shop-ship">📦 Nadaj kurierem</button>
+                        <button type="submit" class="btn-shop-ship">@Localizer["Rentals_BtnShip"]</button>
                     </form>
                     }
                     else
                     {
-                    <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">Zrealizowane</span>
+                    <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">@Localizer["Rentals_Completed"]</span>
                     }
                 </div>
             </td>
@@ -146,15 +144,15 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
             <td colspan="6" style="padding: 15px 25px; text-align: left;">
                 <div style="background: white; padding: 15px; border-radius: 6px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); border-left: 4px solid #ff5a00;">
                     <div style="font-size: 12px; color: #64748b; margin-bottom: 10px;">
-                        📄 Numer paczki systemowej: <code style="background: #f1f5f9; padding: 2px 5px; border-radius: 4px; color: #0f172a; font-weight: bold;">@order.TrackingNumber</code>
+                        @Localizer["Rentals_PackageNumber"] <code style="background: #f1f5f9; padding: 2px 5px; border-radius: 4px; color: #0f172a; font-weight: bold;">@order.TrackingNumber</code>
                     </div>
-                    <div style="font-weight: bold; color: #234465; font-size: 13px; margin-bottom: 8px;">Pozycje do skompletowania z magazynu wydawniczego:</div>
+                    <div style="font-weight: bold; color: #234465; font-size: 13px; margin-bottom: 8px;">@Localizer["Rentals_PickList"]</div>
                     <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #334155; line-height: 1.6;">
                         @foreach (var item in order.SzczegolyPozycji)
                         {
                         <li>
-                            <strong>@item.Tytul</strong> – autor: @item.Autor
-                            <span style="margin-left: 15px; color: #64748b;">(Ilość: <strong style="color: #0f172a;">@item.Ilosc szt.</strong>, wartość pozycji: @item.Cena.ToString("F2") zł)</span>
+                            <strong>@item.Tytul</strong> @Localizer["Rentals_ItemAuthor"] @item.Autor
+                            <span style="margin-left: 15px; color: #64748b;">(@Localizer["Rentals_ItemQty"] <strong style="color: #0f172a;">@item.Ilosc @Localizer["Common_Pcs"]</strong>, @Localizer["Rentals_ItemValue"] @item.Cena.ToString("F2") @Localizer["Common_Currency"])</span>
                         </li>
                         }
                     </ul>
@@ -165,21 +163,21 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
         }
         else
         {
-        <tr><td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">Brak oczekujących zamówień wysyłkowych ze sklepu internetowego.</td></tr>
+        <tr><td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">@Localizer["Rentals_NoShopOrders"]</td></tr>
         }
         </tbody>
     </table>
 
-    <h3 style="color: #234465; font-size: 18px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">📖 Aktywne wypożyczenia (Książki u czytelników)</h3>
+    <h3 style="color: #234465; font-size: 18px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">@Localizer["Rentals_ActiveTitle"]</h3>
     <table class="r-table">
         <thead>
         <tr>
-            <th>Czytelnik</th>
-            <th>Książka</th>
-            <th style="text-align: center;">Kod Inwentarzowy</th>
-            <th>Data wydania</th>
-            <th>Termin zwrotu (30 dni)</th>
-            <th style="text-align: center; width: 25%;">Zarejestruj zwrot</th>
+            <th>@Localizer["Rentals_ColReader"]</th>
+            <th>@Localizer["Rentals_ColBook"]</th>
+            <th style="text-align: center;">@Localizer["Rentals_ColInventory"]</th>
+            <th>@Localizer["Rentals_ColIssueDate"]</th>
+            <th>@Localizer["Rentals_ColDueDate"]</th>
+            <th style="text-align: center; width: 25%;">@Localizer["Rentals_ColRegisterReturn"]</th>
         </tr>
         </thead>
         <tbody>
@@ -188,8 +186,8 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
         foreach (var item in wydane)
         {
         <tr>
-            <td style="font-weight: 600; color: #334155;">@(item.Klient != null ? $"{item.Klient.Nazwisko} {item.Klient.Imie}" : "Klient")</td>
-            <td>@(item.Egzemplarz?.Book?.Tytul ?? "Brak danych")</td>
+            <td style="font-weight: 600; color: #334155;">@(item.Klient != null ? $"{item.Klient.Nazwisko} {item.Klient.Imie}" : Localizer["Rentals_FallbackClient"].Value)</td>
+            <td>@(item.Egzemplarz?.Book?.Tytul ?? Localizer["Common_NoData"].Value)</td>
             <td style="text-align: center; font-family: monospace; font-weight: bold;">#@(item.Egzemplarz?.NumerInwentarzowy ?? "-")</td>
             <td>@item.DataWypozyczenia.ToString("dd.MM.yyyy")</td>
             <td>
@@ -201,7 +199,7 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
                 <form action="/Rentals/ZwrocKsiazke" method="post" style="display: flex; gap: 8px; justify-content: center; margin: 0;">
                     <input type="hidden" name="id_wypozyczenie" value="@item.IdWypozyczenie" />
                     <input type="date" name="data_zwrotu" style="padding: 4px; font-size: 12px; width: 130px;" value="@DateTime.Today.ToString("yyyy-MM-dd")" required>
-                    <button type="submit" class="btn-action">Zwrot</button>
+                    <button type="submit" class="btn-action">@Localizer["Rentals_BtnReturn"]</button>
                 </form>
             </td>
         </tr>
@@ -209,7 +207,7 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
         }
         else
         {
-        <tr><td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">Wszystkie wydane egzemplarze wróciły do biblioteki.</td></tr>
+        <tr><td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">@Localizer["Rentals_AllReturned"]</td></tr>
         }
         </tbody>
     </table>

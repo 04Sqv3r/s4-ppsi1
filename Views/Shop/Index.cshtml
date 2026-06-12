@@ -97,12 +97,12 @@
     
     <div class="catalog-controls">
         <div>
-            <label style="font-size: 14px; color: #64748b; margin-right: 8px; font-weight: 500;">Sortuj według:</label>
+            <label style="font-size: 14px; color: #64748b; margin-right: 8px; font-weight: 500;">@Localizer["Shop_SortBy"]</label>
             <select class="sort-select" id="sortDropdown" onchange="applyFilters()">
-                <option value="domyslne" selected="@(ViewBag.AktualneSortowanie == "domyslne" || ViewBag.AktualneSortowanie == null)">Domyślnie (od najnowszych)</option>
-                <option value="cena_rosnaco" selected="@(ViewBag.AktualneSortowanie == "cena_rosnaco")">Cena: od najniższej</option>
-                <option value="cena_malejaco" selected="@(ViewBag.AktualneSortowanie == "cena_malejaco")">Cena: od najwyższej</option>
-                <option value="alfabetycznie" selected="@(ViewBag.AktualneSortowanie == "alfabetycznie")">Nazwa: A-Z</option>
+                <option value="domyslne" selected="@(ViewBag.AktualneSortowanie == "domyslne" || ViewBag.AktualneSortowanie == null)">@Localizer["Shop_SortDefault"]</option>
+                <option value="cena_rosnaco" selected="@(ViewBag.AktualneSortowanie == "cena_rosnaco")">@Localizer["Shop_SortPriceAsc"]</option>
+                <option value="cena_malejaco" selected="@(ViewBag.AktualneSortowanie == "cena_malejaco")">@Localizer["Shop_SortPriceDesc"]</option>
+                <option value="alfabetycznie" selected="@(ViewBag.AktualneSortowanie == "alfabetycznie")">@Localizer["Shop_SortAlpha"]</option>
             </select>
         </div>
     </div>
@@ -128,7 +128,7 @@
                     <h3 class="card-title">@item.Tytul</h3>
                     <div class="card-author">@item.Autor</div>
                     <div class="card-price">
-                        @(item.Cena > 0 ? $"{item.Cena.Value.ToString("F2")} zł" : "Biblioteka")
+                        @(item.Cena > 0 ? $"{item.Cena.Value.ToString("F2")} zł" : Localizer["Shop_Library"].Value)
                     </div>
                 </div>
             </a>
@@ -137,7 +137,7 @@
     else
     {
         <div style="grid-column: span 4; text-align: center; padding: 40px; color: #64748b; font-size: 16px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            Niestety, brak aktualnie dostępnych pozycji dla podanych kryteriów. 🐾
+            @Localizer["Shop_NoResults"]
         </div>
     }
 </div>

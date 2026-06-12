@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. Kontener bazy danych MySQL
   meow_db:
@@ -30,14 +28,26 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - Qdrant__Host=meow_vector_db
       - ConnectionStrings__DefaultConnection=server=meow_db;port=3306;database=wypozyczalnia_ksiazek;user=root;password=rootpassword;
+      - ConnectionStrings__Redis=meow_redis:6379
     volumes:
       - ./data-protection-keys:/root/.aspnet/DataProtection-Keys
     depends_on:
       - meow_db
+      - meow_redis
     networks:
       - meow_network
 
-  # 3. Kontener bazy danych Qdrant
+  # 3. Redis (cache)
+  meow_redis:
+    image: redis:7-alpine
+    container_name: redis-container
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - meow_network
+
+  # 4. Kontener bazy danych Qdrant
   meow_vector_db:
     image: qdrant/qdrant:latest
     container_name: qdrant-container

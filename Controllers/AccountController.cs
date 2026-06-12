@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using meow.Models;
+using meow.Resources;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,12 @@ namespace meow.Controllers
     public class AccountController : Controller
     {
         private readonly LibraryDbContext _context;
+        private readonly IStringLocalizer<SharedResources> _localizer;
 
-        public AccountController(LibraryDbContext context)
+        public AccountController(LibraryDbContext context, IStringLocalizer<SharedResources> localizer)
         {
             _context = context;
+            _localizer = localizer;
         }
 
         // ==========================================================
@@ -58,7 +62,7 @@ namespace meow.Controllers
             var finesList = nienaliczoneKary.Select(p => new FineItemViewModel
             {
                 Id = p.IdPlatnosc,
-                BookTitle = p.Wypozyczenie?.Egzemplarz?.Book?.Tytul ?? "Opłata regulaminowa",
+                BookTitle = p.Wypozyczenie?.Egzemplarz?.Book?.Tytul ?? _localizer["Profile_RegulatoryFee"].Value,
                 Amount = p.Kwota,
                 DateGenerated = p.Wypozyczenie?.DataZwrotu?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd")
             }).ToList();
@@ -74,10 +78,10 @@ namespace meow.Controllers
                     .Select(w => new RentalHistoryItem
                     {
                         Id = w.IdWypozyczenie,
-                        BookTitle = w.Egzemplarz != null && w.Egzemplarz.Book != null ? w.Egzemplarz.Book.Tytul : "Nieznany tytuł",
+                        BookTitle = w.Egzemplarz != null && w.Egzemplarz.Book != null ? w.Egzemplarz.Book.Tytul : _localizer["Profile_UnknownTitle"].Value,
                         RentalDate = w.DataWypozyczenia.ToString("yyyy-MM-dd"),
                         Status = w.DataZwrotu.HasValue ? "Rozliczone" : (DateTime.Today > w.DataPlanowanegoZwrotu ? "Zaległość" : "Aktywne"),
-                        ReturnDate = w.DataZwrotu.HasValue ? "Zwrócona" : "Wypożyczona" 
+                        ReturnDate = w.DataZwrotu.HasValue ? "Zwrócona" : "Wypożyczona"
                     }).ToList(), 
 
                 // --- SEKCJA ZAMÓWIEŃ Z PEŁNYM DOSTĘPEM DO SZCZEGÓŁÓW ---
@@ -111,7 +115,7 @@ namespace meow.Controllers
                             OrderId = pierwsze.Id,
                             OrderDate = pierwsze.DataZamowienia.ToString("yyyy-MM-dd HH:mm"),
                             Status = pierwsze.Status,
-                            TrackingNumber = pierwsze.NumerSledzenia ?? "Brak numeru",
+                            TrackingNumber = pierwsze.NumerSledzenia ?? _localizer["Profile_NoTracking"].Value,
                             TotalPrice = łącznaSuma,
                             Items = wewnętrznePozycje
                         };
@@ -154,17 +158,18 @@ namespace meow.Controllers
                 HttpContext.Session.SetString("User", user.Login ?? "Użytkownik");
                 HttpContext.Session.SetString("UserRole", user.Rola ?? "Klient");
 
-                if (!user.KlientId.HasValue)
+                if (user.KlientId.HasValue)
+                    HttpContext.Session.SetInt32("UserId", user.KlientId.Value);
+                else
                 {
                     var powiazanyKlient = await _context.Klienci.FirstOrDefaultAsync(k => k.Email == user.Login);
                     if (powiazanyKlient != null)
-                    {
                         HttpContext.Session.SetInt32("UserId", powiazanyKlient.IdKlienta);
-                    }
                 }
+
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.Error = "Nieprawidłowy login lub hasło!";
+            ViewBag.Error = _localizer["Err_InvalidLogin"].Value;
             return View();
         }
 
@@ -186,18 +191,18 @@ namespace meow.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Error = "Wypełnij poprawnie wszystkie wymagane pola!";
+                ViewBag.Error = _localizer["Err_InvalidFields"].Value;
                 return View(model);
             }
             if (_context.Users.Any(u => u.Login == model.Login))
             {
-                ViewBag.Error = "Taki użytkownik już istnieje!";
+                ViewBag.Error = _localizer["Err_UserExists"].Value;
                 return View(model);
             }
 
             if (_context.Klienci.Any(k => k.Email == model.Email))
             {
-                ViewBag.Error = "Ten adres e-mail jest już zajęty!";
+                ViewBag.Error = _localizer["Err_EmailTaken"].Value;
                 return View(model);
             }
 

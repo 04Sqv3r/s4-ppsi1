@@ -1,7 +1,7 @@
 @using Microsoft.AspNetCore.Http
 @model meow.Models.Klient
 @{
-    ViewData["Title"] = "Dostawa i płatność";
+    ViewData["Title"] = Localizer["Checkout_Title"];
 }
 
 <style>
@@ -100,19 +100,19 @@
 </style>
 
 <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; font-size: 14px; color: #94a3b8; font-weight: 500; margin-top: 10px;">
-    <span style="color: #64748b;">Koszyk</span> &nbsp;➔&nbsp; 
-    <span style="color: #ff5a00; font-weight: bold; border-bottom: 2px solid #ff5a00; padding-bottom: 15px;">Dostawa i płatność</span> &nbsp;➔&nbsp; 
-    <span>Metoda dostawy</span> &nbsp;➔&nbsp; 
-    <span>Gotowe</span>
+    <span style="color: #64748b;">@Localizer["Checkout_StepCart"]</span> &nbsp;➔&nbsp; 
+    <span style="color: #ff5a00; font-weight: bold; border-bottom: 2px solid #ff5a00; padding-bottom: 15px;">@Localizer["Checkout_StepPayment"]</span> &nbsp;➔&nbsp; 
+    <span>@Localizer["Checkout_StepDelivery"]</span> &nbsp;➔&nbsp; 
+    <span>@Localizer["Checkout_StepDone"]</span>
 </div>
 
 @if (Context.Session.GetString("User") == null)
 {
     <div style="background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; margin-top: 30px;">
-        <h2 style="color: #1e293b; margin-bottom: 15px;">🔒 Wymagane logowanie</h2>
-        <p style="color: #64748b; margin-bottom: 25px;">Aby sfinalizować zamówienie w księgarni, musisz być zalogowany.</p>
+        <h2 style="color: #1e293b; margin-bottom: 15px;">@Localizer["Checkout_LoginTitle"]</h2>
+        <p style="color: #64748b; margin-bottom: 25px;">@Localizer["Checkout_LoginDesc"]</p>
         <a href="/Account/Login?returnUrl=/Shop/Checkout" style="background: #ff5a00; color: white; padding: 12px 30px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;">
-            Zaloguj się do konta
+            @Localizer["Checkout_LoginBtn"]
         </a>
     </div>
 }
@@ -122,23 +122,23 @@ else
         <div class="checkout-container">
             
             <div class="checkout-form-section">
-                <h2 style="font-size: 22px; color: #1e293b; margin-top: 0; margin-bottom: 20px; font-weight: 700;">Dane odbiorcy</h2>
+                <h2 style="font-size: 22px; color: #1e293b; margin-top: 0; margin-bottom: 20px; font-weight: 700;">@Localizer["Checkout_RecipientTitle"]</h2>
                 
                 <div class="radio-group">
-                    <label><input type="radio" name="typ_odbiorcy" value="prywatna" id="radioPrywatna" onchange="toggleFormLayout()" checked> Osoba prywatna</label>
-                    <label><input type="radio" name="typ_odbiorcy" value="firma" id="radioFirma" onchange="toggleFormLayout()"> Firma</label>
+                    <label><input type="radio" name="typ_odbiorcy" value="prywatna" id="radioPrywatna" onchange="toggleFormLayout()" checked> @Localizer["Checkout_TypePrivate"]</label>
+                    <label><input type="radio" name="typ_odbiorcy" value="firma" id="radioFirma" onchange="toggleFormLayout()"> @Localizer["Checkout_TypeCompany"]</label>
                 </div>
 
                 <div class="form-group-row">
                     <div class="form-field">
-                        <label id="labelImie">Imię</label>
+                        <label id="labelImie">@Localizer["Checkout_FirstName"]</label>
                         <input type="text" name="imie" value="@Model?.Imie" 
                                pattern="^[A-Za-zŻżÓóŁłĆćĘęŚśĄąŹźŃń\s]+$" 
                                title="Imię może zawierać wyłącznie litery!" required />
                     </div>
 
                     <div class="form-field" id="groupNazwisko">
-                        <label>Nazwisko</label>
+                        <label>@Localizer["Checkout_LastName"]</label>
                         <input type="text" name="nazwisko" id="inputNazwisko" value="@Model?.Nazwisko" 
                                pattern="^[A-Za-zŻżÓóŁłĆćĘęŚśĄąŹźŃń\s-]+$" 
                                title="Nazwisko może zawierać wyłącznie litery lub łącznik (myślnik)!" required />
@@ -147,11 +147,11 @@ else
 
                 <div class="form-group-row" id="groupFirmaPola" style="display: none;">
                     <div class="form-field">
-                        <label>Nazwa firmy</label>
+                        <label>@Localizer["Checkout_CompanyName"]</label>
                         <input type="text" name="nazwa_firmy" id="inputNazwaFirmy" />
                     </div>
                     <div class="form-field">
-                        <label>NIP</label>
+                        <label>@Localizer["Checkout_NIP"]</label>
                         <input type="text" name="nip" id="inputNip" maxlength="10" 
                                pattern="^[0-9]{10}$" title="NIP musi składać się z dokładnie 10 cyfr!" placeholder="np. 1234567890" />
                     </div>
@@ -159,11 +159,11 @@ else
 
                 <div class="form-group-row">
                     <div class="form-field">
-                        <label>Adres e-mail</label>
+                        <label>@Localizer["Checkout_Email"]</label>
                         <input type="email" name="email" value="@Model?.Email" required />
                     </div>
                     <div class="form-field">
-                        <label>Numer telefonu</label>
+                        <label>@Localizer["Checkout_Phone"]</label>
                         <input type="text" name="telefon" value="@Model?.Telefon" 
                                pattern="^[0-9\+]{9,15}$" title="Wpisz poprawny numer telefonu!" placeholder="+48" required />
                     </div>
@@ -171,38 +171,38 @@ else
 
                 <div class="form-group-row">
                     <div class="form-field">
-                        <label>Kraj</label>
+                        <label>@Localizer["Checkout_Country"]</label>
                         <select name="kraj">
-                            <option value="Polska">Polska</option>
-                            <option value="Niemcy">Niemcy</option>
-                            <option value="Czechy">Czechy</option>
+                            <option value="Polska">@Localizer["Checkout_Country_PL"]</option>
+                            <option value="Niemcy">@Localizer["Checkout_Country_DE"]</option>
+                            <option value="Czechy">@Localizer["Checkout_Country_CZ"]</option>
                         </select>
                     </div>
                     <div class="form-field" style="flex: 2;">
-                        <label>Ulica</label>
+                        <label>@Localizer["Checkout_Street"]</label>
                         <input type="text" name="ulica" required />
                     </div>
                 </div>
 
                 <div class="form-group-row">
                     <div class="form-field">
-                        <label>Numer domu / budynku</label>
+                        <label>@Localizer["Checkout_Building"]</label>
                         <input type="text" name="numer" required />
                     </div>
                     <div class="form-field">
-                        <label>Lokal (opcjonalnie)</label>
+                        <label>@Localizer["Checkout_Unit"]</label>
                         <input type="text" name="lokal" />
                     </div>
                 </div>
 
                 <div class="form-group-row">
                     <div class="form-field">
-                        <label>Kod pocztowy</label>
+                        <label>@Localizer["Checkout_Postal"]</label>
                         <input type="text" name="kodPocztowy" id="inputKodPocztowy" maxlength="6" 
                                pattern="^[0-9]{2}-[0-9]{3}$" title="Wpisz kod pocztowy w formacie 00-000!" placeholder="00-000" required />
                     </div>
                     <div class="form-field" style="flex: 2;">
-                        <label>Miejscowość</label>
+                        <label>@Localizer["Checkout_City"]</label>
                         <input type="text" name="miejscowosc" 
                                pattern="^[A-Za-zŻżÓóŁłĆćĘęŚśĄąŹźŃń\s-]+$" 
                                title="Nazwa miejscowości nie może zawierać cyfr ani znaków specjalnych!" required />
@@ -213,21 +213,21 @@ else
             <div class="checkout-summary-section">
                 <div class="summary-box">
                     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
-                        <span style="font-size: 18px; font-weight: 700; color: #1e293b;">Wartość koszyka</span>
-                        <span style="font-size: 24px; font-weight: 700; color: #1e293b;">@(((decimal)ViewBag.WartoscKoszyka).ToString("F2")) zł</span>
+                        <span style="font-size: 18px; font-weight: 700; color: #1e293b;">@Localizer["Checkout_CartValue"]</span>
+                        <span style="font-size: 24px; font-weight: 700; color: #1e293b;">@(((decimal)ViewBag.WartoscKoszyka).ToString("F2")) @Localizer["Common_Currency"]</span>
                     </div>
 
                     <div class="summary-row">
-                        <span>Wartość produktów</span>
-                        <span>@(((decimal)ViewBag.WartoscProduktow).ToString("F2")) zł</span>
+                        <span>@Localizer["Checkout_ProductsValue"]</span>
+                        <span>@(((decimal)ViewBag.WartoscProduktow).ToString("F2")) @Localizer["Common_Currency"]</span>
                     </div>
                     <div class="summary-row" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
-                        <span>Koszt dostawy</span>
-                        <span style="color: #64748b; font-weight: 500;">wyliczany w kroku 2</span>
+                        <span>@Localizer["Checkout_DeliveryCost"]</span>
+                        <span style="color: #64748b; font-weight: 500;">@Localizer["Checkout_DeliveryLater"]</span>
                     </div>
 
                     <button type="submit" class="btn-submit-order">
-                        Dalej do dostawy ➔
+                        @Localizer["Checkout_NextDelivery"]
                     </button>
                 </div>
             </div>
@@ -236,6 +236,8 @@ else
     </form>
 
     <script>
+        var labels = { firstName: '@Localizer["Checkout_FirstName"]', contactFirstName: '@Localizer["Checkout_ContactFirstName"]' };
+
         function toggleFormLayout() {
             var isFirma = document.getElementById("radioFirma").checked;
             var groupNazwisko = document.getElementById("groupNazwisko");
@@ -248,9 +250,8 @@ else
             if (isFirma) {
                 groupNazwisko.style.display = "none";
                 groupFirmaPola.style.display = "flex";
-                labelImie.innerText = "Imię osoby kontaktowej";
+                labelImie.innerText = labels.contactFirstName;
                 
-                // POPRAWKA: Czyszczenie wartości pola ukrywanego, aby nie blokowało walidacji HTML5
                 inputNazwisko.value = "";
                 inputNazwisko.required = false;
                 
@@ -259,9 +260,8 @@ else
             } else {
                 groupNazwisko.style.display = "flex";
                 groupFirmaPola.style.display = "none";
-                labelImie.innerText = "Imię";
+                labelImie.innerText = labels.firstName;
                 
-                // POPRAWKA: Czyszczenie wartości pól ukrywanych dla firmy
                 inputNazwaFirmy.value = "";
                 inputNip.value = "";
                 

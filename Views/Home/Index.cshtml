@@ -157,16 +157,16 @@
 
 <div class="hero-banner">
     <div class="hero-text">
-        <h1>Witaj w E-Księgarni! 🐾</h1>
-        <p>Najlepsze opowieści, fascynujące kryminały i komiksy w jednym miejscu. Kupuj z dostawą do domu lub rezerwuj i wypożyczaj fizyczne egzemplarze w naszym salonie stacjonarnie!</p>
-        <a href="/Shop" class="hero-btn">Przeglądaj pełną ofertę</a>
+        <h1>@Localizer["Home_HeroTitle"]</h1>
+        <p>@Localizer["Home_HeroDesc"]</p>
+        <a href="/Shop" class="hero-btn">@Localizer["Home_BrowseOffer"]</a>
     </div>
     <div class="hero-paw">🐾</div>
 </div>
 
 <div class="section-title">
-    <span>🔥 Gorące nowości w ofercie</span>
-    <a href="/Shop">Zobacz wszystkie &rarr;</a>
+    <span>🔥 @Localizer["Home_NewArrivals"]</span>
+    <a href="/Shop">@Localizer["Home_SeeAll"] &rarr;</a>
 </div>
 
 <div class="books-grid">
@@ -190,19 +190,19 @@
                 
                 <div class="card-footer">
                     <div class="card-price">
-                        @(book.Cena > 0 ? $"{book.Cena.Value.ToString("F2")} zł" : "Biblioteka")
+                        @(book.Cena > 0 ? $"{book.Cena.Value.ToString("F2")} zł" : Localizer["Shop_Library"].Value)
                     </div>
                     @if (book.Cena > 0 && book.IloscEgzemplarzy > 0)
                     {
-                        <span class="card-badge badge-hybrid">Sklep + Czytelnia</span>
+                        <span class="card-badge badge-hybrid">@Localizer["Home_Badge_Hybrid"]</span>
                     }
                     else if (book.Cena > 0)
                     {
-                        <span class="card-badge">Tylko Kupno</span>
+                        <span class="card-badge">@Localizer["Home_Badge_ShopOnly"]</span>
                     }
                     else
                     {
-                        <span class="card-badge">Wypożycz</span>
+                        <span class="card-badge">@Localizer["Home_Badge_Rent"]</span>
                     }
                 </div>
             </a>
@@ -211,7 +211,7 @@
     else
     {
         <div style="grid-column: span 5; text-align: center; padding: 40px; color: #94a3b8; font-weight: bold; background: white; border-radius: 6px;">
-            Brak produktów do wyświetlenia. Dodaj pierwsze książki w panelu admina!
+            @Localizer["Home_NoProducts"]
         </div>
     }
 </div>

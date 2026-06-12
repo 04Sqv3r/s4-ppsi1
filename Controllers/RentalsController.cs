@@ -1,21 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using meow.Models;
+using meow.Resources;
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 
 namespace meow.Controllers
-{[MeowAuthorize("Admin")]
-  
+{
+    [MeowAuthorize("Admin")]
     public class RentalsController : Controller
     {
         private readonly LibraryDbContext _context;
+        private readonly IStringLocalizer<SharedResources> _localizer;
 
-        public RentalsController(LibraryDbContext context)
+        public RentalsController(LibraryDbContext context, IStringLocalizer<SharedResources> localizer)
         {
             _context = context;
+            _localizer = localizer;
         }
 
         // ==========================================================
@@ -62,7 +66,7 @@ namespace meow.Controllers
 
             if (data_wypozyczenia > DateTime.Today)
             {
-                TempData["Message"] = "Błąd: Data wypożyczenia nie może być z przyszłości!";
+                TempData["Message"] = _localizer["Msg_RentalDateFuture"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Create");
             }
@@ -81,7 +85,7 @@ namespace meow.Controllers
             _context.Wypozyczenia.Add(wypozyczenie);
             _context.SaveChanges();
 
-            TempData["Message"] = "Wypożyczenie zostało pomyślnie zarejestrowane w bazie meow! 🐾";
+            TempData["Message"] = _localizer["Msg_RentalRegistered"].Value;
             TempData["MessageType"] = "success";
             return RedirectToAction("Returns");
         }
@@ -172,7 +176,7 @@ namespace meow.Controllers
 
             _context.SaveChanges();
 
-            TempData["Message"] = "Książka została pomyślnie wydana klientowi. Termin zwrotu ustawiono na 30 dni! 🐾";
+            TempData["Message"] = _localizer["Msg_BookIssued"].Value;
             TempData["MessageType"] = "success";
 
             return RedirectToAction("Returns");
@@ -191,7 +195,7 @@ namespace meow.Controllers
 
             if (egzemplarz == null)
             {
-                TempData["Message"] = "Nie odnaleziono wybranego egzemplarza.";
+                TempData["Message"] = _localizer["Msg_CopyNotFound"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Index", "Shop");
             }
@@ -201,7 +205,7 @@ namespace meow.Controllers
             // 2. Sprawdzamy, czy użytkownik w ogóle jest zalogowany
             if (HttpContext.Session.GetString("User") == null)
             {
-                TempData["Message"] = "Musisz się zalogować, aby zarezerwować tę książkę stacjonarnie.";
+                TempData["Message"] = _localizer["Msg_ReserveLogin"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Login", "Account", new { returnUrl = $"/Shop/Details/{idKsiazki}" });
             }
@@ -222,7 +226,7 @@ namespace meow.Controllers
 
             if (maZaleglosci)
             {
-                TempData["Message"] = "Blokada konta: Posiadasz przetrzymane książki! Zwróć zaległe pozycje w bibliotece, aby móc rezerwować kolejne. 🐾";
+                TempData["Message"] = _localizer["Msg_ReserveBlocked"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Details", "Shop", new { id = idKsiazki });
             }
@@ -231,7 +235,7 @@ namespace meow.Controllers
             var czyZajety = _context.Wypozyczenia.Any(w => w.IdEgzemplarz == idEgzemplarza && w.DataZwrotu == null);
             if (czyZajety)
             {
-                TempData["Message"] = "Ten konkretny egzemplarz został właśnie zarezerwowany przez kogoś innego. Wybierz inny z listy.";
+                TempData["Message"] = _localizer["Msg_ReserveTaken"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Details", "Shop", new { id = idKsiazki });
             }
@@ -251,7 +255,7 @@ namespace meow.Controllers
             _context.Wypozyczenia.Add(nowaRezerwacja);
             _context.SaveChanges();
 
-            TempData["Message"] = $"🐾 Sukces! Egzemplarz (#{egzemplarz.NumerInwentarzowy}) został zarezerwowany. Zapraszamy po odbiór do dnia: {dataNaOdbior.ToString("dd.MM.yyyy")} r. do godziny 18:00.";
+            TempData["Message"] = string.Format(_localizer["Msg_ReserveSuccess"].Value, egzemplarz.NumerInwentarzowy, dataNaOdbior.ToString("dd.MM.yyyy"));
             TempData["MessageType"] = "success";
 
             return RedirectToAction("Details", "Shop", new { id = idKsiazki });
@@ -273,7 +277,7 @@ namespace meow.Controllers
 
             if (data_zwrotu < wypozyczenie.DataWypozyczenia)
             {
-                TempData["Message"] = "Błąd: Data zwrotu nie może być wcześniejsza niż data wydania!";
+                TempData["Message"] = _localizer["Msg_ReturnDateInvalid"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Returns");
             }
@@ -294,13 +298,13 @@ namespace meow.Controllers
                 _context.Platnosci.Add(platnosc);
                 _context.SaveChanges();
 
-                TempData["Message"] = $"Zwrot zarejestrowany. Naliczono opłatę za {dniSpoznienia} dni spóźnienia w wysokości: {kara:F2} zł.";
+                TempData["Message"] = string.Format(_localizer["Msg_ReturnFine"].Value, dniSpoznienia, kara.ToString("F2"));
                 TempData["MessageType"] = "error";
             }
             else
             {
                 _context.SaveChanges();
-                TempData["Message"] = "Książka zwrócona w terminie. Brak opłat karnych! ✔";
+                TempData["Message"] = _localizer["Msg_ReturnOnTime"].Value;
                 TempData["MessageType"] = "success";
             }
 
@@ -328,7 +332,7 @@ namespace meow.Controllers
 
             if (string.IsNullOrEmpty(trackingNumber))
             {
-                TempData["Message"] = "Błąd: Brak numeru śledzenia paczki.";
+                TempData["Message"] = _localizer["Msg_TrackingMissing"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Returns");
             }
@@ -340,7 +344,7 @@ namespace meow.Controllers
 
             if (!calaPaczka.Any())
             {
-                TempData["Message"] = "Nie odnaleziono paczki o podanym numerze śledzenia.";
+                TempData["Message"] = _localizer["Msg_PackageNotFound"].Value;
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Returns");
             }
@@ -353,7 +357,7 @@ namespace meow.Controllers
 
             _context.SaveChanges();
 
-            TempData["Message"] = $"Status zaktualizowany: Zbiorcza paczka {trackingNumber} została przekazana kurierowi! 📦🐾";
+            TempData["Message"] = string.Format(_localizer["Msg_PackageShipped"].Value, trackingNumber);
             TempData["MessageType"] = "success";
 
             return RedirectToAction("Returns");

@@ -1,5 +1,5 @@
 @{
-ViewData["Title"] = "Panel Zarządzania Administratora";
+    ViewData["Title"] = Localizer["Admin_Dashboard_Title"].Value;
 }
 
 <style>
@@ -91,40 +91,40 @@ ViewData["Title"] = "Panel Zarządzania Administratora";
 
 <div class="dashboard-container">
     <div class="welcome-banner">
-        <h1 style="margin: 0; font-size: 28px; font-weight: 700;">🐾 Konsola Administracyjna </h1>
-        <p style="margin: 10px 0 0 0; color: #cbd5e1; font-size: 15px;">Witaj z powrotem, Administratorze! Masz pełny dostęp do zarządzania zasobami biblioteki oraz realizacji zamówień sklepu internetowego.</p>
+        <h1 style="margin: 0; font-size: 28px; font-weight: 700;">🐾 @Localizer["Admin_ConsoleTitle"]</h1>
+        <p style="margin: 10px 0 0 0; color: #cbd5e1; font-size: 15px;">@Localizer["Admin_ConsoleDesc"]</p>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card">
-            <span class="stat-label">Tytuły w katalogu</span>
+            <span class="stat-label">@Localizer["Admin_Stat_Titles"]</span>
             <span class="stat-number">@ViewBag.LiczbaKsiazek</span>
         </div>
         <div class="stat-card">
-            <span class="stat-label">Wszystkie Egzemplarze</span>
+            <span class="stat-label">@Localizer["Admin_Stat_Copies"]</span>
             <span class="stat-number">@ViewBag.LiczbaEgzemplarzy</span>
         </div>
-        <div class="stat-card stat-card.rent">
-            <span class="stat-label">Książki u czytelników</span>
+        <div class="stat-card rent">
+            <span class="stat-label">@Localizer["Admin_Stat_Borrowed"]</span>
             <span class="stat-number" style="color: #15803d;">@ViewBag.AktywneWypozyczenia</span>
         </div>
-        <div class="stat-card stat-card.shop">
-            <span class="stat-label">Nowe zamówienia e-sklepu</span>
+        <div class="stat-card shop">
+            <span class="stat-label">@Localizer["Admin_Stat_Orders"]</span>
             <span class="stat-number" style="color: #ff5a00;">@ViewBag.NoweZamowieniaSklep</span>
         </div>
-        <div class="stat-card stat-card.users">
-            <span class="stat-label">Zarejestrowani Klienci</span>
+        <div class="stat-card users">
+            <span class="stat-label">@Localizer["Admin_Stat_Clients"]</span>
             <span class="stat-number" style="color: #b45309;">@ViewBag.LiczbaKlientow</span>
         </div>
     </div>
 
     <div class="quick-actions-section">
-        <h3 style="color: #234465; margin: 0; font-size: 18px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">⚡ Szybkie akcje zarządcze</h3>
+        <h3 style="color: #234465; margin: 0; font-size: 18px; font-weight: bold; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">⚡ @Localizer["Admin_QuickActions"]</h3>
         <div class="actions-grid">
-            <a href="/Rentals/Returns" class="action-btn primary-action">📦 Obsługa Zamówień i Paczek</a>
-            <a href="/Books/Create" class="action-btn">➕ Dodaj Nowy Produkt</a>
-            <a href="/Books" class="action-btn">📚 Zarządzaj Stanem Magazynowym</a>
-            <a href="/Clients/Index" class="action-btn">👥 Kartoteka Użytkowników</a>
+            <a href="/Rentals/Returns" class="action-btn primary-action">📦 @Localizer["Admin_Action_Orders"]</a>
+            <a href="/Books/Create" class="action-btn">➕ @Localizer["Admin_Action_AddProduct"]</a>
+            <a href="/Books" class="action-btn">📚 @Localizer["Admin_Action_Inventory"]</a>
+            <a href="/Clients/Index" class="action-btn">👥 @Localizer["Admin_Action_Users"]</a>
         </div>
     </div>
 </div>

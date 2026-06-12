@@ -1,9 +1,9 @@
 @using meow.Models
 @{
-    ViewData["Title"] = "Wypożycz Książkę";
+    ViewData["Title"] = Localizer["RentalsCreate_Title"];
 }
 
-<h2>Panel rejestracji wypożyczenia</h2>
+<h2>@Localizer["RentalsCreate_Heading"]</h2>
 
 @if (TempData["Message"] != null)
 {
@@ -18,9 +18,9 @@
 
 <form action="/Rentals/Create" method="post" style="max-width: 500px; display: flex; flex-direction: column; gap: 15px;">
     <div>
-        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Wybierz aktywnego klienta</label>
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">@Localizer["RentalsCreate_LabelClient"]</label>
         <select name="id_klient" style="width: 100%; padding: 8px;" required>
-            <option value="">-- Wybierz profil --</option>
+            <option value="">@Localizer["RentalsCreate_ClientPlaceholder"]</option>
             @if (ViewBag.Klienci != null)
             {
                 foreach (var k in (List<Klient>)ViewBag.Klienci)
@@ -32,15 +32,15 @@
     </div>
 
     <div>
-        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Wybierz wolny fizyczny egzemplarz</label>
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">@Localizer["RentalsCreate_LabelCopy"]</label>
         <select name="id_egzemplarz" style="width: 100%; padding: 8px;" required>
-            <option value="">-- Wybierz pozycję --</option>
+            <option value="">@Localizer["RentalsCreate_CopyPlaceholder"]</option>
             @if (ViewBag.DostepneEgzemplarze != null)
             {
                 foreach (var e in (List<Egzemplarz>)ViewBag.DostepneEgzemplarze)
                 {
                     <option value="@e.IdEgzemplarza">
-                        @e.Book?.Tytul - [@e.Stan] (@e.NumerInwentarzowy)
+                        @e.Book?.Tytul - [@meow.Services.LocalizationHelper.CopyCondition(Localizer, e.Stan)] (@e.NumerInwentarzowy)
                     </option>
                 }
             }
@@ -48,11 +48,11 @@
     </div>
 
     <div>
-        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Data operacji wygenerowania</label>
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">@Localizer["RentalsCreate_LabelDate"]</label>
         <input type="date" name="data_wypozyczenia" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" style="width: 100%; padding: 8px;" required>
     </div>
 
     <button type="submit" style="background: #234465; color: white; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
-        Zatwierdź wydanie książki
+        @Localizer["RentalsCreate_Submit"]
     </button>
 </form>

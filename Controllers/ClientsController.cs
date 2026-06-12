@@ -1,16 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using meow.Models;
+using meow.Resources;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 
 namespace meow.Controllers
-{[MeowAuthorize("Admin")]
+{
+    [MeowAuthorize("Admin")]
     public class ClientsController : Controller
     {
         private readonly LibraryDbContext _context;
-        public ClientsController(LibraryDbContext context) { _context = context; }
+        private readonly IStringLocalizer<SharedResources> _localizer;
+
+        public ClientsController(LibraryDbContext context, IStringLocalizer<SharedResources> localizer)
+        {
+            _context = context;
+            _localizer = localizer;
+        }
 
         public IActionResult Index()
         {
@@ -38,7 +46,7 @@ namespace meow.Controllers
 
             if (string.IsNullOrEmpty(klient.Imie) || string.IsNullOrEmpty(klient.Nazwisko))
             {
-                TempData["Message"] = "Błąd: Imię i nazwisko nie mogą być puste.";
+                TempData["Message"] = _localizer["Msg_ClientNameRequired"].Value;
                 TempData["MessageType"] = "error";
                 return View(klient);
             }
@@ -46,7 +54,7 @@ namespace meow.Controllers
             _context.Klienci.Add(klient);
             _context.SaveChanges();
 
-            TempData["Message"] = $"Klient {klient.Imie} {klient.Nazwisko} został zarejestrowany w systemie meow!";
+            TempData["Message"] = string.Format(_localizer["Msg_ClientRegistered"].Value, klient.Imie, klient.Nazwisko);
             TempData["MessageType"] = "success";
             return RedirectToAction("Index");
         }

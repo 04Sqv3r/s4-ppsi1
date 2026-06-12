@@ -1,0 +1,12 @@
+@using System.Globalization
+@{
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+    var isPl = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "pl";
+}
+<div class="lang-switch" style="text-align:center; margin-bottom: 12px;">
+    <a href="@Url.Action("Set", "Culture", new { culture = "pl", returnUrl })"
+       style="color: @(isPl ? "#234465" : "#94a3b8"); font-weight: @(isPl ? "bold" : "normal"); text-decoration: none;">PL</a>
+    |
+    <a href="@Url.Action("Set", "Culture", new { culture = "en", returnUrl })"
+       style="color: @(!isPl ? "#234465" : "#94a3b8"); font-weight: @(!isPl ? "bold" : "normal"); text-decoration: none;">EN</a>
+</div>
