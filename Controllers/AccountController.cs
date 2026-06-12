@@ -189,6 +189,18 @@ namespace meow.Controllers
         [ValidateAntiForgeryToken] 
         public IActionResult Register([Bind("Login,Haslo,Email,Imie,Nazwisko,Telefon")] RegisterViewModel model)
         {
+            if (!string.IsNullOrWhiteSpace(model.Telefon))
+            {
+                model.Telefon = new string(model.Telefon.Where(char.IsDigit).ToArray());
+                if (model.Telefon.Length != 9)
+                    ModelState.AddModelError(nameof(model.Telefon), _localizer["Register_ValidationPhone"].Value);
+            }
+            else
+            {
+                model.Telefon = string.Empty;
+                ModelState.Remove(nameof(model.Telefon));
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Error = _localizer["Err_InvalidFields"].Value;

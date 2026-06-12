@@ -25,7 +25,7 @@ docker compose up --build
 | Routing | ✅ | Konwencja `{controller}/{action}/{id?}` |
 | ORM | ✅ | Entity Framework Core |
 | Uwierzytelnianie | ✅ | Sesje + BCrypt + JWT API |
-| Lokalizacja | 🟡 | PL/EN — większość widoków; część pól admina nadal po polsku |
+| Lokalizacja | ✅ | PL/EN — interfejs użytkownika i panel admina |
 | Mailing | 🟡 | MailKit (`EmailService`) — bez SMTP loguje w konsoli |
 | Formularze | ✅ | Rejestracja, checkout, panel admina |
 | Interakcje async | ✅ | Live search — `fetch` → `/api/books` |

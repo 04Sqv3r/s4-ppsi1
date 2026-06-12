@@ -42,7 +42,9 @@ namespace meow.Controllers
             TextInfo textInfo = new CultureInfo("pl-PL", false).TextInfo;
             klient.Imie = textInfo.ToTitleCase(czysteImie.ToLower());
             klient.Nazwisko = textInfo.ToTitleCase(czysteNazwisko.ToLower());
-            klient.Telefon = Regex.Replace(klient.Telefon, @"[^0-9]", "");
+            klient.Telefon = string.IsNullOrWhiteSpace(klient.Telefon)
+                ? "-"
+                : Regex.Replace(klient.Telefon, @"[^0-9]", "");
 
             if (string.IsNullOrEmpty(klient.Imie) || string.IsNullOrEmpty(klient.Nazwisko))
             {

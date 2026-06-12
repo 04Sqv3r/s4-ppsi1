@@ -276,33 +276,33 @@
   <data name="Err_InvalidFields" xml:space="preserve"><value>Wypełnij poprawnie wszystkie wymagane pola!</value></data>
   <data name="Err_UserExists" xml:space="preserve"><value>Taki użytkownik już istnieje!</value></data>
   <data name="Err_EmailTaken" xml:space="preserve"><value>Ten adres e-mail jest już zajęty!</value></data>
-  <data name="Msg_NoPermission" xml:space="preserve"><value>Brak uprawnień do wyświetlenia tej sekcji! ??</value></data>
+  <data name="Msg_NoPermission" xml:space="preserve"><value>Brak uprawnień do wyświetlenia tej sekcji!</value></data>
   <data name="Msg_ProductUnavailable" xml:space="preserve"><value>Niestety, ten produkt nie jest obecnie dostępny w sprzedaży.</value></data>
   <data name="Msg_CartLimit" xml:space="preserve"><value>Osiągnięto limit! W magazynie meow mamy już tylko {0} szt. tego produktu.</value></data>
-  <data name="Msg_AddedToCart" xml:space="preserve"><value>Pomyślnie dodano „{0}” do Twojego koszyka! ??</value></data>
-  <data name="Msg_CartAutoFix" xml:space="preserve"><value>Automatyczna korekta: Niektóre produkty w koszyku zostały wyprzedane lub ich ilość w magazynie uległa zmianie. ??</value></data>
+  <data name="Msg_AddedToCart" xml:space="preserve"><value>Pomyślnie dodano „{0}” do Twojego koszyka!</value></data>
+  <data name="Msg_CartAutoFix" xml:space="preserve"><value>Automatyczna korekta: Niektóre produkty w koszyku zostały wyprzedane lub ich ilość w magazynie uległa zmianie.</value></data>
   <data name="Msg_CartUpdated" xml:space="preserve"><value>Zaktualizowano zawartość koszyka.</value></data>
   <data name="Msg_LoginRequired" xml:space="preserve"><value>Musisz być zalogowany, aby sfinalizować zamówienie.</value></data>
   <data name="Msg_CartEmpty" xml:space="preserve"><value>Twój koszyk był pusty lub zamówienie zostało już przetworzone.</value></data>
   <data name="Msg_ProductSoldOut" xml:space="preserve"><value>Przepraszamy, produkt „{0}” wyprzedał się w międzyczasie.</value></data>
-  <data name="Msg_OrderSuccess" xml:space="preserve"><value>?? Sukces! Zamówienie zostało pomyślnie złożone w sklepie meow.</value></data>
+  <data name="Msg_OrderSuccess" xml:space="preserve"><value>✅ Sukces! Zamówienie zostało pomyślnie złożone w sklepie meow.</value></data>
   <data name="Msg_OrderError" xml:space="preserve"><value>Błąd systemu zamówień: {0}</value></data>
   <data name="Msg_ClientNameRequired" xml:space="preserve"><value>Błąd: Imię i nazwisko nie mogą być puste.</value></data>
   <data name="Msg_ClientRegistered" xml:space="preserve"><value>Klient {0} {1} został zarejestrowany w systemie meow!</value></data>
   <data name="Msg_RentalDateFuture" xml:space="preserve"><value>Błąd: Data wypożyczenia nie może być z przyszłości!</value></data>
-  <data name="Msg_RentalRegistered" xml:space="preserve"><value>Wypożyczenie zostało pomyślnie zarejestrowane w bazie meow! ??</value></data>
-  <data name="Msg_BookIssued" xml:space="preserve"><value>Książka została pomyślnie wydana klientowi. Termin zwrotu ustawiono na 30 dni! ??</value></data>
+  <data name="Msg_RentalRegistered" xml:space="preserve"><value>Wypożyczenie zostało pomyślnie zarejestrowane w bazie meow!</value></data>
+  <data name="Msg_BookIssued" xml:space="preserve"><value>Książka została pomyślnie wydana klientowi. Termin zwrotu ustawiono na 30 dni!</value></data>
   <data name="Msg_CopyNotFound" xml:space="preserve"><value>Nie odnaleziono wybranego egzemplarza.</value></data>
   <data name="Msg_ReserveLogin" xml:space="preserve"><value>Musisz się zalogować, aby zarezerwować tę książkę stacjonarnie.</value></data>
-  <data name="Msg_ReserveBlocked" xml:space="preserve"><value>Blokada konta: Posiadasz przetrzymane książki! Zwróć zaległe pozycje w bibliotece, aby móc rezerwować kolejne. ??</value></data>
+  <data name="Msg_ReserveBlocked" xml:space="preserve"><value>Blokada konta: Posiadasz przetrzymane książki! Zwróć zaległe pozycje w bibliotece, aby móc rezerwować kolejne.</value></data>
   <data name="Msg_ReserveTaken" xml:space="preserve"><value>Ten konkretny egzemplarz został właśnie zarezerwowany przez kogoś innego. Wybierz inny z listy.</value></data>
-  <data name="Msg_ReserveSuccess" xml:space="preserve"><value>?? Sukces! Egzemplarz (#{0}) został zarezerwowany. Zapraszamy po odbiór do dnia: {1} r. do godziny 18:00.</value></data>
+  <data name="Msg_ReserveSuccess" xml:space="preserve"><value>✅ Sukces! Egzemplarz (#{0}) został zarezerwowany. Zapraszamy po odbiór do dnia: {1} r. do godziny 18:00.</value></data>
   <data name="Msg_ReturnDateInvalid" xml:space="preserve"><value>Błąd: Data zwrotu nie może być wcześniejsza niż data wydania!</value></data>
   <data name="Msg_ReturnFine" xml:space="preserve"><value>Zwrot zarejestrowany. Naliczono opłatę za {0} dni spóźnienia w wysokości: {1} zł.</value></data>
   <data name="Msg_ReturnOnTime" xml:space="preserve"><value>Książka zwrócona w terminie. Brak opłat karnych! ?</value></data>
   <data name="Msg_TrackingMissing" xml:space="preserve"><value>Błąd: Brak numeru śledzenia paczki.</value></data>
   <data name="Msg_PackageNotFound" xml:space="preserve"><value>Nie odnaleziono paczki o podanym numerze śledzenia.</value></data>
-  <data name="Msg_PackageShipped" xml:space="preserve"><value>Status zaktualizowany: Zbiorcza paczka {0} została przekazana kurierowi! ????</value></data>
+  <data name="Msg_PackageShipped" xml:space="preserve"><value>Status zaktualizowany: Zbiorcza paczka {0} została przekazana kurierowi! 🚚</value></data>
   <data name="Status_Preparing" xml:space="preserve"><value>W przygotowaniu</value></data>
   <data name="Status_New" xml:space="preserve"><value>Nowe</value></data>
   <data name="Status_Shipped" xml:space="preserve"><value>Wysłana</value></data>
@@ -314,14 +314,14 @@
   <data name="Profile_Title" xml:space="preserve"><value>Moje Konto</value></data>
   <data name="Profile_Welcome" xml:space="preserve"><value>Witaj, {0}!</value></data>
   <data name="Profile_Subtitle" xml:space="preserve"><value>Zarządzaj swoimi wypożyczeniami i zamówieniami w jednym miejscu.</value></data>
-  <data name="Profile_FinesTitle" xml:space="preserve"><value>?? Masz nieopłacone naliczone opłaty (kary)!</value></data>
+  <data name="Profile_FinesTitle" xml:space="preserve"><value>Masz nieopłacone naliczone opłaty (kary)!</value></data>
   <data name="Profile_FinesTotal" xml:space="preserve"><value>Łączna kwota do uregulowania w kasie biblioteki wynosi:</value></data>
   <data name="Profile_FinesColTitle" xml:space="preserve"><value>Tytuł książki</value></data>
   <data name="Profile_FinesColAmount" xml:space="preserve"><value>Kwota opłaty</value></data>
-  <data name="Profile_RentalsTitle" xml:space="preserve"><value>?? Twoje wypożyczenia z biblioteki</value></data>
-  <data name="Profile_RentalsEmpty" xml:space="preserve"><value>Nie masz jeszcze żadnych wypożyczonych książek. ??</value></data>
-  <data name="Profile_OrdersTitle" xml:space="preserve"><value>?? Statusy Twoich paczek ze sklepu</value></data>
-  <data name="Profile_OrdersEmpty" xml:space="preserve"><value>Nie masz obecnie żadnych zamówień w sklepie. ??</value></data>
+  <data name="Profile_RentalsTitle" xml:space="preserve"><value>Twoje wypożyczenia z biblioteki</value></data>
+  <data name="Profile_RentalsEmpty" xml:space="preserve"><value>Nie masz jeszcze żadnych wypożyczonych książek.</value></data>
+  <data name="Profile_OrdersTitle" xml:space="preserve"><value>Statusy Twoich paczek ze sklepu</value></data>
+  <data name="Profile_OrdersEmpty" xml:space="preserve"><value>Nie masz obecnie żadnych zamówień w sklepie.</value></data>
   <data name="Profile_ColId" xml:space="preserve"><value>ID</value></data>
   <data name="Profile_ColBookTitle" xml:space="preserve"><value>Tytuł książki</value></data>
   <data name="Profile_ColRentalDate" xml:space="preserve"><value>Data wypożyczenia</value></data>
@@ -343,22 +343,22 @@
   <data name="Details_CoverAlt" xml:space="preserve"><value>Okładka</value></data>
   <data name="Details_CoverPlaceholder" xml:space="preserve"><value>Okładka zastępcza</value></data>
   <data name="Details_CoverPrice" xml:space="preserve"><value>Cena okładkowa:</value></data>
-  <data name="Details_SavePercent" xml:space="preserve"><value>?? Oszczędzasz {0}%</value></data>
+  <data name="Details_SavePercent" xml:space="preserve"><value>Oszczędzasz {0}%</value></data>
   <data name="Details_RentOnly" xml:space="preserve"><value>Pozycja wyłącznie do wypożyczenia</value></data>
-  <data name="Details_InStock" xml:space="preserve"><value>? Dostępny w magazynie wysyłkowym (Sztuk: {0})</value></data>
+  <data name="Details_InStock" xml:space="preserve"><value>✅ Dostępny w magazynie wysyłkowym (Sztuk: {0})</value></data>
   <data name="Details_AddToCart" xml:space="preserve"><value>Dodaj do koszyka</value></data>
-  <data name="Details_SoldOut" xml:space="preserve"><value>? Obecnie wyprzedane w sklepie internetowym</value></data>
-  <data name="Details_FreeLibrary" xml:space="preserve"><value>? Ta książka jest dostępna darmowo w ramach abonamentu naszej biblioteki.</value></data>
-  <data name="Details_StationaryTitle" xml:space="preserve"><value>?? Dostępność w placówce stacjonarnej</value></data>
+  <data name="Details_SoldOut" xml:space="preserve"><value>❌ Obecnie wyprzedane w sklepie internetowym</value></data>
+  <data name="Details_FreeLibrary" xml:space="preserve"><value>📚 Ta książka jest dostępna darmowo w ramach abonamentu naszej biblioteki.</value></data>
+  <data name="Details_StationaryTitle" xml:space="preserve"><value>Dostępność w placówce stacjonarnej</value></data>
   <data name="Details_OnShelves" xml:space="preserve"><value>Na półkach:</value></data>
   <data name="Details_AvailableRent" xml:space="preserve"><value>Wolnych do wypożyczenia:</value></data>
   <data name="Details_SelectCopy" xml:space="preserve"><value>Wybierz interesujący Cię egzemplarz stacjonarny:</value></data>
   <data name="Details_CopyState" xml:space="preserve"><value>Stan:</value></data>
-  <data name="Details_ReserveBtn" xml:space="preserve"><value>?? Zarezerwuj wybrany egzemplarz</value></data>
-  <data name="Details_NoCopies" xml:space="preserve"><value>? Brak dostępnych egzemplarzy na półkach do rezerwacji.</value></data>
-  <data name="Details_DescTitle" xml:space="preserve"><value>?? Opis książki</value></data>
+  <data name="Details_ReserveBtn" xml:space="preserve"><value>Zarezerwuj wybrany egzemplarz</value></data>
+  <data name="Details_NoCopies" xml:space="preserve"><value>⚠️ Brak dostępnych egzemplarzy na półkach do rezerwacji.</value></data>
+  <data name="Details_DescTitle" xml:space="preserve"><value>Opis książki</value></data>
   <data name="Details_NoDesc" xml:space="preserve"><value>Ta pozycja nie posiada jeszcze oficjalnego opisu w systemie.</value></data>
-  <data name="Details_SpecTitle" xml:space="preserve"><value>?? Informacje szczegółowe</value></data>
+  <data name="Details_SpecTitle" xml:space="preserve"><value>Informacje szczegółowe</value></data>
   <data name="Details_ProductId" xml:space="preserve"><value>ID produktu:</value></data>
   <data name="Details_LabelTitle" xml:space="preserve"><value>Tytuł:</value></data>
   <data name="Details_OriginalTitle" xml:space="preserve"><value>Tytuł oryginalny:</value></data>
@@ -385,7 +385,7 @@
   <data name="Checkout_StepPayment" xml:space="preserve"><value>Dostawa i płatność</value></data>
   <data name="Checkout_StepDelivery" xml:space="preserve"><value>Metoda dostawy</value></data>
   <data name="Checkout_StepDone" xml:space="preserve"><value>Gotowe</value></data>
-  <data name="Checkout_LoginTitle" xml:space="preserve"><value>?? Wymagane logowanie</value></data>
+  <data name="Checkout_LoginTitle" xml:space="preserve"><value>Wymagane logowanie</value></data>
   <data name="Checkout_LoginDesc" xml:space="preserve"><value>Aby sfinalizować zamówienie w księgarni, musisz być zalogowany.</value></data>
   <data name="Checkout_LoginBtn" xml:space="preserve"><value>Zaloguj się do konta</value></data>
   <data name="Checkout_RecipientTitle" xml:space="preserve"><value>Dane odbiorcy</value></data>
@@ -427,11 +427,11 @@
   <data name="Delivery_COD" xml:space="preserve"><value>Płatność przy odbiorze (Za pobraniem)</value></data>
   <data name="Delivery_CODCourier" xml:space="preserve"><value>U kuriera</value></data>
   <data name="Delivery_Total" xml:space="preserve"><value>Do zapłaty</value></data>
-  <data name="Delivery_Submit" xml:space="preserve"><value>Złóż zamówienie i zapłać ??</value></data>
+  <data name="Delivery_Submit" xml:space="preserve"><value>Złóż zamówienie i zapłać</value></data>
   <data name="Delivery_Disclaimer" xml:space="preserve"><value>Klikając przycisk zatwierdzasz operację. Dane zostaną przetworzone, a stany magazynowe w bazie zostaną automatycznie zaktualizowane.</value></data>
   <data name="Books_IndexTitle" xml:space="preserve"><value>Zarządzanie asortymentem</value></data>
-  <data name="Books_PanelTitle" xml:space="preserve"><value>?? Panel Asortymentu</value></data>
-  <data name="Books_AddNew" xml:space="preserve"><value>? Dodaj nowy produkt</value></data>
+  <data name="Books_PanelTitle" xml:space="preserve"><value>📚 Panel Asortymentu</value></data>
+  <data name="Books_AddNew" xml:space="preserve"><value>Dodaj nowy produkt</value></data>
   <data name="Books_ColCover" xml:space="preserve"><value>Okładka</value></data>
   <data name="Books_ColTitleAuthor" xml:space="preserve"><value>Tytuł / Autor</value></data>
   <data name="Books_ColGenre" xml:space="preserve"><value>Gatunek</value></data>
@@ -440,12 +440,12 @@
   <data name="Books_ColActions" xml:space="preserve"><value>Akcje</value></data>
   <data name="Books_NoCover" xml:space="preserve"><value>Brak okładki</value></data>
   <data name="Books_ManageCopies" xml:space="preserve"><value>(zarządzaj ˇ)</value></data>
-  <data name="Books_EditProduct" xml:space="preserve"><value>? Edytuj produkt</value></data>
-  <data name="Books_CopiesFor" xml:space="preserve"><value>?? Fizyczne egzemplarze w bibliotece dla:</value></data>
+  <data name="Books_EditProduct" xml:space="preserve"><value>✏️ Edytuj produkt</value></data>
+  <data name="Books_CopiesFor" xml:space="preserve"><value>Fizyczne egzemplarze w bibliotece dla:</value></data>
   <data name="Books_NoCopies" xml:space="preserve"><value>Brak zarejestrowanych sztuk w systemie wypożyczalni dla tej książki.</value></data>
   <data name="Books_CopyCode" xml:space="preserve"><value>Kod:</value></data>
-  <data name="Books_CopyBorrowed" xml:space="preserve"><value>?? Aktualnie wypożyczona</value></data>
-  <data name="Books_CopyOnShelf" xml:space="preserve"><value>?? Na półce</value></data>
+  <data name="Books_CopyBorrowed" xml:space="preserve"><value>Aktualnie wypożyczona</value></data>
+  <data name="Books_CopyOnShelf" xml:space="preserve"><value>Na półce</value></data>
   <data name="Books_SaveState" xml:space="preserve"><value>Zapisz stan</value></data>
   <data name="Books_DeleteCopyConfirm" xml:space="preserve"><value>Czy na pewno chcesz usunąć ten fizyczny egzemplarz biblioteczny?</value></data>
   <data name="Cond_Ideal" xml:space="preserve"><value>idealny</value></data>
@@ -461,7 +461,7 @@
   <data name="Clients_ColPhone" xml:space="preserve"><value>Telefon</value></data>
   <data name="Rentals_Title" xml:space="preserve"><value>Zarządzanie Zamówieniami i Wypożyczeniami</value></data>
   <data name="Rentals_NewIssue" xml:space="preserve"><value>+ Nowe Wydanie</value></data>
-  <data name="Rentals_ReservationsTitle" xml:space="preserve"><value>??? Rezerwacje do odebrania w salonie</value></data>
+  <data name="Rentals_ReservationsTitle" xml:space="preserve"><value>📋 Rezerwacje do odebrania w salonie</value></data>
   <data name="Rentals_ColReader" xml:space="preserve"><value>Czytelnik</value></data>
   <data name="Rentals_ColBook" xml:space="preserve"><value>Książka</value></data>
   <data name="Rentals_ColInventory" xml:space="preserve"><value>Kod Inwentarzowy</value></data>
@@ -469,24 +469,24 @@
   <data name="Rentals_ColPickupDeadline" xml:space="preserve"><value>Ostateczny termin odbioru</value></data>
   <data name="Rentals_ColActionStatus" xml:space="preserve"><value>Status akcji</value></data>
   <data name="Rentals_Reserved" xml:space="preserve"><value>(Zarezerwowana)</value></data>
-  <data name="Rentals_IssueBtn" xml:space="preserve"><value>? Wydaj klientowi książkę</value></data>
-  <data name="Rentals_NoReservations" xml:space="preserve"><value>Brak nowych rezerwacji oczekujących na półce rezerwacji. ??</value></data>
-  <data name="Rentals_ShopOrdersTitle" xml:space="preserve"><value>?? Historia zamówień internetowych (Wysyłka e-Sklep)</value></data>
+  <data name="Rentals_IssueBtn" xml:space="preserve"><value>📤 Wydaj klientowi książkę</value></data>
+  <data name="Rentals_NoReservations" xml:space="preserve"><value>Brak nowych rezerwacji oczekujących na półce rezerwacji.</value></data>
+  <data name="Rentals_ShopOrdersTitle" xml:space="preserve"><value>🛒 Historia zamówień internetowych (Wysyłka e-Sklep)</value></data>
   <data name="Rentals_ColCustomer" xml:space="preserve"><value>Klient Zamawiający</value></data>
   <data name="Rentals_ColContact" xml:space="preserve"><value>Kontakt Klienta</value></data>
   <data name="Rentals_ColOrderDate" xml:space="preserve"><value>Data Złożenia</value></data>
   <data name="Rentals_ColShipmentStatus" xml:space="preserve"><value>Status Przesyłki</value></data>
   <data name="Rentals_ColExpedition" xml:space="preserve"><value>Ekspedycja / Akcja</value></data>
   <data name="Rentals_BtnContents" xml:space="preserve"><value>SKŁAD ?</value></data>
-  <data name="Rentals_BtnShip" xml:space="preserve"><value>?? Nadaj kurierem</value></data>
+  <data name="Rentals_BtnShip" xml:space="preserve"><value>Nadaj kurierem</value></data>
   <data name="Rentals_Completed" xml:space="preserve"><value>Zrealizowane</value></data>
-  <data name="Rentals_PackageNumber" xml:space="preserve"><value>?? Numer paczki systemowej:</value></data>
+  <data name="Rentals_PackageNumber" xml:space="preserve"><value>Numer paczki systemowej:</value></data>
   <data name="Rentals_PickList" xml:space="preserve"><value>Pozycje do skompletowania z magazynu wydawniczego:</value></data>
   <data name="Rentals_ItemAuthor" xml:space="preserve"><value>– autor:</value></data>
   <data name="Rentals_ItemQty" xml:space="preserve"><value>Ilość:</value></data>
   <data name="Rentals_ItemValue" xml:space="preserve"><value>wartość pozycji:</value></data>
   <data name="Rentals_NoShopOrders" xml:space="preserve"><value>Brak oczekujących zamówień wysyłkowych ze sklepu internetowego.</value></data>
-  <data name="Rentals_ActiveTitle" xml:space="preserve"><value>?? Aktywne wypożyczenia (Książki u czytelników)</value></data>
+  <data name="Rentals_ActiveTitle" xml:space="preserve"><value>📖 Aktywne wypożyczenia (Książki u czytelników)</value></data>
   <data name="Rentals_ColIssueDate" xml:space="preserve"><value>Data wydania</value></data>
   <data name="Rentals_ColDueDate" xml:space="preserve"><value>Termin zwrotu (30 dni)</value></data>
   <data name="Rentals_ColRegisterReturn" xml:space="preserve"><value>Zarejestruj zwrot</value></data>
@@ -510,9 +510,9 @@
   <data name="Register_PlaceholderPasswordMin" xml:space="preserve"><value>Min. 6 znaków</value></data>
   <data name="Register_PlaceholderEmail" xml:space="preserve"><value>np. nazwa@domena.pl</value></data>
   <data name="Register_PlaceholderPhone" xml:space="preserve"><value>np. 500600700</value></data>
-  <data name="Register_PasswordTooShort" xml:space="preserve"><value>? Za krótkie (min. 6 znaków)</value></data>
-  <data name="Register_PasswordStrong" xml:space="preserve"><value>? Silne hasło</value></data>
-  <data name="Register_PasswordMedium" xml:space="preserve"><value>? Średnie (dodaj wielką literę i cyfrę)</value></data>
+  <data name="Register_PasswordTooShort" xml:space="preserve"><value>⚠️ Za krótkie (min. 6 znaków)</value></data>
+  <data name="Register_PasswordStrong" xml:space="preserve"><value>✅ Silne hasło</value></data>
+  <data name="Register_PasswordMedium" xml:space="preserve"><value>🟡 Średnie (dodaj wielką literę i cyfrę)</value></data>
   <data name="Register_ValidationFirstName" xml:space="preserve"><value>Imię musi zawierać min. 2 znaki!</value></data>
   <data name="Register_ValidationLastName" xml:space="preserve"><value>Nazwisko musi zawierać min. 2 znaki!</value></data>
   <data name="Register_ValidationPassword" xml:space="preserve"><value>Hasło jest za krótkie!</value></data>
@@ -555,5 +555,63 @@
   <data name="RentalsIndex_To" xml:space="preserve"><value>Do dnia:</value></data>
   <data name="RentalsIndex_Generate" xml:space="preserve"><value>Generuj wykaz finansowy</value></data>
   <data name="RentalsIndex_NoEntries" xml:space="preserve"><value>Brak wpisów dla wybranego przedziału czasowego.</value></data>
+  <data name="BooksCreate_LabelDesc" xml:space="preserve"><value>Opis / streszczenie utworu</value></data>
+  <data name="BooksCreate_LabelCoverFile" xml:space="preserve"><value>Zdjęcie okładki (JPG / PNG)</value></data>
+  <data name="BooksCreate_LabelGenre" xml:space="preserve"><value>Kategoria literacka</value></data>
+  <data name="BooksCreate_LabelOriginalTitle" xml:space="preserve"><value>Tytuł oryginalny</value></data>
+  <data name="BooksCreate_LabelSeries" xml:space="preserve"><value>Seria wydawnicza</value></data>
+  <data name="BooksCreate_LabelTranslator" xml:space="preserve"><value>Tłumaczenie (imię i nazwisko tłumacza)</value></data>
+  <data name="BooksCreate_LabelLangEdition" xml:space="preserve"><value>Język wydania</value></data>
+  <data name="BooksCreate_LabelLangOriginal" xml:space="preserve"><value>Język oryginału</value></data>
+  <data name="BooksCreate_LabelPages" xml:space="preserve"><value>Liczba stron</value></data>
+  <data name="BooksCreate_LabelEditionNumber" xml:space="preserve"><value>Numer wydania</value></data>
+  <data name="BooksCreate_LabelCoverType" xml:space="preserve"><value>Typ okładki</value></data>
+  <data name="BooksCreate_LabelPremiereDate" xml:space="preserve"><value>Data premiery</value></data>
+  <data name="BooksCreate_LabelReleaseDate" xml:space="preserve"><value>Data wydania</value></data>
+  <data name="BooksCreate_LabelHeight" xml:space="preserve"><value>Wysokość [mm]</value></data>
+  <data name="BooksCreate_LabelDepth" xml:space="preserve"><value>Głębokość [mm]</value></data>
+  <data name="BooksCreate_LabelWidth" xml:space="preserve"><value>Szerokość [mm]</value></data>
+  <data name="BooksCreate_LabelLibraryCopies" xml:space="preserve"><value>Liczba egzemplarzy do wypożyczeń</value></data>
+  <data name="BooksCreate_LabelShopStock" xml:space="preserve"><value>Ilość sztuk na magazynie sklepu</value></data>
+  <data name="BooksCreate_CopyCondition" xml:space="preserve"><value>Ocena techniczna sztuki #{0}</value></data>
+  <data name="BooksCreate_DefaultLangEdition" xml:space="preserve"><value>polski</value></data>
+  <data name="BooksCreate_Ph_Title" xml:space="preserve"><value>np. Wiedźmin: Ostatnie życzenie</value></data>
+  <data name="BooksCreate_Ph_Author" xml:space="preserve"><value>np. Andrzej Sapkowski</value></data>
+  <data name="BooksCreate_Ph_Desc" xml:space="preserve"><value>Wklej opis książki wyświetlany na karcie produktu...</value></data>
+  <data name="BooksCreate_Ph_OrigTitle" xml:space="preserve"><value>np. The Goal</value></data>
+  <data name="BooksCreate_Ph_Series" xml:space="preserve"><value>np. Off-Campus</value></data>
+  <data name="BooksCreate_Ph_Publisher" xml:space="preserve"><value>np. Wydawnictwo Zysk i S-ka</value></data>
+  <data name="BooksCreate_Ph_Translator" xml:space="preserve"><value>np. Mackiewicz Anna</value></data>
+  <data name="BooksCreate_Ph_LangOriginal" xml:space="preserve"><value>np. angielski</value></data>
+  <data name="BooksCreate_Ph_CoverType" xml:space="preserve"><value>np. miękka / twarda</value></data>
+  <data name="BooksCreate_Ph_CoverPrice" xml:space="preserve"><value>np. 59.99</value></data>
+  <data name="BooksCreate_Ph_RetailPrice" xml:space="preserve"><value>np. 44.99 (0 = brak w sklepie)</value></data>
+  <data name="RentalsIndex_ColTitleCode" xml:space="preserve"><value>Tytuł oraz kod</value></data>
+  <data name="RentalsIndex_ColIssueDate" xml:space="preserve"><value>Data wydania</value></data>
+  <data name="RentalsIndex_ColActualReturn" xml:space="preserve"><value>Faktyczny zwrot</value></data>
+  <data name="RentalsIndex_ColDueDate" xml:space="preserve"><value>Termin regulaminu</value></data>
+  <data name="RentalsIndex_ColDelayDays" xml:space="preserve"><value>Zwłoka (dni)</value></data>
+  <data name="RentalsIndex_ColLateFee" xml:space="preserve"><value>Naliczona opłata spóźnienia</value></data>
+  <data name="RentalsIndex_TotalRevenue" xml:space="preserve"><value>Sumaryczny przychód systemu:</value></data>
+  <data name="RentalsOrders_ColOrderId" xml:space="preserve"><value>ID zamówienia</value></data>
+  <data name="RentalsOrders_ColCustomer" xml:space="preserve"><value>Klient odbiorca</value></data>
+  <data name="RentalsOrders_ColProduct" xml:space="preserve"><value>Zakupiony towar</value></data>
+  <data name="RentalsOrders_ColOrderDate" xml:space="preserve"><value>Data złożenia</value></data>
+  <data name="RentalsOrders_ColStatus" xml:space="preserve"><value>Status paczki</value></data>
+  <data name="RentalsOrders_ColExpedition" xml:space="preserve"><value>Ekspedycja</value></data>
+  <data name="RentalsOrders_FallbackClient" xml:space="preserve"><value>Klient</value></data>
+  <data name="RentalsOrders_FallbackBook" xml:space="preserve"><value>Książka meow</value></data>
+  <data name="RentalsOrders_StatusPreparing" xml:space="preserve"><value>⏳ W przygotowaniu</value></data>
+  <data name="RentalsOrders_ShippedOn" xml:space="preserve"><value>🚀 Wysłano ({0})</value></data>
+  <data name="RentalsOrders_BtnDispatch" xml:space="preserve"><value>📦 Nadaj paczkę</value></data>
+  <data name="RentalsOrders_Completed" xml:space="preserve"><value>Zrealizowano</value></data>
+  <data name="Msg_BookAdded" xml:space="preserve"><value>Produkt „{0}” został dodany do systemu meow! 🐾</value></data>
+  <data name="Msg_BookSaveError" xml:space="preserve"><value>Błąd zapisu: {0}</value></data>
+  <data name="Msg_BookUpdated" xml:space="preserve"><value>Zaktualizowano parametry oferty i specyfikacji dla „{0}”! 🐾</value></data>
+  <data name="Msg_BookEditError" xml:space="preserve"><value>Błąd edycji zasobu: {0}</value></data>
+  <data name="Msg_CopyStateUpdated" xml:space="preserve"><value>Stan techniczny egzemplarza został zaktualizowany.</value></data>
+  <data name="Msg_CopyDeleteBlocked" xml:space="preserve"><value>Nie można usunąć: ten egzemplarz jest obecnie wypożyczony przez klienta!</value></data>
+  <data name="Msg_CopyDeleted" xml:space="preserve"><value>Egzemplarz został pomyślnie usunięty z systemu meow.</value></data>
+  <data name="Msg_CopyDeleteError" xml:space="preserve"><value>Błąd podczas usuwania zasobu: {0}</value></data>
 </root>
 

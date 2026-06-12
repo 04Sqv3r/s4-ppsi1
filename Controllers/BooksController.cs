@@ -7,6 +7,8 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Localization;
+using meow.Resources;
 using meow.Services;
 using Qdrant.Client.Grpc;
 
@@ -17,6 +19,7 @@ namespace meow.Controllers
         private readonly LibraryDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly VectorSearchService _vectorService;
+        private readonly IStringLocalizer<SharedResources> _localizer;
 
      
         private readonly string[] _wszystkieGatunki = new[] { 
@@ -28,11 +31,12 @@ namespace meow.Controllers
             "Wiek-0-2", "Wiek-3-5", "Wiek-6-8", "Wiek-9-12", "Emocje", "Kariera", "Psychologia"
         };
 
-        public BooksController(LibraryDbContext context, IWebHostEnvironment webHostEnvironment, VectorSearchService vectorService)
+        public BooksController(LibraryDbContext context, IWebHostEnvironment webHostEnvironment, VectorSearchService vectorService, IStringLocalizer<SharedResources> localizer)
 {
     _context = context;
     _webHostEnvironment = webHostEnvironment;
     _vectorService = vectorService;
+    _localizer = localizer;
 }
 
 
@@ -43,9 +47,6 @@ namespace meow.Controllers
         {
             if (HttpContext.Session.GetString("User") == null) return RedirectToAction("Login", "Account");
 
-            var testVector = _vectorService.GenerateVector("test");
-            Console.WriteLine($"Utworzono wektor! Rozmiar: {testVector.Length}");
-            
             ViewBag.AktywneWypozyczenia = _context.Wypozyczenia
                 .Where(w => w.DataZwrotu == null && w.IdEgzemplarz != null)
                 .Select(w => (int)w.IdEgzemplarz!)
@@ -60,36 +61,17 @@ namespace meow.Controllers
         }
 
         // ==========================================================
-        // 2. KREATOR: DODAWANIE NOWEGO PRODUKTU (POPRAWIONY BINDING STANÓW)
+        // 2. KREATOR: DODAWANIE NOWEGO PRODUKTU
         // ==========================================================
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Tytul,Autor,Gatunek,RokWydania,IloscEgzemplarzy,Cena")] Book book, string stanProduktu)
-        {
-            if (ModelState.IsValid)
-            {
-                // 1. Zapisujemy główną książkę do bazy, aby baza nadała jej Id
-                _context.Add(book);
-                await _context.SaveChangesAsync();
-
-                // 2. Automatycznie tworzymy fizyczny egzemplarz na stanie z pobranym z formularza stanem
-                var nowyEgzemplarz = new Egzemplarz
-                {
-                    IdKsiazka = book.Id,
-                    NumerInwentarzowy = $"INV-{book.Id}-01",
-                    Stan = string.IsNullOrEmpty(stanProduktu) ? "Nowy" : stanProduktu // <--- Zapisujemy stan!
-                };
-
-                _context.Egzemplarze.Add(nowyEgzemplarz);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-            return View(book);
-        }
-        [HttpPost]
-        [MeowAuthorize]
-        public async Task<IActionResult> Create(Book book, int ilosc, string[] stany, IFormFile zdjecieOkładki)
+        public async Task<IActionResult> Create(Book book, int ilosc, string[] stany, IFormFile? zdjecieOkładki)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -116,7 +98,14 @@ namespace meow.Controllers
                 _context.Books.Add(book);
                 _context.SaveChanges();
 
-                await _vectorService.UpsertBook(book.Id, book.Tytul, book.Opis ?? "");
+                try
+                {
+                    await _vectorService.UpsertBook(book.Id, book.Tytul, book.Opis ?? "");
+                }
+                catch (Exception vectorEx)
+                {
+                    Console.WriteLine($"Vector index skip: {vectorEx.Message}");
+                }
 
                 if (ilosc > 0)
                 {
@@ -139,13 +128,13 @@ namespace meow.Controllers
                 _context.SaveChanges();
                 transaction.Commit();
 
-                TempData["Message"] = $"Produkt '{book.Tytul}' został dodany do systemu meow! 🐾";
+                TempData["Message"] = string.Format(_localizer["Msg_BookAdded"].Value, book.Tytul);
                 TempData["MessageType"] = "success";
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                TempData["Message"] = "Błąd zapisu: " + ex.Message;
+                TempData["Message"] = string.Format(_localizer["Msg_BookSaveError"].Value, ex.Message);
                 TempData["MessageType"] = "error";
             }
 
@@ -219,12 +208,12 @@ namespace meow.Controllers
                 }
 
                 _context.SaveChanges();
-                TempData["Message"] = $"Zaktualizowano parametry oferty i specyfikacji dla '{bookInDb.Tytul}'! 🐾";
+                TempData["Message"] = string.Format(_localizer["Msg_BookUpdated"].Value, bookInDb.Tytul);
                 TempData["MessageType"] = "success";
             }
             catch (Exception ex)
             {
-                TempData["Message"] = "Błąd edycji zasobu: " + ex.Message;
+                TempData["Message"] = string.Format(_localizer["Msg_BookEditError"].Value, ex.Message);
                 TempData["MessageType"] = "error";
             }
 
@@ -242,7 +231,7 @@ namespace meow.Controllers
             {
                 egz.Stan = stan; 
                 _context.SaveChanges();
-                TempData["Message"] = "Stan techniczny egzemplarza został zaktualizowany.";
+                TempData["Message"] = _localizer["Msg_CopyStateUpdated"].Value;
                 TempData["MessageType"] = "success";
             }
             return RedirectToAction("Index");
@@ -264,7 +253,7 @@ namespace meow.Controllers
 
                 if (czyWypozyczony)
                 {
-                    TempData["Message"] = "Nie można usunąć: ten egzemplarz jest obecnie wypożyczony przez klienta!";
+                    TempData["Message"] = _localizer["Msg_CopyDeleteBlocked"].Value;
                     TempData["MessageType"] = "error";
                     return RedirectToAction("Index");
                 }
@@ -292,13 +281,13 @@ namespace meow.Controllers
                 }
 
                 transaction.Commit();
-                TempData["Message"] = "Egzemplarz został pomyślnie usunięty z systemu meow.";
+                TempData["Message"] = _localizer["Msg_CopyDeleted"].Value;
                 TempData["MessageType"] = "success";
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                TempData["Message"] = "Błąd podczas usuwania zasobu: " + ex.Message;
+                TempData["Message"] = string.Format(_localizer["Msg_CopyDeleteError"].Value, ex.Message);
                 TempData["MessageType"] = "error";
             }
 

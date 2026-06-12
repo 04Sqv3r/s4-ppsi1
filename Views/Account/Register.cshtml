@@ -172,31 +172,31 @@
         
         <div class="section-title">@Localizer["Register_SectionLogin"]</div>
         
-        <label for="login">@Localizer["Register_LabelLogin"]</label>
-        <input type="text" name="login" id="login" placeholder="@Localizer["Register_PlaceholderLoginMin"]" required minlength="4">
+        <label for="Login">@Localizer["Register_LabelLogin"]</label>
+        <input type="text" name="Login" id="Login" placeholder="@Localizer["Register_PlaceholderLoginMin"]" required minlength="4">
         
-        <label for="haslo">@Localizer["Register_LabelPassword"]</label>
-        <input type="password" name="haslo" id="haslo" placeholder="@Localizer["Register_PlaceholderPasswordMin"]" required onkeyup="checkPasswordStrength()">
+        <label for="Haslo">@Localizer["Register_LabelPassword"]</label>
+        <input type="password" name="Haslo" id="Haslo" placeholder="@Localizer["Register_PlaceholderPasswordMin"]" required onkeyup="checkPasswordStrength()">
         <div id="password-status" class="password-strength"></div>
 
         <div class="section-title">@Localizer["Register_SectionProfile"]</div>
 
         <div class="row">
             <div class="col">
-                <label for="imie">@Localizer["Register_LabelFirstName"]</label>
-                <input type="text" name="imie" id="imie" placeholder="@Localizer["Register_LabelFirstName"]" required>
+                <label for="Imie">@Localizer["Register_LabelFirstName"]</label>
+                <input type="text" name="Imie" id="Imie" placeholder="@Localizer["Register_LabelFirstName"]" required>
             </div>
             <div class="col">
-                <label for="nazwisko">@Localizer["Register_LabelLastName"]</label>
-                <input type="text" name="nazwisko" id="nazwisko" placeholder="@Localizer["Register_LabelLastName"]" required>
+                <label for="Nazwisko">@Localizer["Register_LabelLastName"]</label>
+                <input type="text" name="Nazwisko" id="Nazwisko" placeholder="@Localizer["Register_LabelLastName"]" required>
             </div>
         </div>
 
-        <label for="email">@Localizer["Register_LabelEmail"]</label>
-        <input type="email" name="email" id="email" placeholder="@Localizer["Register_PlaceholderEmail"]" required>
+        <label for="Email">@Localizer["Register_LabelEmail"]</label>
+        <input type="email" name="Email" id="Email" placeholder="@Localizer["Register_PlaceholderEmail"]" required>
 
-        <label for="telefon">@Localizer["Register_LabelPhone"]</label>
-        <input type="text" name="telefon" id="telefon" placeholder="@Localizer["Register_PlaceholderPhone"]" maxlength="9">
+        <label for="Telefon">@Localizer["Register_LabelPhone"]</label>
+        <input type="text" name="Telefon" id="Telefon" placeholder="@Localizer["Register_PlaceholderPhone"]" maxlength="9" inputmode="numeric">
 
         <button type="submit">@Localizer["Register_Submit"]</button>
     </form>
@@ -221,22 +221,22 @@
         validationPhone: '@Localizer["Register_ValidationPhone"]'
     };
 
-    document.getElementById('imie').addEventListener('input', function() {
+    document.getElementById('Imie').addEventListener('input', function() {
         this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '');
     });
 
-    document.getElementById('nazwisko').addEventListener('input', function() {
+    document.getElementById('Nazwisko').addEventListener('input', function() {
         this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '');
     });
 
-    document.getElementById('telefon').addEventListener('input', function() {
+    document.getElementById('Telefon').addEventListener('input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
     // Dynamiczny wskaźnik siły hasła
     function checkPasswordStrength() {
         var status = document.getElementById('password-status');
-        var password = document.getElementById('haslo').value;
+        var password = document.getElementById('Haslo').value;
         
         if (password.length === 0) {
             status.innerHTML = "";
@@ -257,19 +257,20 @@
 
     // Ostateczna weryfikacja przed wysłaniem formularza
     function validateForm() {
-        var imie = document.getElementById('imie').value;
-        var nazwisko = document.getElementById('nazwisko').value;
-        var telefon = document.getElementById('telefon').value;
-        var haslo = document.getElementById('haslo').value;
+        var imie = document.getElementById('Imie').value.trim();
+        var nazwisko = document.getElementById('Nazwisko').value.trim();
+        var telefon = document.getElementById('Telefon').value.replace(/[^0-9]/g, '');
+        var haslo = document.getElementById('Haslo').value;
 
         if (imie.length < 2) { alert(messages.validationFirstName); return false; }
         if (nazwisko.length < 2) { alert(messages.validationLastName); return false; }
         if (haslo.length < 6) { alert(messages.validationPassword); return false; }
-        
-        if (telefon.length > 0 && telefon.length !== 9) { 
-            alert(messages.validationPhone); 
-            return false; 
+
+        if (telefon.length > 0 && telefon.length !== 9) {
+            alert(messages.validationPhone);
+            return false;
         }
+        document.getElementById('Telefon').value = telefon;
         return true;
     }
 </script>
