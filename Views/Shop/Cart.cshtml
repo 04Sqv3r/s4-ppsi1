@@ -1,0 +1,151 @@
+@model IEnumerable<meow.Models.Book>
+@{
+    ViewData["Title"] = Localizer["Cart_Title"].Value;
+    var quantities = ViewBag.Quantities as Dictionary<int, int> ?? new Dictionary<int, int>();
+    decimal suma = ViewBag.SumaKoszyka ?? 0;
+}
+
+<style>
+    .cart-container {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-top: 20px;
+    }
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .cart-table th {
+        background: #f8fafc;
+        color: #234465;
+        text-align: left;
+        padding: 15px;
+        font-weight: 700;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    .cart-table td {
+        padding: 15px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+    .btn-remove {
+        background: #fee2e2;
+        color: #ef4444;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        transition: background 0.2s;
+    }
+    .btn-remove:hover { background: #fca5a5; }
+    .summary-box {
+        margin-top: 30px;
+        background: #f8fafc;
+        padding: 25px;
+        border-radius: 6px;
+        text-align: right;
+        border: 1px solid #e2e8f0;
+    }
+    .btn-checkout {
+        background-color: #e67e22;
+        color: white;
+        border: none;
+        padding: 14px 40px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 15px;
+    }
+    .btn-checkout:hover { background-color: #d35400; }
+</style>
+
+<div class="cart-container">
+    <h2 style="color: #234465; font-size: 26px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">🛒 @Localizer["Cart_Heading"]</h2>
+    <p style="color: #64748b; margin-bottom: 30px;">@Localizer["Cart_Description"]</p>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">@Localizer["Cart_Col_Cover"]</th>
+                    <th>@Localizer["Cart_Col_Product"]</th>
+                    <th style="text-align: center; width: 15%;">@Localizer["Cart_Col_UnitPrice"]</th>
+                    <th style="text-align: center; width: 10%;">@Localizer["Cart_Col_Qty"]</th>
+                    <th style="text-align: center; width: 15%;">@Localizer["Cart_Col_Value"]</th>
+                    <th style="text-align: center; width: 10%;">@Localizer["Cart_Col_Action"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    int ilosc = quantities.ContainsKey(item.Id) ? quantities[item.Id] : 1;
+                    decimal totalItemPrice = (item.Cena ?? 0) * ilosc;
+
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" style="width: 60px; height: 85px; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" />
+                            }
+                            else
+                            {
+                                <div style="width: 60px; height: 85px; background: #234465; color: white; font-size: 9px; text-align: center; border-radius: 4px; display: flex; align-items: center; justify-content: center; padding: 2px; box-sizing: border-box;">@item.Tytul</div>
+                            }
+                        </td>
+                        <td>
+                            <div style="font-weight: 600; color: #1e293b; font-size: 16px;">@item.Tytul</div>
+                            <div style="color: #64748b; font-size: 13px; margin-top: 3px;">@Localizer["Cart_Author"]: @item.Autor</div>
+                            @if(!string.IsNullOrEmpty(item.EAN))
+                            {
+                                <div style="color: #94a3b8; font-size: 11px; font-family: monospace; margin-top: 2px;">EAN: @item.EAN</div>
+                            }
+                        </td>
+                        <td style="text-align: center; font-weight: 500; color: #475569;">
+                            @item.Cena?.ToString("F2") zł
+                        </td>
+                        <td style="text-align: center; font-weight: bold; color: #1e293b; font-size: 15px;">
+                            @ilosc
+                        </td>
+                        <td style="text-align: center; font-weight: 700; color: #234465; font-size: 16px;">
+                            @totalItemPrice.ToString("F2") zł
+                        </td>
+                        <td style="text-align: center;">
+                            <form action="/Shop/RemoveFromCart" method="post" style="margin: 0;">
+                                <input type="hidden" name="bookId" value="@item.Id" />
+                                <button type="submit" class="btn-remove">@Localizer["Cart_Remove"]</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="summary-box">
+            <div style="font-size: 16px; color: #64748b;">@Localizer["Cart_TotalLabel"]</div>
+            <div style="font-size: 32px; font-weight: 800; color: #1e293b; margin-top: 5px; margin-bottom: 5px;">
+                @suma.ToString("F2") zł
+            </div>
+            
+            <a href="/Shop/Checkout" style="background-color: #ff5a00; color: white; padding: 14px 28px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block; text-align: center;">@Localizer["Cart_Checkout"] ➔</a>
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 50px; margin-bottom: 20px;">🛒</div>
+            <h3 style="color: #234465; font-size: 20px; margin-bottom: 10px;">@Localizer["Cart_EmptyTitle"]</h3>
+            <p style="color: #64748b; margin-bottom: 25px;">@Localizer["Cart_EmptyDesc"]</p>
+            <a href="/Shop" style="background: #234465; color: white; text-decoration: none; padding: 12px 30px; font-weight: bold; border-radius: 4px; font-size: 14px;">@Localizer["Cart_BackShopping"]</a>
+        </div>
+    }
+</div>

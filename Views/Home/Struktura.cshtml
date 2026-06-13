@@ -1,0 +1,10 @@
+@{ ViewData["Title"] = "Struktura Bazy"; }
+<h2>Architektura Modelu Relacyjnego (meow.Models)</h2>
+<p>Struktura została zaimplementowana w standardzie Entity Framework Core (Code-First) i mapuje obiekty biznesowe bezpośrednio do relacyjnej bazy danych.</p>
+<pre style="background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; font-family: monospace;">
+  [User] 1 ---------> N [Sesje Autoryzacji]
+  [Book] 1 ---------> N [Egzemplarz]
+  [Klient] 1 -------> N [Wypozyczenie]
+  [Egzemplarz] 1 ---> N [Wypozyczenie]
+  [Wypozyczenie] 1 -> 0..1 [Platnosc (Kary Opóźnień)]
+</pre>

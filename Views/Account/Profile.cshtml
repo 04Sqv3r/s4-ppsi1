@@ -1,0 +1,171 @@
+@model meow.Models.ProfileViewModel
+
+@{
+    ViewData["Title"] = Localizer["Profile_Title"];
+}
+
+<div class="container mt-4">
+    <h2>@string.Format(Localizer["Profile_Welcome"].Value, Model.CustomerName)</h2>
+    <p class="text-muted">@Localizer["Profile_Subtitle"]</p>
+
+    <div style="background: white; padding: 20px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 20px; margin-bottom: 10px; font-size: 14px;">
+        <h3 style="margin: 0 0 12px 0; color: #234465; font-size: 16px;">@Localizer["Profile_AccountTitle"]</h3>
+        <div style="display: grid; grid-template-columns: 140px 1fr; gap: 8px 16px; color: #475569;">
+            <span style="font-weight: 600;">@Localizer["Profile_Login"]</span>
+            <span>@Model.Login</span>
+            <span style="font-weight: 600;">@Localizer["Profile_Email"]</span>
+            <span>@(string.IsNullOrWhiteSpace(Model.Email) ? Localizer["Profile_EmailMissing"].Value : Model.Email)</span>
+            <span style="font-weight: 600;">@Localizer["Profile_Phone"]</span>
+            <span>@(string.IsNullOrWhiteSpace(Model.Phone) ? "—" : Model.Phone)</span>
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    @if (Model.TotalFinesAmount > 0)
+    {
+        <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 20px; border-radius: 6px; margin-bottom: 30px; font-family: sans-serif;">
+            <h3 style="color: #991b1b; margin: 0 0 10px 0; font-size: 18px;">@Localizer["Profile_FinesTitle"]</h3>
+            <p style="color: #7f1d1d; font-size: 14px; margin: 0 0 15px 0;">
+                @Localizer["Profile_FinesTotal"] <strong style="font-size: 16px;">@Model.TotalFinesAmount.ToString("F2") @Localizer["Common_Currency"]</strong>
+            </p>
+        
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #374151;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #fee2e2; text-align: left;">
+                        <th style="padding: 8px 0; color: #991b1b;">@Localizer["Profile_FinesColTitle"]</th>
+                        <th style="padding: 8px 0; color: #991b1b; text-align: right;">@Localizer["Profile_FinesColAmount"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var fine in Model.Fines)
+                    {
+                        <tr style="border-bottom: 1px solid #fef2f2;">
+                            <td style="padding: 8px 0; font-style: italic;">@fine.BookTitle</td>
+                            <td style="padding: 8px 0; text-align: right; font-weight: bold; color: #b91c1c;">@fine.Amount.ToString("F2") @Localizer["Common_Currency"]</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <hr class="my-4" />
+    }
+
+    <h3 class="mb-3">@Localizer["Profile_RentalsTitle"]</h3>
+    @if (Model.Rentals != null && Model.Rentals.Any())
+    {
+        <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; margin-bottom: 30px;">
+            <thead>
+                <tr style="background-color: #234465; color: white; text-align: left;">
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColId"]</th>
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColBookTitle"]</th>
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColRentalDate"]</th>
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColReturnDate"]</th>
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColStatus"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rental in Model.Rentals)
+                {
+                    <tr style="border-bottom: 1px solid #eef2f5; font-size: 14px;">
+                        <td style="padding: 12px 15px; font-weight: bold; color: #234465;">@rental.Id</td>
+                        <td style="padding: 12px 15px; font-weight: 500;">@rental.BookTitle</td>
+                        <td style="padding: 12px 15px;">@rental.RentalDate</td>
+                        <td style="padding: 12px 15px; font-weight: 500;">@rental.ReturnDate</td>
+                        <td style="padding: 12px 15px;">
+                            <span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; background-color: @(rental.Status == "Rozliczone" ? "#2ecc71" : (rental.Status == "Zaległość" ? "#e74c3c" : "#f39c12")); color: white;">
+                                @meow.Services.LocalizationHelper.RentalStatus(Localizer, rental.Status)
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div style="background-color: #d9edf7; color: #31708f; padding: 15px; border-radius: 4px; margin-bottom: 30px; font-size: 14px;">
+            @Localizer["Profile_RentalsEmpty"]
+        </div>
+    }
+
+    <hr class="my-5" />
+
+    <h3 class="mb-3">@Localizer["Profile_OrdersTitle"]</h3>
+    @if (Model.Packages != null && Model.Packages.Any())
+    {
+        <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden;">
+            <thead>
+                <tr style="background-color: #234465; color: white; text-align: left;">
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColNumber"]</th>
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColOrderDate"]</th>
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColTracking"]</th>
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColValue"]</th>
+                    <th style="padding: 12px 15px;">@Localizer["Profile_ColStatus"]</th>
+                    <th style="padding: 12px 15px; text-align: center;">@Localizer["Profile_ColAction"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var package in Model.Packages)
+                {
+                    <tr style="border-bottom: 1px solid #eef2f5; font-size: 14px;">
+                        <td style="padding: 12px 15px; font-weight: bold; color: #234465;">#@package.OrderId</td>
+                        <td style="padding: 12px 15px;">@package.OrderDate</td>
+                        <td style="padding: 12px 15px;"><code style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; color: #334155;">@package.TrackingNumber</code></td>
+                        <td style="padding: 12px 15px; font-weight: bold; color: #e67e22;">@package.TotalPrice.ToString("F2") @Localizer["Common_Currency"]</td>
+                        <td style="padding: 12px 15px;">
+                            <span style="background-color: #3498db; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">@meow.Services.LocalizationHelper.OrderStatus(Localizer, package.Status)</span>
+                        </td>
+                        <td style="padding: 12px 15px; text-align: center;">
+                            <button class="btn-szczegoly" onclick="toggleDetails('order-@package.OrderId')" style="background-color: #e67e22; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                                @Localizer["Profile_BtnDetails"]
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr id="order-@package.OrderId" style="display: none; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                        <td colspan="6" style="padding: 20px 30px;">
+                            <h4 style="margin: 0 0 15px 0; color: #234465; font-size: 15px; border-bottom: 2px solid #cbd5e1; padding-bottom: 5px;">@Localizer["Profile_PackageItems"]</h4>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                @foreach (var item in package.Items)
+                                {
+                                    <div style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 12px 20px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); border-left: 4px solid #234465;">
+                                        <div style="display: flex; align-items: center; gap: 15px;">
+                                            <img src="@item.ImageUrl" alt="@Localizer["Details_CoverAlt"]" style="width: 45px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0;" />
+                                            <div>
+                                                <div style="font-weight: bold; color: #1e293b; font-size: 14px;">@item.Title</div>
+                                                <div style="font-size: 12px; color: #64748b;">@Localizer["Profile_ItemAuthor"] @item.Author</div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 40px; font-size: 14px; font-weight: 500;">
+                                            <div style="color: #64748b;">@Localizer["Profile_ItemQty"] <strong style="color: #1e293b;">@item.Quantity @Localizer["Common_Pcs"]</strong></div>
+                                            <div style="color: #64748b;">@Localizer["Profile_ItemPrice"] <strong style="color: #e67e22;">@item.Price.ToString("F2") @Localizer["Common_Currency"]</strong></div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div style="background-color: #d9edf7; color: #31708f; padding: 15px; border-radius: 4px; font-size: 14px;">
+            @Localizer["Profile_OrdersEmpty"]
+        </div>
+    }
+</div>
+
+<script>
+    function toggleDetails(rowId) {
+        var row = document.getElementById(rowId);
+        if (row.style.display === "none" || row.style.display === "") {
+            row.style.display = "table-row";
+        } else {
+            row.style.display = "none";
+        }
+    }
+</script>

@@ -1,0 +1,37 @@
+/* RWD — responsywny layout */
+
+@media (max-width: 992px) {
+    header { padding: 12px 20px; }
+    .header-top { flex-wrap: wrap; gap: 12px; }
+    .search-container { max-width: 100%; flex-grow: 1; order: 3; width: 100%; }
+    .mega-dropdown-content {
+        min-width: 100%;
+        left: 0;
+        flex-direction: column;
+        position: static;
+        display: none;
+        margin-top: 8px;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    .mega-dropdown.open .mega-dropdown-content { display: flex; }
+    .mega-dropdown:hover .mega-dropdown-content { display: none; }
+    .mega-dropdown.open:hover .mega-dropdown-content { display: flex; }
+}
+
+@media (max-width: 768px) {
+    nav { flex-wrap: wrap; gap: 12px; }
+    .logo { font-size: 18px; }
+    .container { margin: 16px auto; padding: 0 12px; }
+    .lang-switch { font-size: 12px; }
+    .user-greeting { font-size: 13px; }
+    footer { padding: 14px; font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+    .header-actions { width: 100%; justify-content: flex-end; gap: 10px; }
+    .user-menu { gap: 8px; font-size: 13px; }
+    .user-greeting { white-space: normal; }
+    .search-btn { padding: 0 12px; font-size: 12px; }
+    .cart-status { font-size: 11px; padding: 3px 8px; }
+}

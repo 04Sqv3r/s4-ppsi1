@@ -1,0 +1,139 @@
+@{ 
+    Layout = null; 
+}
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Localizer["Login_Title"]</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f6f9; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+        }
+        .box { 
+            background: white; 
+            padding: 35px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            width: 320px; 
+            box-sizing: border-box;
+        }
+        input { 
+            width: 100%; 
+            padding: 11px 15px; 
+            margin: 10px 0; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+            outline: none;
+        }
+        input:focus {
+            border-color: #e67e22;
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background: #234465; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 15px;
+            margin-top: 5px;
+            transition: background 0.2s;
+        }
+        button:hover { 
+            background: #1a3047; 
+        }
+        .alert-message { 
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px; 
+            text-align: center; 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+        }
+        .error-style { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
+        .success-style { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        
+        .nav-links {
+            text-align: center; 
+            font-size: 13px; 
+            margin-top: 20px;
+            color: #64748b;
+        }
+        .nav-links a {
+            color: #e67e22;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .back-home-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+        .back-home-btn:hover {
+            background: #eddcd2;
+            color: #234465;
+            border-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    @await Html.PartialAsync("_LanguageSwitch")
+    <h2 style="text-align: center; color: #234465; margin-top: 0; font-weight: bold;">@Localizer["Login_PanelTitle"]</h2>
+    
+    @if (ViewBag.Error != null) 
+    { 
+        <div class="alert-message error-style">@ViewBag.Error</div> 
+    }
+
+    @if (TempData["Message"] != null)
+    {
+        var msgType = TempData["MessageType"]?.ToString();
+        var styleClass = msgType == "success" ? "success-style" : "error-style";
+        <div class="alert-message @styleClass">
+            @TempData["Message"]
+        </div>
+    }
+
+    <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
+        @Html.AntiForgeryToken()
+        <input type="text" name="login" placeholder="@Localizer["Login_PlaceholderLogin"]" required>
+        <input type="password" name="haslo" placeholder="@Localizer["Login_PlaceholderPassword"]" required>
+        <button type="submit">@Localizer["Login_Submit"]</button>
+    </form>
+    
+    <div class="nav-links">
+        @Localizer["Login_NewUser"] <a href="/Account/Register">@Localizer["Login_RegisterLink"]</a>
+    </div>
+
+    <a href="/Shop" class="back-home-btn">
+        🏠 @Localizer["Login_BackShop"]
+    </a>
+</div>
+</body>
+</html>

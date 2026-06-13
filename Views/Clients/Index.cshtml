@@ -1,0 +1,10 @@
+@model IEnumerable<meow.Models.Klient>
+@{ ViewData["Title"] = Localizer["Clients_IndexTitle"]; }
+<h2>@Localizer["Clients_Heading"]</h2>
+<table>
+    <tr><th>@Localizer["Clients_ColId"]</th><th>@Localizer["Clients_ColName"]</th><th>@Localizer["Clients_ColEmail"]</th><th>@Localizer["Clients_ColPhone"]</th></tr>
+    @foreach (var k in Model)
+    {
+        <tr><td>@k.IdKlienta</td><td>@k.Nazwisko, @k.Imie</td><td>@k.Email</td><td>@k.Telefon</td></tr>
+    }
+</table>

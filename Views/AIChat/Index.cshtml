@@ -1,0 +1,56 @@
+@{ ViewBag.Title = "AI Chat"; }
+
+<h2>Asystent Księgarni</h2>
+
+<button type="button" id="toggleButton" onclick="toggleInterface()">🤖 AI Assystent</button>
+
+<div id="searchBox">
+    <input type="text" placeholder="Szukaj książek...">
+</div>
+
+<div id="chatBox" style="display:none;">
+    <textarea id="userPrompt" rows="3" placeholder="Zadaj pytanie..."></textarea>
+    <button type="button" onclick="sendToAI()">Wyślij pytanie</button>
+</div>
+
+<div id="aiResponseContainer" style="display:none; margin-top: 20px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;">
+    <h3>Odpowiedź AI:</h3>
+    <p id="aiResponseText"></p>
+    <button onclick="hideResponse()">[X] Zamknij</button>
+</div>
+
+<script>
+    function toggleInterface() {
+        var search = document.getElementById("searchBox");
+        var chat = document.getElementById("chatBox");
+        chat.style.display = (chat.style.display === "none") ? "block" : "none";
+        search.style.display = (search.style.display === "none") ? "block" : "none";
+    }
+
+    async function sendToAI() {
+        const prompt = document.getElementById("userPrompt").value;
+        const responseText = document.getElementById("aiResponseText");
+        const container = document.getElementById("aiResponseContainer");
+
+        responseText.innerText = "Myślę..."; 
+        container.style.display = "block";
+
+        const response = await fetch('/AIChat/Ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ 'prompt': prompt })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            responseText.innerText = data.message;
+        } else {
+            responseText.innerText = "Błąd: " + data.message;
+        }
+    }
+
+    function hideResponse() {
+        document.getElementById('aiResponseContainer').style.display = 'none';
+    }
+</script>

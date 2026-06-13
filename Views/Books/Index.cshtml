@@ -1,0 +1,158 @@
+@model IEnumerable<meow.Models.Book>
+@{ ViewData["Title"] = Localizer["Books_IndexTitle"]; }
+
+<style>
+    .admin-panel { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 20px; font-family: sans-serif; }
+    .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+    .admin-table th { background: #234465; color: white; text-align: left; padding: 14px; font-weight: 600; }
+    .admin-table td { padding: 14px; border-bottom: 1px solid #eef2f5; vertical-align: middle; }
+    .thumb { width: 45px; height: 60px; object-fit: cover; border-radius: 4px; background: #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .badge { padding: 5px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; color: white; display: inline-block; }
+    .badge-shop { background: #e67e22; }
+    .badge-lib { background: #234465; cursor: pointer; transition: opacity 0.2s; }
+    .badge-lib:hover { opacity: 0.8; }
+    .btn-action { text-decoration: none; font-weight: bold; padding: 7px 12px; border-radius: 4px; font-size: 12px; display: inline-block; border: none; cursor: pointer; }
+    .btn-edit { background: #f39c12; color: white; }
+    .btn-edit:hover { background: #d35400; }
+    .btn-save { background: #2ecc71; color: white; }
+    .btn-save:hover { background: #27ae60; }
+    .btn-delete { background: #e74c3c; color: white; }
+    .btn-delete:hover { background: #c0392b; }
+    
+    .egzemplarze-row { background: #f8fafc; display: none; }
+    .egzemplarze-box { padding: 20px; border: 1px solid #e2e8f0; border-radius: 6px; margin: 10px 0; background: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .egz-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f1f5f9; }
+    .egz-item:last-child { border-bottom: none; }
+    .egz-info { font-size: 13px; color: #475569; }
+    .egz-info strong { color: #1e293b; font-family: monospace; font-size: 14px; }
+    .select-stan { padding: 6px 10px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 13px; background: white; color: #334155; }
+</style>
+
+<div class="admin-panel">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: #234465; margin: 0; font-weight: 700;">@Localizer["Books_PanelTitle"]</h2>
+        <a href="/Books/Create" style="background: #27ae60; color: white; padding: 10px 18px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 14px; transition: background 0.2s;">@Localizer["Books_AddNew"]</a>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div style="padding: 14px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; background: @(TempData["MessageType"]?.ToString() == "success" ? "#ddf7e3; color: #1e7e34; border-left: 5px solid #27ae60;" : "#fce8e6; color: #c82333; border-left: 5px solid #e74c3c;")">
+            @TempData["Message"]
+        </div>
+    }
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>@Localizer["Books_ColCover"]</th>
+                <th>@Localizer["Books_ColTitleAuthor"]</th>
+                <th>@Localizer["Books_ColGenre"]</th>
+                <th>@Localizer["Books_ColShop"]</th>
+                <th>@Localizer["Books_ColLibrary"]</th>
+                <th style="text-align: center;">@Localizer["Books_ColActions"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(book.ImageUrl))
+                        {
+                            <img src="@book.ImageUrl" class="thumb" />
+                        }
+                        else
+                        {
+                            <div class="thumb" style="display:flex; align-items:center; justify-content:center; font-size:9px; color:#999; text-align:center;">@Localizer["Books_NoCover"]</div>
+                        }
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; color: #234465; font-size: 15px;">@book.Tytul</div>
+                        <div style="color: #64748b; font-size: 13px; margin-top: 2px;">@book.Autor</div>
+                    </td>
+                    <td><span style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; color: #475569; font-size: 13px;">@book.Gatunek</span></td>
+                    <td>
+                        <span class="badge badge-shop">
+                            @(book.Cena > 0 ? $"{book.Cena.Value.ToString("F2")} {Localizer["Common_Currency"]}" : $"0.00 {Localizer["Common_Currency"]}") — @book.IloscDoSprzedazy @Localizer["Common_Pcs"]
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-lib" onclick="toggleEgzemplarze(@book.Id)">
+                            📚 @book.IloscEgzemplarzy @Localizer["Common_Pcs"] @Localizer["Books_ManageCopies"]
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="/Books/Edit/@book.Id" class="btn-action btn-edit">@Localizer["Books_EditProduct"]</a>
+                    </td>
+                </tr>
+
+                <tr id="egz-row-@book.Id" class="egzemplarze-row">
+                    <td colspan="6">
+                        <div class="egzemplarze-box">
+                            <h4 style="margin-top: 0; margin-bottom: 12px; color: #234465; font-size: 14px;">@Localizer["Books_CopiesFor"] <em>"@book.Tytul"</em></h4>
+                            
+                            @if (!book.Egzemplarze.Any())
+                            {
+                                <p style="color: #94a3b8; font-size: 13px; margin: 0;">@Localizer["Books_NoCopies"]</p>
+                            }
+                            else
+                            {
+                                @foreach (var egz in book.Egzemplarze)
+                                {
+                                    bool czyWypozyczony = ((List<int>)ViewBag.AktywneWypozyczenia).Contains(egz.IdEgzemplarza);
+                                    
+                                    <div class="egz-item">
+                                        <div class="egz-info">
+                                            @Localizer["Books_CopyCode"] <strong>@egz.NumerInwentarzowy</strong> 
+                                            @if (czyWypozyczony)
+                                            {
+                                                <span style="color: #ef4444; font-weight: bold; margin-left: 10px;">@Localizer["Books_CopyBorrowed"]</span>
+                                            }
+                                            else
+                                            {
+                                                <span style="color: #10b981; font-weight: bold; margin-left: 10px;">@Localizer["Books_CopyOnShelf"]</span>
+                                            }
+                                        </div>
+
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <form action="/Books/ZapiszEgzemplarz" method="post" style="margin: 0; display: flex; gap: 6px;">
+                                                <input type="hidden" name="idEgzemplarza" value="@egz.IdEgzemplarza" />
+                                                <select name="stan" class="select-stan">
+                                                    @if (ViewBag.Stany != null)
+                                                    {
+                                                        foreach (var st in ViewBag.Stany)
+                                                        {
+                                                            <option value="@st" selected="@(st == egz.Stan ? "selected" : null)">@meow.Services.LocalizationHelper.CopyCondition(Localizer, st)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <button type="submit" class="btn-action btn-save">@Localizer["Books_SaveState"]</button>
+                                            </form>
+
+                                            <a href="/Books/UsunEgzemplarz/@egz.IdEgzemplarza" 
+                                               class="btn-action btn-delete" 
+                                               onclick="return confirm('@Localizer["Books_DeleteCopyConfirm"]');">
+                                                @Localizer["Cart_Remove"]
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function toggleEgzemplarze(bookId) {
+        var row = document.getElementById("egz-row-" + bookId);
+        if (row.style.display === "table-row") {
+            row.style.display = "none";
+        } else {
+            row.style.display = "table-row";
+        }
+    }
+</script>

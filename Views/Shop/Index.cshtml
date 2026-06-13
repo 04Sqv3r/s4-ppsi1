@@ -1,0 +1,231 @@
+@model IEnumerable<meow.Models.Book>
+@{
+    ViewData["Title"] = "Katalog produktów";
+}
+
+<style>
+    .catalog-header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        margin-top: 10px;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 15px;
+        gap: 20px;
+    }
+
+    .catalog-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .sort-select {
+        padding: 8px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background-color: white;
+        color: #1e293b;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .sort-select:focus {
+        border-color: #e67e22;
+    }
+
+    .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+    }
+
+    .book-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .card-cover {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+
+    .card-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0 0 5px 0;
+        color: #234465;
+        line-height: 1.3;
+    }
+
+    .card-author {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 10px;
+    }
+
+    .card-price {
+        font-size: 18px;
+        font-weight: bold;
+        color: #e67e22;
+        margin-top: auto;
+    }
+
+    .highlight-book {
+    border: 3px solid #e67e22 !important;
+    transform: scale(1.05);
+    transition: all 0.5s ease;
+}
+</style>
+
+<div class="catalog-header-bar">
+    <h2 style="font-size: 24px; color: #234465; font-weight: 700; margin: 0;">
+        @ViewBag.WybranyGatunek
+    </h2>
+    
+    <div class="catalog-controls">
+        <div>
+            <label style="font-size: 14px; color: #64748b; margin-right: 8px; font-weight: 500;">@Localizer["Shop_SortBy"]</label>
+            <select class="sort-select" id="sortDropdown" onchange="applyFilters()">
+                <option value="domyslne" selected="@(ViewBag.AktualneSortowanie == "domyslne" || ViewBag.AktualneSortowanie == null)">@Localizer["Shop_SortDefault"]</option>
+                <option value="cena_rosnaco" selected="@(ViewBag.AktualneSortowanie == "cena_rosnaco")">@Localizer["Shop_SortPriceAsc"]</option>
+                <option value="cena_malejaco" selected="@(ViewBag.AktualneSortowanie == "cena_malejaco")">@Localizer["Shop_SortPriceDesc"]</option>
+                <option value="alfabetycznie" selected="@(ViewBag.AktualneSortowanie == "alfabetycznie")">@Localizer["Shop_SortAlpha"]</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="catalog-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            var coverFallback = $"https://placehold.co/220x320/234465/ffffff?font=source-sans-pro&text={Uri.EscapeDataString(item.Tytul.Length > 22 ? item.Tytul[..22] : item.Tytul)}";
+            <a href="/Shop/Details/@item.Id" id="book-@item.Id" class="book-card">
+                <div style="text-align: center;">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" class="card-cover" alt="Okładka @item.Tytul"
+                             data-fallback="@coverFallback"
+                             onerror="this.onerror=null;this.src=this.dataset.fallback;" />
+                    }
+                    else
+                    {
+                        <img src="https://placehold.co/220x280/234465/FFF?text=@Uri.EscapeDataString(item.Tytul)" class="card-cover" alt="Okładka zastępcza" />
+                    }
+                </div>
+                <div>
+                    <h3 class="card-title">@item.Tytul</h3>
+                    <div class="card-author">@item.Autor</div>
+                    <div class="card-price">
+                        @(item.Cena > 0 ? $"{item.Cena.Value.ToString("F2")} zł" : Localizer["Shop_Library"].Value)
+                    </div>
+                </div>
+            </a>
+        }
+    }
+    else
+    {
+        <div style="grid-column: span 4; text-align: center; padding: 40px; color: #64748b; font-size: 16px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            @Localizer["Shop_NoResults"]
+        </div>
+    }
+</div>
+
+<script>
+    // Automatycznie znajduje globalny input wyszukiwarki z Layoutu
+    function getGlobalSearchInput() {
+        return document.querySelector('input[name="fraza"]') || 
+               document.querySelector('input[type="text"][placeholder*="Szukaj"]') ||
+               document.getElementById("searchField");
+    }
+
+    function applyFilters() {
+        var select = document.getElementById("sortDropdown");
+        var wybranySort = select.value;
+        
+        var duzyInputWyszukiwarki = getGlobalSearchInput();
+        var wpisanaFraza = duzyInputWyszukiwarki ? duzyInputWyszukiwarki.value : "";
+        var aktualnyGatunek = "@Html.Raw(ViewBag.AktualnyGatunek)";
+        
+        var url = "/Shop?sortowanie=" + wybranySort;
+        
+        if (wpisanaFraza && wpisanaFraza.trim() !== "") {
+            url += "&fraza=" + encodeURIComponent(wpisanaFraza.trim());
+        }
+        
+        if (aktualnyGatunek && aktualnyGatunek.trim() !== "") {
+            url += "&gatunek=" + encodeURIComponent(aktualnyGatunek.trim());
+        }
+        
+        window.location.href = url;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var duzyInputWyszukiwarki = getGlobalSearchInput();
+                                    
+        if (duzyInputWyszukiwarki) {
+            // Przypisujemy wartość z serwera z powrotem do paska w menu, żeby tekst nie znikał
+            var aktualnaFrazaZSerwera = "@Html.Raw(ViewBag.AktualneWyszukiwanie)";
+            if (aktualnaFrazaZSerwera && aktualnaFrazaZSerwera.trim() !== "") {
+                duzyInputWyszukiwarki.value = aktualnaFrazaZSerwera;
+            }
+
+            // Obsługa klawisza Enter w globalnej wyszukiwarce na stronie sklepu
+            duzyInputWyszukiwarki.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    applyFilters();
+                }
+            });
+
+            // Obsługa przycisku / lupy obok inputa (jeśli istnieje w strukturze menu)
+            var przyciskSzukaj = duzyInputWyszukiwarki.parentElement ? duzyInputWyszukiwarki.parentElement.querySelector('button') : null;
+            if (przyciskSzukaj) {
+                przyciskSzukaj.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    applyFilters();
+                });
+            }
+        }
+    });
+    
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchedBook = urlParams.get('fraza');
+        
+        if (searchedBook) {
+            const allBooks = document.querySelectorAll('.book-card');
+            allBooks.forEach(card => {
+                const title = card.querySelector('.card-title').innerText;
+                if (title.toLowerCase().includes(searchedBook.toLowerCase())) {
+                    card.scrollIntoView({ behavior: 'smooth' });
+                    card.classList.add('highlight-book');
+                } else {
+                    card.style.opacity = "0.3";
+                }
+            });
+        }
+    });
+</script>

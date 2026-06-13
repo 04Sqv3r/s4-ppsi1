@@ -1,0 +1,176 @@
+@model meow.Models.Book
+@{ ViewData["Title"] = Localizer["BooksEdit_Title"].Value; }
+
+<style>
+    .books-container {
+        max-width: 650px;
+        margin: 20px auto;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-top: 5px solid #234465;
+    }
+    .books-container h2 {
+        color: #234465;
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .form-section {
+        background: #f8fafc;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border-left: 4px solid #234465;
+    }
+    .shop-section {
+        border-left-color: #e67e22;
+    }
+    .form-section h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        color: #475569;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+        outline: none;
+    }
+    .form-control:focus {
+        border-color: #234465;
+    }
+    .current-cover {
+        width: 90px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-top: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        display: block;
+    }
+    .btn-submit {
+        background: #234465;
+        color: white;
+        border: none;
+        padding: 13px;
+        width: 100%;
+        font-size: 15px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn-submit:hover {
+        background: #172d44;
+    }
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 13px;
+    }
+</style>
+
+<div class="books-container">
+    <h2>@string.Format(Localizer["BooksEdit_Heading"].Value, Model.Id) 🐾</h2>
+
+    <form action="/Books/Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="form-section">
+            <h3>@Localizer["BooksEdit_SectionPub"]</h3>
+            
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelTitle"]</label>
+                <input type="text" name="Tytul" class="form-control" value="@Model.Tytul" required>
+            </div>
+
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelAuthor"]</label>
+                <input type="text" name="Autor" class="form-control" value="@Model.Autor" required>
+            </div>
+
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelGenre"]</label>
+                <input type="text" name="Gatunek" class="form-control" value="@Model.Gatunek" required>
+            </div>
+
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelYear"]</label>
+                <input type="number" name="RokWydania" class="form-control" value="@Model.RokWydania" min="1000" max="@DateTime.Now.Year" required>
+            </div>
+
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelPublisher"]</label>
+                <input type="text" name="Wydawnictwo" class="form-control" value="@Model.Wydawnictwo">
+            </div>
+
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelEan"]</label>
+                <input type="text" name="EAN" class="form-control" value="@Model.EAN" maxlength="13" pattern="[0-9]{13}">
+            </div>
+
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelDesc"]</label>
+                <textarea name="opis" class="form-control" rows="5">@Model.Opis</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelCover"]</label>
+                <input type="file" name="noweZdjecie" class="form-control" accept="image/*">
+                
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <label style="margin-top:15px; font-size:11px; color:#777;">@Localizer["BooksEdit_CurrentCover"]</label>
+                    <img src="@Model.ImageUrl" class="current-cover" alt="@Localizer["BooksEdit_CurrentCover"]" />
+                }
+            </div>
+        </div>
+
+        <div class="form-section shop-section">
+            <h3>@Localizer["BooksEdit_SectionShop"]</h3>
+            
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelCoverPrice"]</label>
+                <input type="text" name="cenaOkladkaPub" class="form-control" 
+                       value="@Model.CenaOkladkowa?.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)">
+            </div>
+
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelRetailPrice"]</label>
+                <input type="text" name="cenaSklep" class="form-control" 
+                       value="@Model.Cena?.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)">
+            </div>
+            
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelStock"]</label>
+                <input type="number" name="IloscDoSprzedazy" class="form-control" value="@Model.IloscDoSprzedazy" min="0" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">@Localizer["BooksEdit_Submit"]</button>
+    </form>
+
+    <a href="/Books/Index" class="back-link">@Localizer["BooksEdit_Cancel"]</a>
+</div>

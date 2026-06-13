@@ -1,0 +1,34 @@
+@model meow.Models.Klient
+@{ ViewData["Title"] = Localizer["ClientsCreate_Title"]; }
+<h2>@Localizer["ClientsCreate_Heading"]</h2>
+
+<form action="/Clients/Create" method="post" onsubmit="return validateForm()">
+    <label>@Localizer["Register_LabelFirstName"]</label>
+    <input type="text" name="imie" id="imie" required oninput="this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '')">
+
+    <label>@Localizer["Register_LabelLastName"]</label>
+    <input type="text" name="nazwisko" id="nazwisko" required oninput="this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '')">
+
+    <label>@Localizer["Register_LabelEmail"]</label>
+    <input type="email" name="email" required>
+
+    <label>@Localizer["Register_LabelPhone"]</label>
+    <input type="text" name="telefon" id="telefon" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+
+    <button type="submit">@Localizer["ClientsCreate_Submit"]</button>
+</form>
+
+<script>
+    var messages = {
+        validationFirstName: '@Localizer["ClientsCreate_ValidationFirstName"]',
+        validationLastName: '@Localizer["ClientsCreate_ValidationLastName"]'
+    };
+
+    function validateForm() {
+        var imie = document.getElementById('imie').value;
+        var nazwisko = document.getElementById('nazwisko').value;
+        if (imie.length < 2) { alert(messages.validationFirstName); return false; }
+        if (nazwisko.length < 2) { alert(messages.validationLastName); return false; }
+        return true;
+    }
+</script>

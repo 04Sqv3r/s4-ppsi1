@@ -1,0 +1,278 @@
+@{ 
+    Layout = null; 
+}
+@model meow.Models.RegisterViewModel
+
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Localizer["Register_Title"]</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f4f6f9; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+        .box { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            width: 420px; 
+            box-sizing: border-box;
+        }
+        .logo-area {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #234465;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #234465;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 25px 0 10px 0;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 5px;
+        }
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            display: block;
+            margin-top: 12px;
+        }
+        input { 
+            width: 100%; 
+            padding: 10px 14px; 
+            margin: 6px 0 14px 0; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: #ff5a00;
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        .row .col {
+            flex: 1;
+        }
+        button { 
+            width: 100%; 
+            padding: 13px; 
+            background: #ff5a00; /* Flagowy pomarańczowy meow */
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+        button:hover { 
+            background: #d04900; 
+        }
+        .alert-message { 
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px; 
+            text-align: center; 
+            font-weight: 600; 
+            margin-bottom: 20px; 
+        }
+        .error-style { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
+        .success-style { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+
+        .password-strength {
+            font-size: 11px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .nav-links {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 20px;
+            color: #64748b;
+        }
+        .nav-links a {
+            color: #234465;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .back-home-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+        .back-home-btn:hover {
+            background: #eddcd2;
+            color: #234465;
+            border-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    @await Html.PartialAsync("_LanguageSwitch")
+    <div class="logo-area">@Localizer["Nav_LogoShop"] 🐾</div>
+    <div class="subtitle">@Localizer["Register_Subtitle"]</div>
+    
+    @if (ViewBag.Error != null) { 
+        <div class="alert-message error-style">@ViewBag.Error</div> 
+    }
+
+    @if (TempData["Message"] != null)
+    {
+        var msgType = TempData["MessageType"]?.ToString();
+        var styleClass = msgType == "success" ? "success-style" : "error-style";
+        <div class="alert-message @styleClass">
+            @TempData["Message"]
+        </div>
+    }
+
+    <form action="/Account/Register" method="post" onsubmit="return validateForm()">
+        @Html.AntiForgeryToken()
+        
+        <div class="section-title">@Localizer["Register_SectionLogin"]</div>
+        
+        <label for="Login">@Localizer["Register_LabelLogin"]</label>
+        <input type="text" name="Login" id="Login" placeholder="@Localizer["Register_PlaceholderLoginMin"]" required minlength="4">
+        
+        <label for="Haslo">@Localizer["Register_LabelPassword"]</label>
+        <input type="password" name="Haslo" id="Haslo" placeholder="@Localizer["Register_PlaceholderPasswordMin"]" required onkeyup="checkPasswordStrength()">
+        <div id="password-status" class="password-strength"></div>
+
+        <div class="section-title">@Localizer["Register_SectionProfile"]</div>
+
+        <div class="row">
+            <div class="col">
+                <label for="Imie">@Localizer["Register_LabelFirstName"]</label>
+                <input type="text" name="Imie" id="Imie" placeholder="@Localizer["Register_LabelFirstName"]" required>
+            </div>
+            <div class="col">
+                <label for="Nazwisko">@Localizer["Register_LabelLastName"]</label>
+                <input type="text" name="Nazwisko" id="Nazwisko" placeholder="@Localizer["Register_LabelLastName"]" required>
+            </div>
+        </div>
+
+        <label for="Email">@Localizer["Register_LabelEmail"]</label>
+        <input type="email" name="Email" id="Email" placeholder="@Localizer["Register_PlaceholderEmail"]" required>
+
+        <label for="Telefon">@Localizer["Register_LabelPhone"]</label>
+        <input type="text" name="Telefon" id="Telefon" placeholder="@Localizer["Register_PlaceholderPhone"]" maxlength="9" inputmode="numeric">
+
+        <button type="submit">@Localizer["Register_Submit"]</button>
+    </form>
+    
+    <div class="nav-links">
+        <a href="/Account/Login">@Localizer["Register_HasAccount"]</a>
+    </div>
+
+    <a href="/Shop" class="back-home-btn">
+         🏠 @Localizer["Register_BackShop"]
+    </a>
+</div>
+
+<script>
+    var messages = {
+        passwordTooShort: '@Localizer["Register_PasswordTooShort"]',
+        passwordStrong: '@Localizer["Register_PasswordStrong"]',
+        passwordMedium: '@Localizer["Register_PasswordMedium"]',
+        validationFirstName: '@Localizer["Register_ValidationFirstName"]',
+        validationLastName: '@Localizer["Register_ValidationLastName"]',
+        validationPassword: '@Localizer["Register_ValidationPassword"]',
+        validationPhone: '@Localizer["Register_ValidationPhone"]'
+    };
+
+    document.getElementById('Imie').addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '');
+    });
+
+    document.getElementById('Nazwisko').addEventListener('input', function() {
+        this.value = this.value.replace(/[^a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]/g, '');
+    });
+
+    document.getElementById('Telefon').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // Dynamiczny wskaźnik siły hasła
+    function checkPasswordStrength() {
+        var status = document.getElementById('password-status');
+        var password = document.getElementById('Haslo').value;
+        
+        if (password.length === 0) {
+            status.innerHTML = "";
+            return;
+        }
+        
+        if (password.length < 6) {
+            status.innerHTML = messages.passwordTooShort;
+            status.style.color = "#ef4444";
+        } else if (password.match(/[A-Z]/) && password.match(/[0-9]/)) {
+            status.innerHTML = messages.passwordStrong;
+            status.style.color = "#16a34a";
+        } else {
+            status.innerHTML = messages.passwordMedium;
+            status.style.color = "#ea580c";
+        }
+    }
+
+    // Ostateczna weryfikacja przed wysłaniem formularza
+    function validateForm() {
+        var imie = document.getElementById('Imie').value.trim();
+        var nazwisko = document.getElementById('Nazwisko').value.trim();
+        var telefon = document.getElementById('Telefon').value.replace(/[^0-9]/g, '');
+        var haslo = document.getElementById('Haslo').value;
+
+        if (imie.length < 2) { alert(messages.validationFirstName); return false; }
+        if (nazwisko.length < 2) { alert(messages.validationLastName); return false; }
+        if (haslo.length < 6) { alert(messages.validationPassword); return false; }
+
+        if (telefon.length > 0 && telefon.length !== 9) {
+            alert(messages.validationPhone);
+            return false;
+        }
+        document.getElementById('Telefon').value = telefon;
+        return true;
+    }
+</script>
+</body>
+</html>

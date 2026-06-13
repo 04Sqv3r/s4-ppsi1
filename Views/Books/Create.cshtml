@@ -1,0 +1,286 @@
+@{ ViewData["Title"] = Localizer["BooksCreate_Title"].Value; }
+@using meow.Services
+<style>
+    .books-container {
+        max-width: 650px;
+        margin: 20px auto;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-top: 5px solid #234465;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .books-container h2 {
+        color: #234465;
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .form-section {
+        background: #f8fafc;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border-left: 4px solid #234465;
+    }
+    .shop-section {
+        border-left-color: #e67e22;
+    }
+    .form-section h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #444;
+        font-size: 13px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: inherit;
+    }
+    .form-control:focus {
+        border-color: #234465;
+        outline: none;
+    }
+    .btn-submit {
+        background-color: #234465;
+        color: white;
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+        transition: background-color 0.2s;
+    }
+    .btn-submit:hover {
+        background-color: #1a3047;
+    }
+</style>
+
+<div class="books-container">
+    <h2>@Localizer["BooksCreate_Heading"] 🐾</h2>
+
+    <form action="/Books/Create" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div class="form-section">
+            <h3>@Localizer["BooksCreate_SectionGeneral"]</h3>
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelTitle"]</label>
+                <input type="text" name="tytul" class="form-control" required placeholder="@Localizer["BooksCreate_Ph_Title"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelAuthor"]</label>
+                <input type="text" name="autor" class="form-control" required placeholder="@Localizer["BooksCreate_Ph_Author"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelDesc"]</label>
+                <textarea name="opis" class="form-control" rows="5" placeholder="@Localizer["BooksCreate_Ph_Desc"]"></textarea>
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelCoverFile"]</label>
+                <input type="file" name="zdjecieOkładki" class="form-control" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelGenre"]</label>
+                <select name="gatunek" class="form-control" required>
+                    <option value="" disabled selected>@Localizer["BooksCreate_GenrePlaceholder"]</option>
+                    <optgroup label="@Localizer["Menu_Recommended"]">
+                        <option value="Biografia">@Localizer["Cat_Biography"]</option>
+                        <option value="Biznes">@Localizer["Cat_Business"]</option>
+                        <option value="Ezoteryka i parapsychologia">@Localizer["Cat_Esoteric"]</option>
+                        <option value="Fantasy">@Localizer["Cat_Fantasy"]</option>
+                        <option value="Historia">@Localizer["Cat_History"]</option>
+                        <option value="Komiksy, Mangy">@Localizer["Cat_Comics"]</option>
+                        <option value="Kryminał">@Localizer["Cat_Crime"]</option>
+                        <option value="Kuchnia i diety">@Localizer["Cat_Cooking"]</option>
+                    </optgroup>
+                    <optgroup label="@Localizer["Menu_CultureArt"]">
+                        <option value="Popularnonaukowa">@Localizer["Cat_NonFiction"]</option>
+                        <option value="Literatura obcojęzyczna">@Localizer["Cat_ForeignLit"]</option>
+                        <option value="Literatura obyczajowa">@Localizer["Cat_Fiction"]</option>
+                        <option value="Powieść">@Localizer["Cat_BellesLetters"]</option>
+                        <option value="Nauka języków">@Localizer["Cat_Languages"]</option>
+                        <option value="Nauki humanistyczne">@Localizer["Cat_Humanities"]</option>
+                        <option value="Naukowe">@Localizer["Cat_Science"]</option>
+                        <option value="Podręczniki akademickie">@Localizer["Cat_Academic"]</option>
+                        <option value="Podróże i turystyka">@Localizer["Cat_Travel"]</option>
+                        <option value="Poezja">@Localizer["Cat_Poetry"]</option>
+                        <option value="Poradniki">@Localizer["Cat_Guides"]</option>
+                        <option value="Prawo">@Localizer["Cat_Law"]</option>
+                        <option value="Religia">@Localizer["Cat_Religion"]</option>
+                        <option value="Sport">@Localizer["Cat_Sport"]</option>
+                    </optgroup>
+                    <optgroup label="@Localizer["Menu_ChildrenBooks"]">
+                        <option value="Wiek-0-2">@Localizer["Menu_Age02"]</option>
+                        <option value="Wiek-3-5">@Localizer["Menu_Age35"]</option>
+                        <option value="Wiek-6-8">@Localizer["Menu_Age68"]</option>
+                        <option value="Wiek-9-12">@Localizer["Menu_Age912"]</option>
+                    </optgroup>
+                    <optgroup label="@Localizer["Menu_PersonalDev"]">
+                        <option value="Emocje">@Localizer["Cat_Emotions"]</option>
+                        <option value="Kariera">@Localizer["Cat_Career"]</option>
+                        <option value="Psychologia">@Localizer["Cat_Psychology"]</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelYear"]</label>
+                <input type="number" name="rokWydania" class="form-control" value="2026" min="1000" max="2026">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>@Localizer["BooksCreate_SectionTechnical"]</h3>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelOriginalTitle"]</label>
+                <input type="text" name="tytulOryginalny" class="form-control" placeholder="@Localizer["BooksCreate_Ph_OrigTitle"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelSeries"]</label>
+                <input type="text" name="seria" class="form-control" placeholder="@Localizer["BooksCreate_Ph_Series"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelPublisher"]</label>
+                <input type="text" name="wydawnictwo" class="form-control" placeholder="@Localizer["BooksCreate_Ph_Publisher"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelTranslator"]</label>
+                <input type="text" name="tlumaczenie" class="form-control" placeholder="@Localizer["BooksCreate_Ph_Translator"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelLangEdition"]</label>
+                <input type="text" name="jezykWydania" class="form-control" value="@Localizer["BooksCreate_DefaultLangEdition"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelLangOriginal"]</label>
+                <input type="text" name="jezykOryginalu" class="form-control" placeholder="@Localizer["BooksCreate_Ph_LangOriginal"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelPages"]</label>
+                <input type="number" name="liczbaStron" class="form-control" placeholder="432">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelEditionNumber"]</label>
+                <input type="text" name="numerWydania" class="form-control" value="I">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelCoverType"]</label>
+                <input type="text" name="okladkaTyp" class="form-control" placeholder="@Localizer["BooksCreate_Ph_CoverType"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelPremiereDate"]</label>
+                <input type="date" name="dataPremiery" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelReleaseDate"]</label>
+                <input type="date" name="dataWydania" class="form-control">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>@Localizer["BooksCreate_LabelHeight"]</label>
+                    <input type="number" name="wysokoscMm" class="form-control" placeholder="200">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>@Localizer["BooksCreate_LabelDepth"]</label>
+                    <input type="number" name="glebokoscMm" class="form-control" placeholder="15">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>@Localizer["BooksCreate_LabelWidth"]</label>
+                    <input type="number" name="szerokoscMm" class="form-control" placeholder="140">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelEan"]</label>
+                <input type="text" name="ean" class="form-control" placeholder="9788383353708">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>@Localizer["BooksCreate_SectionLibrary"]</h3>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelLibraryCopies"]</label>
+                <input type="number" name="ilosc" id="ilosc" class="form-control" min="0" value="1" oninput="generujStany(this.value)" required>
+            </div>
+            <div id="stanyEgzemplarzy"></div>
+        </div>
+
+        <div class="form-section shop-section">
+            <h3 style="color:#e67e22;">@Localizer["BooksCreate_SectionShop"]</h3>
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelCoverPrice"]</label>
+                <input type="number" name="cenaOkladkowa" step="0.01" min="0" class="form-control" placeholder="@Localizer["BooksCreate_Ph_CoverPrice"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksEdit_LabelRetailPrice"]</label>
+                <input type="number" name="cena" step="0.01" min="0" class="form-control" placeholder="@Localizer["BooksCreate_Ph_RetailPrice"]">
+            </div>
+            <div class="form-group">
+                <label>@Localizer["BooksCreate_LabelShopStock"]</label>
+                <input type="number" name="iloscDoSprzedazy" class="form-control" min="0" value="0" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">@Localizer["BooksCreate_Submit"]</button>
+    </form>
+</div>
+
+<script>
+    const copyLabelFmt = '@Localizer["BooksCreate_CopyCondition"]';
+    const stanLabels = {
+        'idealny': '@LocalizationHelper.CopyCondition(Localizer, "idealny")',
+        'bardzo dobry': '@LocalizationHelper.CopyCondition(Localizer, "bardzo dobry")',
+        'dobry': '@LocalizationHelper.CopyCondition(Localizer, "dobry")',
+        'zużyty': '@LocalizationHelper.CopyCondition(Localizer, "zużyty")',
+        'zniszczony': '@LocalizationHelper.CopyCondition(Localizer, "zniszczony")'
+    };
+    const stany = ['idealny', 'bardzo dobry', 'dobry', 'zużyty', 'zniszczony'];
+
+    function generujStany(ilosc) {
+        const k = document.getElementById('stanyEgzemplarzy');
+        k.innerHTML = '';
+        if (ilosc == 0 || ilosc == '') return;
+
+        for (let i = 1; i <= ilosc; i++) {
+            let l = document.createElement('label');
+            l.innerText = copyLabelFmt.replace('#{0}', i);
+            l.style.display = 'block';
+            l.style.marginTop = '10px';
+            l.style.fontWeight = '600';
+            l.style.fontSize = '12px';
+            l.style.color = '#555';
+            let s = document.createElement('select');
+            s.name = 'stany';
+            s.className = 'form-control';
+            s.style.marginTop = '4px';
+            stany.forEach(st => {
+                let o = document.createElement('option');
+                o.value = st;
+                o.innerText = stanLabels[st];
+                s.appendChild(o);
+            });
+            k.appendChild(l);
+            k.appendChild(s);
+        }
+    }
+    generujStany(1);
+</script>

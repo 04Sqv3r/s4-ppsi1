@@ -1,0 +1,89 @@
+@model IEnumerable<meow.Models.Wypozyczenie>
+@{
+    ViewData["Title"] = Localizer["RentalsOrders_Title"].Value;
+}
+
+<style>
+    .orders-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 20px; font-family: sans-serif;}
+    .o-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .o-table th { background: #f8fafc; color: #234465; text-align: left; padding: 14px; font-weight: bold; border-bottom: 2px solid #e2e8f0; }
+    .o-table td { padding: 14px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+    .badge { padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    .badge-progress { background: #fff7ed; color: #c2410c; border: 1px solid #fdba74; }
+    .badge-success { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .btn-ship { background: #ff5a00; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
+    .btn-ship:hover { background: #d04900; }
+</style>
+
+<div class="orders-box">
+    <h2 style="color: #234465; font-size: 26px; font-weight: bold; margin-top: 0; margin-bottom: 5px;">📦 @Localizer["RentalsOrders_Title"]</h2>
+    <p style="color: #64748b; margin-bottom: 25px; font-size: 14px;">@Localizer["RentalsOrders_Desc"]</p>
+
+    @if (TempData["Message"] != null)
+    {
+        var msgType = TempData["MessageType"]?.ToString();
+        var bgColor = msgType == "success" ? "#dcfce7" : "#fee2e2";
+        var textColor = msgType == "success" ? "#15803d" : "#ef4444";
+        <div style="padding: 12px; background: @bgColor; color: @textColor; border-radius: 4px; margin: 20px 0; font-weight: 500;">
+            @TempData["Message"]
+        </div>
+    }
+
+    <table class="o-table">
+        <thead>
+            <tr>
+                <th>@Localizer["RentalsOrders_ColOrderId"]</th>
+                <th>@Localizer["RentalsOrders_ColCustomer"]</th>
+                <th>@Localizer["RentalsOrders_ColProduct"]</th>
+                <th>@Localizer["RentalsOrders_ColOrderDate"]</th>
+                <th>@Localizer["RentalsOrders_ColStatus"]</th>
+                <th style="text-align: center;">@Localizer["RentalsOrders_ColExpedition"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="font-weight: bold; color: #475569;">#ZAM-@item.IdWypozyczenie</td>
+                        <td style="font-weight: 600; color: #1e293b;">
+                            @(item.Klient != null ? $"{item.Klient.Nazwisko} {item.Klient.Imie}" : Localizer["RentalsOrders_FallbackClient"].Value)
+                        </td>
+                        <td style="font-weight: 500; color: #234465;">
+                            @(item.Book != null ? item.Book.Tytul : Localizer["RentalsOrders_FallbackBook"].Value)
+                        </td>
+                        <td>@item.DataWypozyczenia.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            @if (item.DataZwrotu == null)
+                            {
+                                <span class="badge badge-progress">@Localizer["RentalsOrders_StatusPreparing"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-success">@string.Format(Localizer["RentalsOrders_ShippedOn"].Value, item.DataZwrotu.Value.ToString("dd.MM.yyyy"))</span>
+                            }
+                        </td>
+                        <td style="text-align: center;">
+                            @if (item.DataZwrotu == null)
+                            {
+                                <form action="/Rentals/ZatwierdzWysylke" method="post" style="margin: 0;">
+                                    <input type="hidden" name="id_wypozyczenie" value="@item.IdWypozyczenie" />
+                                    <button type="submit" class="btn-ship">@Localizer["RentalsOrders_BtnDispatch"]</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">@Localizer["RentalsOrders_Completed"]</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="6" style="text-align: center; padding: 30px; color: #94a3b8;">@Localizer["RentalsOrders_NoOrders"]</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
