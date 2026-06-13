@@ -44,7 +44,7 @@ docker compose up --build
 | Mailing | ✅ | MailKit + Brevo API (prod) / Mailpit (Docker) — [docs/SMTP.md](docs/SMTP.md) |
 | Formularze | ✅ | Rejestracja, checkout, panel admina |
 | Interakcje async | ✅ | Live search — `fetch` → `/api/books` |
-| Konsumpcja API | 🟡 | Szkic `AITest` / Ollama (opcjonalnie) |
+| Konsumpcja API | 🟡 | Szkic `AIChat` / Ollama (opcjonalnie) |
 | Publikacja API | ✅ | REST + Swagger `/swagger` |
 | RWD | ✅ | `responsive.css` + media queries |
 | Logger | ✅ | `ILogger` + `appsettings.json` |
