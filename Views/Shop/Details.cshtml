@@ -86,13 +86,18 @@
 <div class="product-page">
 
     <div class="product-cover-section">
+        @{
+            var detailCoverFallback = $"https://placehold.co/400x550/234465/ffffff?font=source-sans-pro&text={Uri.EscapeDataString(Model.Tytul.Length > 24 ? Model.Tytul[..24] : Model.Tytul)}";
+        }
         @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
-            <img src="@Model.ImageUrl" class="product-cover" alt="@Localizer["Details_CoverAlt"] @Model.Tytul" />
+            <img src="@Model.ImageUrl" class="product-cover" alt="@Localizer["Details_CoverAlt"] @Model.Tytul"
+                 data-fallback="@detailCoverFallback"
+                 onerror="this.onerror=null;this.src=this.dataset.fallback;" />
         }
         else
         {
-            <img src="https://placehold.co/400x550/234465/FFF?text=@Uri.EscapeDataString(Model.Tytul)" class="product-cover" alt="@Localizer["Details_CoverPlaceholder"]" />
+            <img src="@detailCoverFallback" class="product-cover" alt="@Localizer["Details_CoverPlaceholder"]" />
         }
     </div>
 

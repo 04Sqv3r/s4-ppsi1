@@ -174,11 +174,14 @@
     {
         foreach (var book in Model.Take(5)) // Wyświetlamy max 5 najnowszych pozycji
         {
+            var coverFallback = $"https://placehold.co/220x320/234465/ffffff?font=source-sans-pro&text={Uri.EscapeDataString(book.Tytul.Length > 22 ? book.Tytul[..22] : book.Tytul)}";
             <a href="/Shop/Details/@book.Id" class="book-card">
                 <div class="card-img-box">
                     @if (!string.IsNullOrEmpty(book.ImageUrl))
                     {
-                        <img src="@book.ImageUrl" class="card-cover" alt="Okładka" />
+                        <img src="@book.ImageUrl" class="card-cover" alt="Okładka @book.Tytul"
+                             data-fallback="@coverFallback"
+                             onerror="this.onerror=null;this.src=this.dataset.fallback;" />
                     }
                     else
                     {

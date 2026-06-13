@@ -20,6 +20,7 @@ namespace meow.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly VectorSearchService _vectorService;
         private readonly IStringLocalizer<SharedResources> _localizer;
+        private readonly ILogger<BooksController> _logger;
 
      
         private readonly string[] _wszystkieGatunki = new[] { 
@@ -31,13 +32,14 @@ namespace meow.Controllers
             "Wiek-0-2", "Wiek-3-5", "Wiek-6-8", "Wiek-9-12", "Emocje", "Kariera", "Psychologia"
         };
 
-        public BooksController(LibraryDbContext context, IWebHostEnvironment webHostEnvironment, VectorSearchService vectorService, IStringLocalizer<SharedResources> localizer)
-{
-    _context = context;
-    _webHostEnvironment = webHostEnvironment;
-    _vectorService = vectorService;
-    _localizer = localizer;
-}
+        public BooksController(LibraryDbContext context, IWebHostEnvironment webHostEnvironment, VectorSearchService vectorService, IStringLocalizer<SharedResources> localizer, ILogger<BooksController> logger)
+        {
+            _context = context;
+            _webHostEnvironment = webHostEnvironment;
+            _vectorService = vectorService;
+            _localizer = localizer;
+            _logger = logger;
+        }
 
 
         // ==========================================================
@@ -104,7 +106,7 @@ namespace meow.Controllers
                 }
                 catch (Exception vectorEx)
                 {
-                    Console.WriteLine($"Vector index skip: {vectorEx.Message}");
+                    _logger.LogWarning(vectorEx, "Vector index skip dla książki {BookId}.", book.Id);
                 }
 
                 if (ilosc > 0)

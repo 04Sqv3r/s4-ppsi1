@@ -10,6 +10,16 @@
 *.userosscache
 *.sln.docstates
 *.env
+.tools/
+appsettings.Smtp.local.json
+data-protection-keys/
+
+# LaTeX (sprawozdanie — tylko .tex i .pdf w repo)
+docs/sprawozdanie.aux
+docs/sprawozdanie.log
+docs/sprawozdanie.out
+docs/sprawozdanie.toc
+docs/sprawozdanie-overleaf.zip
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

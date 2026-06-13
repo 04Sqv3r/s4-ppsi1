@@ -121,6 +121,7 @@
     }
 
     <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
+        @Html.AntiForgeryToken()
         <input type="text" name="login" placeholder="@Localizer["Login_PlaceholderLogin"]" required>
         <input type="password" name="haslo" placeholder="@Localizer["Login_PlaceholderPassword"]" required>
         <button type="submit">@Localizer["Login_Submit"]</button>

@@ -113,11 +113,14 @@
     {
         foreach (var item in Model)
         {
+            var coverFallback = $"https://placehold.co/220x320/234465/ffffff?font=source-sans-pro&text={Uri.EscapeDataString(item.Tytul.Length > 22 ? item.Tytul[..22] : item.Tytul)}";
             <a href="/Shop/Details/@item.Id" class="book-card">
                 <div style="text-align: center;">
                     @if (!string.IsNullOrEmpty(item.ImageUrl))
                     {
-                        <img src="@item.ImageUrl" class="card-cover" alt="Okładka @item.Tytul" />
+                        <img src="@item.ImageUrl" class="card-cover" alt="Okładka @item.Tytul"
+                             data-fallback="@coverFallback"
+                             onerror="this.onerror=null;this.src=this.dataset.fallback;" />
                     }
                     else
                     {

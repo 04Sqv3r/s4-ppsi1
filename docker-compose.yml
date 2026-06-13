@@ -29,11 +29,17 @@ services:
       - Qdrant__Host=meow_vector_db
       - ConnectionStrings__DefaultConnection=server=meow_db;port=3306;database=wypozyczalnia_ksiazek;user=root;password=rootpassword;
       - ConnectionStrings__Redis=meow_redis:6379
+      - Smtp__Host=meow_mailpit
+      - Smtp__Port=1025
+      - Smtp__UseSsl=false
+      - Smtp__From=noreply@meow.pl
+      - Smtp__FromName=meow E-Księgarnia
     volumes:
       - ./data-protection-keys:/root/.aspnet/DataProtection-Keys
     depends_on:
       - meow_db
       - meow_redis
+      - meow_mailpit
     networks:
       - meow_network
 
@@ -57,6 +63,17 @@ services:
       - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage
+    networks:
+      - meow_network
+
+  # 5. Mailpit — lokalny SMTP + podgląd maili (http://localhost:8025)
+  meow_mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit-container
+    restart: always
+    ports:
+      - "8025:8025"
+      - "1025:1025"
     networks:
       - meow_network
 

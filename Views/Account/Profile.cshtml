@@ -8,6 +8,18 @@
     <h2>@string.Format(Localizer["Profile_Welcome"].Value, Model.CustomerName)</h2>
     <p class="text-muted">@Localizer["Profile_Subtitle"]</p>
 
+    <div style="background: white; padding: 20px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 20px; margin-bottom: 10px; font-size: 14px;">
+        <h3 style="margin: 0 0 12px 0; color: #234465; font-size: 16px;">@Localizer["Profile_AccountTitle"]</h3>
+        <div style="display: grid; grid-template-columns: 140px 1fr; gap: 8px 16px; color: #475569;">
+            <span style="font-weight: 600;">@Localizer["Profile_Login"]</span>
+            <span>@Model.Login</span>
+            <span style="font-weight: 600;">@Localizer["Profile_Email"]</span>
+            <span>@(string.IsNullOrWhiteSpace(Model.Email) ? Localizer["Profile_EmailMissing"].Value : Model.Email)</span>
+            <span style="font-weight: 600;">@Localizer["Profile_Phone"]</span>
+            <span>@(string.IsNullOrWhiteSpace(Model.Phone) ? "—" : Model.Phone)</span>
+        </div>
+    </div>
+
     <hr class="my-4" />
 
     @if (Model.TotalFinesAmount > 0)

@@ -1,0 +1,498 @@
+% Sprawozdanie z pracy projektowej — meow
+% Kompilacja: pdflatex sprawozdanie.tex (2× dla spisu treści)
+% Wymaga: TeX Live / MiKTeX z pakietami babel-polish, hyperref, listings
+
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage[titles]{tocloft}
+
+\geometry{margin=2.5cm}
+\setlength{\cftbeforesecskip}{4pt}
+\setlength{\cftbeforesubsecskip}{2pt}
+\setlength{\cftaftertoctitleskip}{1.5em}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    pdftitle={Sprawozdanie — meow},
+    pdfauthor={Filip Jędryczkowski, Kyrylo Shchedrin, Nikola Pisarska}
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!8},
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    showstringspaces=false
+}
+
+\graphicspath{{obrazy/}}
+
+\begin{document}
+
+% --- Strona 1: tytułowa ---
+\begin{titlepage}
+\pagestyle{empty}
+\raggedleft
+\textbf{Collegium Witelona}\\[0.2em]
+\textbf{Wydział nauk technicznych i ekonomicznych}\\[0.4em]
+Projektowanie i programowanie systemów internetowych I
+
+\vspace{1.2cm}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{logo_witelona.jpg}
+\end{center}
+
+\vspace{1.2cm}
+\begin{center}
+    {\Large\bfseries\textit{Sprawozdanie z pracy projektowej}}\\[0.6em]
+    {\large System biblioteczno-sklepowy \textit{meow}}\\[0.3em]
+    {\normalsize ASP.NET Core MVC + REST API}
+\end{center}
+
+\vspace{1.5cm}
+\begin{center}
+    \textbf{Zespół projektowy}\\[0.5em]
+    Filip Jędryczkowski, Kyrylo Shchedrin, Nikola Pisarska\\[0.4em]
+    nr albumu: 44917\\[0.2em]
+    grupa: s2PAM2(2)u
+\end{center}
+
+\vfill
+\begin{center}
+    Legnica, 2026
+\end{center}
+\end{titlepage}
+
+% --- Strona 2: spis treści (sekcje + podsekcje) ---
+\setcounter{tocdepth}{2}
+\tableofcontents
+\newpage
+
+%==============================================================================
+\section{Opis przedmiotu zlecenia}
+%==============================================================================
+
+Przedmiotem zlecenia projektowego jest zaprojektowanie, implementacja i wdrożenie
+zintegrowanego systemu informatycznego łączącego \textbf{wypożyczalnię książek}
+oraz \textbf{sklep internetowy} pod wspólną marką \textit{meow}.
+
+Zgodnie z wymaganiami prowadzącego przedmiot \emph{Projektowanie i programowanie systemów internetowych I}
+system musi udostępniać:
+\begin{itemize}
+    \item \textbf{interfejs webowy} dla klientów (przeglądanie katalogu, koszyk, checkout,
+          rezerwacja egzemplarzy bibliotecznych, konto użytkownika),
+    \item \textbf{panel administracyjny} do zarządzania katalogiem, klientami,
+          wypożyczeniami i zamówieniami sklepowymi,
+    \item \textbf{REST API} (z dokumentacją OpenAPI) jako warstwę danych dla
+          planowanej aplikacji mobilnej.
+\end{itemize}
+
+\subsection{Zakres funkcjonalny}
+
+System obejmuje m.in.:
+\begin{itemize}
+    \item rejestrację i logowanie użytkowników (role: klient, administrator),
+    \item zarządzanie książkami, egzemplarzami bibliotecznymi i stanem magazynowym sklepu,
+    \item proces zakupu (koszyk, dane dostawy, składanie zamówienia),
+    \item wypożyczenia (termin 30 dni), rezerwacje, zwroty oraz obsługę opóźnień,
+    \item eksport danych raportowych z modułu wypożyczeń (\texttt{ReportsController}, widok finansowy),
+    \item integrację z zewnętrznymi usługami (cache Redis, Brevo API / Mailpit, szkielet AI/Ollama).
+\end{itemize}
+
+%==============================================================================
+\section{Opis technologiczny proponowanego rozwiązania}
+%==============================================================================
+
+\subsection{Architektura ogólna}
+
+Aplikacja oparta jest na wzorcu \textbf{MVC} (Model--View--Controller) w środowisku
+\textbf{ASP.NET Core} (.NET~10). Warstwa prezentacji realizowana jest przez widoki
+Razor (\texttt{.cshtml}); logika biznesowa znajduje się w kontrolerach i serwisach;
+dane utrwalane są w relacyjnej bazie \textbf{MySQL~8} przez \textbf{Entity Framework Core}
+(Pomelo provider).
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.92\textwidth}{\centering\vspace{0.4em}
+\textbf{Klient WWW} $\rightarrow$ \textbf{ASP.NET Core (MVC + API)} $\rightarrow$
+\textbf{MySQL}\\
+$\hookrightarrow$ \textbf{Redis} (cache katalogu) \quad
+$\hookrightarrow$ \textbf{MailKit/SMTP} (powiadomienia) \quad
+$\hookrightarrow$ \textbf{Qdrant} (wektory, opcjonalnie)
+\vspace{0.4em}}}
+\caption{Uproszczony schemat architektury systemu \textit{meow}.}
+\end{figure}
+
+\subsection{Stos technologiczny}
+
+\begin{table}[H]
+\centering
+\caption{Technologie wykorzystane w projekcie.}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Warstwa} & \textbf{Technologia} \\
+\midrule
+Backend & ASP.NET Core MVC, C\# \\
+Baza danych & MySQL 8.0, EF Core (Code First) \\
+Cache & Redis 7 (StackExchange.Redis) \\
+API & REST, JSON, Swagger/OpenAPI (Swashbuckle) \\
+Auth (WWW) & Sesje ASP.NET Core, BCrypt \\
+Auth (API) & JWT Bearer \\
+Frontend & Razor Views, Bootstrap 5, CSS/JS \\
+Lokalizacja & \texttt{IStringLocalizer}, pliki \texttt{.resx} (PL/EN) \\
+Mailing & MailKit + Brevo API (prod.) / Mailpit (dev.) \\
+Konteneryzacja & Docker, Docker Compose \\
+Hosting & Railway (\url{https://meow-app-production.up.railway.app}) \\
+CI & GitHub Actions (\texttt{dotnet build}) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Model danych}
+
+Główne encje ORM (\texttt{LibraryDbContext}):
+\begin{itemize}
+    \item \texttt{Book} --- tytuł, autor, gatunek, ceny, ilość w sklepie,
+    \item \texttt{Egzemplarz} --- egzemplarz biblioteczny (numer inwentarzowy, stan),
+    \item \texttt{Klient}, \texttt{User} --- dane klienta i konto logowania,
+    \item \texttt{Wypozyczenie}, \texttt{Platnosc} --- wypożyczenia i kary,
+    \item \texttt{Zamowienie} --- zamówienia sklepowe.
+\end{itemize}
+
+Migracje EF Core stosowane są przy starcie aplikacji (\texttt{Database.Migrate()}).
+
+\subsection{Warstwa API i cache}
+
+Publiczne endpointy REST (prefix \texttt{/api}):
+\begin{itemize}
+    \item \texttt{GET /api/books} --- katalog z opcjonalnym filtrem \texttt{?q=} i \texttt{?gatunek=},
+    \item \texttt{GET /api/books/\{id\}} --- szczegóły książki,
+    \item \texttt{POST /api/auth/login} --- uwierzytelnienie JWT,
+    \item \texttt{POST /api/books/refresh-cache} --- unieważnienie cache (dev/admin).
+\end{itemize}
+
+Serwis \texttt{BookCatalogCacheService} buforuje wyniki katalogu w Redisie
+(klucze z prefiksem \texttt{meow:}), co ogranicza obciążenie bazy przy częstych
+odczytach (np. live search w sklepie).
+
+\subsection{Uwierzytelnianie i autoryzacja}
+
+\begin{itemize}
+    \item \textbf{Panel WWW:} sesja po logowaniu (\texttt{HttpContext.Session}),
+          atrybut \texttt{[MeowAuthorize(Rola = "Admin")]} na akcjach administracyjnych.
+    \item \textbf{API mobilne:} token JWT (HS256, issuer/audience w \texttt{appsettings.json}),
+          ważność 8~h, claim \texttt{klient\_id} dla powiązania z profilem.
+\end{itemize}
+
+Hasła przechowywane są jako skróty BCrypt.
+
+\subsection{Lokalizacja i interfejs}
+
+Interfejs obsługuje języki \textbf{polski} (domyślny) i \textbf{angielski}.
+Przełącznik kultury zapisuje wybór w ciasteczku (\texttt{CookieRequestCultureProvider}).
+Teksty UI w plikach \texttt{Resources/SharedResources.*.resx}.
+
+Responsywność (RWD) zapewnia \texttt{wwwroot/css/responsive.css} oraz komponenty Bootstrap~5.
+
+\subsection{Integracje zewnętrzne (stan implementacji)}
+
+\begin{itemize}
+    \item \textbf{Redis, Swagger, mailing} --- zaimplementowane. Cache Redis opcjonalny
+          (fallback: \texttt{DistributedMemoryCache}). Maile potwierdzeń zamówień:
+          lokalnie \textbf{Mailpit} (port 8025), produkcja \textbf{Brevo Transactional API}
+          (\texttt{Smtp\_\_ApiKey}, HTTPS --- wymagane na Railway z powodu blokady portu SMTP).
+    \item \textbf{Ollama (AI)} --- szkielet (\texttt{AITestController}, \texttt{AIChatController});
+          wymaga osobnej instalacji Ollama (integracja w zakresie Kyrylo Shchedrin).
+    \item \textbf{Qdrant + ONNX} --- infrastruktura Docker i \texttt{VectorSearchService};
+          wykorzystanie produkcyjne opcjonalne.
+\end{itemize}
+
+%==============================================================================
+\section{Wykaz zadań projektowych z szacowanym czasem}
+%==============================================================================
+
+Poniższa tabela przedstawia główne zadania realizacji systemu wraz z orientacyjnym
+czasem potrzebnym do wykonania (bez przypisania do konkretnych osób).
+
+\begin{longtable}{@{}p{0.42\textwidth}cp{0.38\textwidth}@{}}
+\toprule
+\textbf{Zadanie} & \textbf{Czas} & \textbf{Rezultat} \\
+\midrule
+\endhead
+Analiza wymagań i projekt architektury & 6--10 h &
+    Diagram encji, podział MVC/API \\
+\addlinespace
+Konfiguracja repozytorium Git, Docker, MySQL & 5--8 h &
+    \texttt{docker-compose.yml}, migracje EF \\
+\addlinespace
+Moduł sklepu (katalog, koszyk, checkout) & 16--24 h &
+    \texttt{ShopController}, widoki sklepu \\
+\addlinespace
+Moduł biblioteki (wypożyczenia, zwroty, rezerwacje) & 16--22 h &
+    \texttt{RentalsController}, panel zwrotów \\
+\addlinespace
+Panel administracyjny (książki, klienci, dashboard) & 12--18 h &
+    \texttt{BooksController}, \texttt{ClientsController} \\
+\addlinespace
+REST API + Swagger/OpenAPI & 8--12 h &
+    \texttt{Controllers/Api/}, \texttt{/swagger} \\
+\addlinespace
+Cache Redis & 3--5 h &
+    \texttt{BookCatalogCacheService} \\
+\addlinespace
+Uwierzytelnianie (sesje + JWT) & 6--10 h &
+    \texttt{AccountController}, \texttt{AuthApiController} \\
+\addlinespace
+Lokalizacja PL/EN & 10--14 h &
+    \texttt{SharedResources.*.resx} \\
+\addlinespace
+Mailing (MailKit / Brevo API) & 3--5 h &
+    \texttt{EmailService} \\
+\addlinespace
+Interakcje asynchroniczne (live search) & 2--4 h &
+    \texttt{live-search.js} \\
+\addlinespace
+RWD i Bootstrap 5 & 5--8 h &
+    \texttt{responsive.css}, layout \\
+\addlinespace
+Integracja AI (Ollama) & 8--12 h &
+    \texttt{AITestController} (w trakcie) \\
+\addlinespace
+CI/CD i dokumentacja wdrożenia & 3--6 h &
+    \texttt{.github/workflows/ci.yml}, \texttt{DEPLOY.md} \\
+\addlinespace
+Hosting produkcyjny (Railway) & 3--6 h &
+    \url{https://meow-app-production.up.railway.app} \\
+\addlinespace
+Raporty finansowe admina & 3--5 h &
+    \texttt{ReportsController}, \texttt{Views/Reports/Index.cshtml} \\
+\addlinespace
+Testy, poprawki, sprawozdanie & 8--12 h &
+    Stabilna wersja demo \\
+\midrule
+\textbf{Łącznie (szacunek)} & \textbf{118--182 h} & \\
+\bottomrule
+\end{longtable}
+
+%==============================================================================
+\section{Podział zadań w zespole}
+%==============================================================================
+
+\begin{table}[H]
+\centering
+\caption{Orientacyjny podział obowiązków (gałąź \texttt{filip/aktualna-wersja}).}
+\begin{tabular}{@{}lp{0.62\textwidth}@{}}
+\toprule
+\textbf{Osoba} & \textbf{Zakres} \\
+\midrule
+Filip Jędryczkowski &
+    MVC (sklep, checkout, wypożyczenia), lokalizacja PL/EN, panel admina,
+    raporty finansowe, mailing (Brevo API), hosting Railway, seed bazy, poprawki UI \\
+Kyrylo Shchedrin &
+    Repozytorium GitHub, integracja AI (Ollama, \texttt{AITestController}),
+    wczesna architektura projektu \\
+Nikola Pisarska &
+    Współpraca przy realizacji wymagań PPSI I, testy i dokumentacja \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\section{Instrukcja uruchomienia systemu}
+%==============================================================================
+
+\subsection{Wymagania wstępne}
+
+\begin{itemize}
+    \item Docker Desktop (Windows/macOS) lub Docker Engine + Compose (Linux),
+    \item Porty wolne: \texttt{5000} (WWW), \texttt{3307} (MySQL), \texttt{6379} (Redis),
+          \texttt{8025} (Mailpit), opcjonalnie \texttt{6333} (Qdrant),
+    \item Klon repozytorium:
+\begin{lstlisting}[language=bash]
+git clone https://github.com/04Sqv3r/s4-ppsi1.git
+cd s4-ppsi1
+git checkout filip/aktualna-wersja   # lub main po merge
+\end{lstlisting}
+\end{itemize}
+
+\subsection{Uruchomienie lokalne}
+
+W katalogu projektu:
+
+\begin{lstlisting}[language=bash]
+docker compose up --build
+\end{lstlisting}
+
+Po zbudowaniu kontenerów:
+\begin{itemize}
+    \item Strona WWW: \url{http://localhost:5000}
+    \item Dokumentacja OpenAPI (Swagger UI): \url{http://localhost:5000/swagger}
+    \item Specyfikacja JSON: \url{http://localhost:5000/swagger/v1/swagger.json}
+\end{itemize}
+
+\textbf{Pierwsze konto:} zarejestruj użytkownika przez \texttt{/Account/Register},
+następnie zaloguj się. Przy starcie aplikacji \texttt{DatabaseSeeder} uzupełnia katalog
+książek (jeśli baza jest pusta). Rolę administratora można nadać w bazie:
+\begin{lstlisting}[language=sql]
+UPDATE Users SET Rola = 'Admin' WHERE Login = 'twoj_login';
+\end{lstlisting}
+(Użytkownik \texttt{filip} otrzymuje rolę Admin automatycznie, jeśli istnieje w bazie.)
+
+\textbf{Zatrzymanie:}
+\begin{lstlisting}[language=bash]
+docker compose down
+\end{lstlisting}
+
+\subsection{Uruchomienie zdalne (produkcja)}
+
+\subsubsection{Docker Compose (VPS)}
+
+\begin{lstlisting}[language=bash]
+docker compose -f docker-compose.yml \
+  -f docker-compose.prod.yml up -d --build
+\end{lstlisting}
+
+Wymagane zmienne środowiskowe:
+\begin{itemize}
+    \item \texttt{ConnectionStrings\_\_DefaultConnection}
+    \item \texttt{ConnectionStrings\_\_Redis}
+    \item \texttt{Jwt\_\_Key} (min. 32 znaki)
+    \item opcjonalnie: \texttt{Smtp\_\_ApiKey}, \texttt{Smtp\_\_From} (Brevo) --- patrz \texttt{docs/SMTP.md}
+\end{itemize}
+
+\subsubsection{Railway (zalecane dla demo)}
+
+Publiczny adres wdrożenia zespołu:
+\url{https://meow-app-production.up.railway.app}
+
+\begin{enumerate}
+    \item Utwórz projekt na \url{https://railway.app} (deploy z GitHub lub CLI).
+    \item Dodaj usługę \textbf{MySQL} (Redis opcjonalny).
+    \item W aplikacji webowej ustaw m.in.:
+    \begin{itemize}
+        \item \texttt{ASPNETCORE\_URLS=http://0.0.0.0:8080}
+        \item \texttt{ConnectionStrings\_\_DefaultConnection} --- z panelu MySQL
+        \item \texttt{Jwt\_\_Key} --- min. 32 znaki
+        \item \texttt{Smtp\_\_ApiKey} --- klucz Brevo API (\texttt{xkeysib-...})
+        \item \texttt{Smtp\_\_From} --- zweryfikowany nadawca w Brevo
+    \end{itemize}
+    \item Railway wykrywa \texttt{Dockerfile} i buduje obraz automatycznie.
+    \item W zakładce \emph{Networking} wygeneruj publiczny URL.
+    \item Dokumentacja OpenAPI:
+          \url{https://meow-app-production.up.railway.app/swagger}
+\end{enumerate}
+
+Szczegóły: plik \texttt{DEPLOY.md} w repozytorium.
+
+\subsection{Pipeline CI}
+
+Przy pushu na gałąź \texttt{main} uruchamiany jest workflow GitHub Actions
+(\texttt{.github/workflows/ci.yml}): \texttt{dotnet restore}, \texttt{dotnet build},
+\texttt{dotnet publish}.
+
+%==============================================================================
+\section{Dokumentacja OpenAPI}
+%==============================================================================
+
+Specyfikacja API generowana jest automatycznie przez \textbf{Swashbuckle.AspNetCore}
+i udostępniana w formacie OpenAPI~3.0 (tytuł dokumentu: \textit{meow --- API biblioteki i sklepu}).
+W Swagger UI skonfigurowano serwery produkcyjny (Railway) i lokalny (\texttt{localhost:5000})
+oraz schemat autoryzacji \texttt{Bearer} (JWT).
+
+\subsection{Dostęp do dokumentacji}
+
+\begin{table}[H]
+\centering
+\caption{Adresy dokumentacji API.}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Zasób} & \textbf{URL} \\
+\midrule
+Swagger UI (lokalnie) & \url{http://localhost:5000/swagger} \\
+OpenAPI JSON (lokalnie) & \url{http://localhost:5000/swagger/v1/swagger.json} \\
+Swagger UI (Railway) & \url{https://meow-app-production.up.railway.app/swagger} \\
+OpenAPI JSON (Railway) & \url{https://meow-app-production.up.railway.app/swagger/v1/swagger.json} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Po wdrożeniu produkcyjnym te same ścieżki działają pod publicznym adresem hosta
+(wymaganie: dokumentacja OpenAPI dołączona do hostowanej aplikacji).
+
+\subsection{Endpointy}
+
+\begin{table}[H]
+\centering
+\caption{Publiczne endpointy REST API (wersja v1).}
+\begin{tabular}{@{}llp{0.45\textwidth}@{}}
+\toprule
+\textbf{Metoda} & \textbf{Ścieżka} & \textbf{Opis} \\
+\midrule
+GET & \texttt{/api/books} &
+    Lista książek. Parametry: \texttt{q} (fraza), \texttt{gatunek}. Cache Redis. \\
+GET & \texttt{/api/books/\{id\}} &
+    Szczegóły książki po identyfikatorze. \\
+POST & \texttt{/api/auth/login} &
+    Logowanie; body JSON: \texttt{\{ "login", "haslo" \}}; odpowiedź: \texttt{token}, \texttt{login}, \texttt{rola}, \texttt{klientId}. \\
+POST & \texttt{/api/books/refresh-cache} &
+    Czyści cache katalogu (204 No Content). \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+W Swagger UI mogą być widoczne także endpointy pomocnicze spoza warstwy \texttt{/api}
+(np.\ \texttt{/AITest/Ask}, \texttt{/Culture/Set/\{culture\}}) --- główna dokumentacja
+REST dla aplikacji mobilnej obejmuje wyłącznie ścieżki z prefiksem \texttt{/api}.
+
+\subsection{Przykład wywołania}
+
+\textbf{Logowanie:}
+\begin{lstlisting}[language=bash]
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d "{\"login\":\"user\",\"haslo\":\"haslo123\"}"
+\end{lstlisting}
+
+\textbf{Katalog z wyszukiwaniem:}
+\begin{lstlisting}[language=bash]
+curl "http://localhost:5000/api/books?q=wiedzmin"
+\end{lstlisting}
+
+\textbf{Autoryzacja JWT} (nagłówek):
+\begin{lstlisting}
+Authorization: Bearer <token>
+\end{lstlisting}
+
+%==============================================================================
+\section{Podsumowanie}
+%==============================================================================
+
+System \textit{meow} realizuje zintegrowany model biblioteki i sklepu internetowego
+z panelem administracyjnym, raportami finansowymi oraz warstwą REST API gotową pod
+aplikację mobilną. Rozwiązanie konteneryzowane (Docker) umożliwia jednolite uruchomienie
+lokalne i zdalne; dokumentacja OpenAPI dostępna jest przez Swagger UI pod ścieżką
+\texttt{/swagger}.
+
+Aplikacja produkcyjna działa pod adresem
+\url{https://meow-app-production.up.railway.app}.
+Mailing potwierdzeń zamówień zrealizowano przez Brevo Transactional API
+(weryfikacja nadawcy w panelu Brevo).
+
+Element opcjonalny w trakcie rozbudowy: pełna integracja Ollama (moduł AI).
+
+\end{document}

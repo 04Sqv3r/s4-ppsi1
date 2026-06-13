@@ -240,6 +240,10 @@
 
   <data name="Admin_Nav_OrdersRentals" xml:space="preserve"><value>[Admin] Orders &amp; rentals</value></data>
 
+  <data name="Admin_Nav_Reports" xml:space="preserve"><value>[Admin] Financial reports</value></data>
+
+  <data name="Reports_BackToRentals" xml:space="preserve"><value>Back to rentals</value></data>
+
   <data name="Admin_Dashboard_Title" xml:space="preserve"><value>Administrator Dashboard</value></data>
 
   <data name="Admin_ConsoleTitle" xml:space="preserve"><value>Administrative Console</value></data>
@@ -286,6 +290,10 @@
   <data name="Msg_CartEmpty" xml:space="preserve"><value>Your cart was empty or the order was already processed.</value></data>
   <data name="Msg_ProductSoldOut" xml:space="preserve"><value>Sorry, „{0}” sold out in the meantime.</value></data>
   <data name="Msg_OrderSuccess" xml:space="preserve"><value>✅ Success! Your order was placed in the meow store.</value></data>
+  <data name="Msg_OrderSuccessDetail" xml:space="preserve"><value>✅ Order placed! Tracking: {0}. {1}</value></data>
+  <data name="Msg_OrderEmailSent" xml:space="preserve"><value>Confirmation sent via Brevo to {0} (check spam too).</value></data>
+  <data name="Msg_OrderEmailFailed" xml:space="preserve"><value>Could not send email — order is saved in the system.</value></data>
+  <data name="Msg_OrderEmailMissing" xml:space="preserve"><value>No email on profile — notification was not sent.</value></data>
   <data name="Msg_OrderError" xml:space="preserve"><value>Order system error: {0}</value></data>
   <data name="Msg_ClientNameRequired" xml:space="preserve"><value>Error: First and last name cannot be empty.</value></data>
   <data name="Msg_ClientRegistered" xml:space="preserve"><value>Client {0} {1} was registered in the meow system!</value></data>
@@ -299,7 +307,7 @@
   <data name="Msg_ReserveSuccess" xml:space="preserve"><value>✅ Success! Copy (#{0}) reserved. Pick up by {1} before 6:00 PM.</value></data>
   <data name="Msg_ReturnDateInvalid" xml:space="preserve"><value>Error: Return date cannot be earlier than issue date!</value></data>
   <data name="Msg_ReturnFine" xml:space="preserve"><value>Return registered. Late fee for {0} days: {1} PLN.</value></data>
-  <data name="Msg_ReturnOnTime" xml:space="preserve"><value>Book returned on time. No late fees! ?</value></data>
+  <data name="Msg_ReturnOnTime" xml:space="preserve"><value>Book returned on time. No late fees!</value></data>
   <data name="Msg_TrackingMissing" xml:space="preserve"><value>Error: Missing package tracking number.</value></data>
   <data name="Msg_PackageNotFound" xml:space="preserve"><value>Package with the given tracking number was not found.</value></data>
   <data name="Msg_PackageShipped" xml:space="preserve"><value>Status updated: Package {0} was handed to the courier! 🚚</value></data>
@@ -314,6 +322,11 @@
   <data name="Profile_Title" xml:space="preserve"><value>My Account</value></data>
   <data name="Profile_Welcome" xml:space="preserve"><value>Welcome, {0}!</value></data>
   <data name="Profile_Subtitle" xml:space="preserve"><value>Manage your rentals and orders in one place.</value></data>
+  <data name="Profile_AccountTitle" xml:space="preserve"><value>Account details</value></data>
+  <data name="Profile_Login" xml:space="preserve"><value>Login</value></data>
+  <data name="Profile_Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Profile_Phone" xml:space="preserve"><value>Phone</value></data>
+  <data name="Profile_EmailMissing" xml:space="preserve"><value>not set — add it at next checkout</value></data>
   <data name="Profile_FinesTitle" xml:space="preserve"><value>You have unpaid fines!</value></data>
   <data name="Profile_FinesTotal" xml:space="preserve"><value>Total amount due at the library desk:</value></data>
   <data name="Profile_FinesColTitle" xml:space="preserve"><value>Book title</value></data>
@@ -332,7 +345,7 @@
   <data name="Profile_ColTracking" xml:space="preserve"><value>Tracking number</value></data>
   <data name="Profile_ColValue" xml:space="preserve"><value>Value</value></data>
   <data name="Profile_ColAction" xml:space="preserve"><value>Action</value></data>
-  <data name="Profile_BtnDetails" xml:space="preserve"><value>DETAILS ?</value></data>
+  <data name="Profile_BtnDetails" xml:space="preserve"><value>Details</value></data>
   <data name="Profile_PackageItems" xml:space="preserve"><value>Products in this package:</value></data>
   <data name="Profile_ItemAuthor" xml:space="preserve"><value>author:</value></data>
   <data name="Profile_ItemQty" xml:space="preserve"><value>Qty:</value></data>
@@ -408,7 +421,7 @@
   <data name="Checkout_ProductsValue" xml:space="preserve"><value>Products value</value></data>
   <data name="Checkout_DeliveryCost" xml:space="preserve"><value>Delivery cost</value></data>
   <data name="Checkout_DeliveryLater" xml:space="preserve"><value>calculated in step 2</value></data>
-  <data name="Checkout_NextDelivery" xml:space="preserve"><value>Continue to delivery ?</value></data>
+  <data name="Checkout_NextDelivery" xml:space="preserve"><value>Continue to delivery</value></data>
   <data name="Checkout_Country_PL" xml:space="preserve"><value>Poland</value></data>
   <data name="Checkout_Country_DE" xml:space="preserve"><value>Germany</value></data>
   <data name="Checkout_Country_CZ" xml:space="preserve"><value>Czech Republic</value></data>
@@ -477,7 +490,7 @@
   <data name="Rentals_ColOrderDate" xml:space="preserve"><value>Order date</value></data>
   <data name="Rentals_ColShipmentStatus" xml:space="preserve"><value>Shipment status</value></data>
   <data name="Rentals_ColExpedition" xml:space="preserve"><value>Dispatch / Action</value></data>
-  <data name="Rentals_BtnContents" xml:space="preserve"><value>CONTENTS ?</value></data>
+  <data name="Rentals_BtnContents" xml:space="preserve"><value>Contents</value></data>
   <data name="Rentals_BtnShip" xml:space="preserve"><value>Ship via courier</value></data>
   <data name="Rentals_Completed" xml:space="preserve"><value>Completed</value></data>
   <data name="Rentals_PackageNumber" xml:space="preserve"><value>System package number:</value></data>

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using meow.Models;
 using meow.Resources;
+using meow.Services;
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
@@ -71,7 +72,7 @@ namespace meow.Controllers
                 return RedirectToAction("Create");
             }
 
-            DateTime dataPlanowana = data_wypozyczenia.AddDays(14);
+            DateTime dataPlanowana = data_wypozyczenia.AddDays(LibraryConstants.LoanPeriodDays);
 
             var wypozyczenie = new Wypozyczenie
             {
@@ -172,7 +173,7 @@ namespace meow.Controllers
             if (wypozyczenie == null) return RedirectToAction("Returns");
 
             wypozyczenie.DataWypozyczenia = DateTime.Today;
-            wypozyczenie.DataPlanowanegoZwrotu = DateTime.Today.AddDays(30);
+            wypozyczenie.DataPlanowanegoZwrotu = DateTime.Today.AddDays(LibraryConstants.LoanPeriodDays);
 
             _context.SaveChanges();
 
@@ -240,7 +241,7 @@ namespace meow.Controllers
                 return RedirectToAction("Details", "Shop", new { id = idKsiazki });
             }
 
-            DateTime dataNaOdbior = DateTime.Today.AddDays(3);
+            DateTime dataNaOdbior = DateTime.Today.AddDays(LibraryConstants.ReservationPickupDays);
 
             var nowaRezerwacja = new Wypozyczenie
             {

@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using meow.Models;
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace meow.Controllers
 {
+    [MeowAuthorize("Admin")]
     public class ReportsController : Controller
     {
         private readonly LibraryDbContext _context;
@@ -17,7 +19,8 @@ namespace meow.Controllers
 
         public IActionResult Index(DateTime? data_od, DateTime? data_do)
         {
-            if (HttpContext.Session.GetString("User") == null) return RedirectToAction("Login", "Account");
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+                return RedirectToAction("Login", "Account");
 
             DateTime od = data_od ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             DateTime @do = data_do ?? DateTime.Today;

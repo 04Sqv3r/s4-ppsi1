@@ -15,18 +15,18 @@ namespace meow.Controllers
     public class ShopController : Controller
     {
         private readonly LibraryDbContext _context;
-        private readonly EmailService _emailService;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<ShopController> _logger;
         private readonly IStringLocalizer<SharedResources> _localizer;
 
         public ShopController(
             LibraryDbContext context,
-            EmailService emailService,
+            IServiceScopeFactory scopeFactory,
             ILogger<ShopController> logger,
             IStringLocalizer<SharedResources> localizer)
         {
             _context = context;
-            _emailService = emailService;
+            _scopeFactory = scopeFactory;
             _logger = logger;
             _localizer = localizer;
         }
@@ -281,6 +281,23 @@ namespace meow.Controllers
                 $"{imie} {nazwisko}. ul. {ulica} {numer}{(string.IsNullOrEmpty(lokal) ? "" : "/" + lokal)}, {kodPocztowy} {miejscowosc}. Tel: {telefon}";
             HttpContext.Session.SetString("AdresDostawy", pelnyAdres);
 
+            var idKlienta = HttpContext.Session.GetInt32("UserId");
+            if (idKlienta.HasValue)
+            {
+                var klient = _context.Klienci.FirstOrDefault(k => k.IdKlienta == idKlienta.Value);
+                if (klient != null)
+                {
+                    klient.Imie = imie;
+                    if (!string.IsNullOrWhiteSpace(nazwisko))
+                        klient.Nazwisko = nazwisko;
+                    if (!string.IsNullOrWhiteSpace(email))
+                        klient.Email = email.Trim();
+                    if (!string.IsNullOrWhiteSpace(telefon))
+                        klient.Telefon = telefon.Trim();
+                    _context.SaveChanges();
+                }
+            }
+
             return View();
         }
 
@@ -316,80 +333,114 @@ namespace meow.Controllers
             var bookIds = cartString.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
             var zakupioneGrupy = bookIds.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
 
-            // 3. TRANSAKCJA BAZODANOWA: Bezpieczne modyfikowanie ilości i zapis zamówień
-            using var transaction = _context.Database.BeginTransaction();
+            string? soldOutTitle = null;
+            var wspólnyNumerPaczki = "";
+            var pozycjeDoMaila = new List<string>();
+            var strategy = _context.Database.CreateExecutionStrategy();
+
             try
             {
-                Random random = new Random();
-
-                string wspólnyNumerPaczki = "MEOW-" + random.Next(100000000, 999999999).ToString();
-                var pozycjeDoMaila = new List<string>();
-
-                foreach (var kp in zakupioneGrupy)
+                await strategy.ExecuteAsync(async () =>
                 {
-                    var ksiazka = _context.Books.FirstOrDefault(b => b.Id == kp.Key);
-                    if (ksiazka != null)
-                    {
-                        if (ksiazka.IloscDoSprzedazy < kp.Value)
-                        {
-                            TempData["Message"] = string.Format(_localizer["Msg_ProductSoldOut"].Value, ksiazka.Tytul);
-                            TempData["MessageType"] = "error";
-                            transaction.Rollback();
-                            return RedirectToAction("Cart");
-                        }
-
-                        ksiazka.IloscDoSprzedazy -= kp.Value;
-
-                        for (int i = 0; i < kp.Value; i++)
-                        {
-                            var noweZamowienie = new Zamowienie
-                            {
-                                IdKlienta = finalKlientId,
-                                DataZamowienia = DateTime.Now,
-                                Status = "W przygotowaniu",
-                                NumerSledzenia = wspólnyNumerPaczki, // Przypisujemy ten sam kod całej paczce
-                                IdKsiazki = ksiazka.Id
-                            };
-                            _context.Zamowienia.Add(noweZamowienie);
-                        }
-
-                        pozycjeDoMaila.Add($"„{ksiazka.Tytul}” × {kp.Value} szt.");
-                    }
-                }
-
-                _context.SaveChanges();
-                transaction.Commit();
-
-                var klient = _context.Klienci.FirstOrDefault(k => k.IdKlienta == finalKlientId);
-                if (klient != null && !string.IsNullOrEmpty(klient.Email))
-                {
+                    await using var transaction = await _context.Database.BeginTransactionAsync();
                     try
                     {
-                        await _emailService.SendOrderConfirmationAsync(
-                            klient.Email,
-                            $"{klient.Imie} {klient.Nazwisko}",
-                            wspólnyNumerPaczki,
-                            pozycjeDoMaila);
+                        var random = new Random();
+                        wspólnyNumerPaczki = "MEOW-" + random.Next(100000000, 999999999).ToString();
+
+                        foreach (var kp in zakupioneGrupy)
+                        {
+                            var ksiazka = await _context.Books.FirstOrDefaultAsync(b => b.Id == kp.Key);
+                            if (ksiazka == null) continue;
+
+                            if (ksiazka.IloscDoSprzedazy < kp.Value)
+                            {
+                                soldOutTitle = ksiazka.Tytul;
+                                await transaction.RollbackAsync();
+                                return;
+                            }
+
+                            ksiazka.IloscDoSprzedazy -= kp.Value;
+
+                            for (int i = 0; i < kp.Value; i++)
+                            {
+                                _context.Zamowienia.Add(new Zamowienie
+                                {
+                                    IdKlienta = finalKlientId,
+                                    DataZamowienia = DateTime.Now,
+                                    Status = "W przygotowaniu",
+                                    NumerSledzenia = wspólnyNumerPaczki,
+                                    IdKsiazki = ksiazka.Id
+                                });
+                            }
+
+                            pozycjeDoMaila.Add($"„{ksiazka.Tytul}” × {kp.Value} szt.");
+                        }
+
+                        if (soldOutTitle != null)
+                            return;
+
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
                     }
-                    catch (Exception mailEx)
+                    catch
                     {
-                        _logger.LogWarning(mailEx, "Zamówienie zapisane, ale e-mail nie został wysłany.");
+                        await transaction.RollbackAsync();
+                        throw;
                     }
-                }
-
-                HttpContext.Session.Remove("Koszyk");
-                HttpContext.Session.Remove("AdresDostawy");
-
-                TempData["Message"] = _localizer["Msg_OrderSuccess"].Value;
-                TempData["MessageType"] = "success";
+                });
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
                 TempData["Message"] = string.Format(_localizer["Msg_OrderError"].Value, ex.Message);
                 TempData["MessageType"] = "error";
                 return RedirectToAction("Cart");
             }
+
+            if (soldOutTitle != null)
+            {
+                TempData["Message"] = string.Format(_localizer["Msg_ProductSoldOut"].Value, soldOutTitle);
+                TempData["MessageType"] = "error";
+                return RedirectToAction("Cart");
+            }
+
+            HttpContext.Session.Remove("Koszyk");
+            HttpContext.Session.Remove("AdresDostawy");
+
+            var klient = await _context.Klienci.FirstOrDefaultAsync(k => k.IdKlienta == finalKlientId);
+            var emailStatus = "";
+
+            if (klient != null && !string.IsNullOrEmpty(klient.Email))
+            {
+                try
+                {
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+                    using var scope = _scopeFactory.CreateScope();
+                    var emailService = scope.ServiceProvider.GetRequiredService<EmailService>();
+                    await emailService.SendOrderConfirmationAsync(
+                        klient.Email,
+                        $"{klient.Imie} {klient.Nazwisko}",
+                        wspólnyNumerPaczki,
+                        pozycjeDoMaila,
+                        cts.Token);
+                    emailStatus = string.Format(_localizer["Msg_OrderEmailSent"].Value, klient.Email);
+                }
+                catch (Exception mailEx)
+                {
+                    _logger.LogWarning(mailEx, "Zamówienie zapisane, ale e-mail nie został wysłany.");
+                    emailStatus = _localizer["Msg_OrderEmailFailed"].Value;
+                }
+            }
+            else
+            {
+                emailStatus = _localizer["Msg_OrderEmailMissing"].Value;
+            }
+
+            TempData["Message"] = string.Format(
+                _localizer["Msg_OrderSuccessDetail"].Value,
+                wspólnyNumerPaczki,
+                emailStatus);
+            TempData["MessageType"] = "success";
 
             return RedirectToAction("Profile", "Account");
         }

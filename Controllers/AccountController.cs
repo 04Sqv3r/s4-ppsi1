@@ -71,6 +71,9 @@ namespace meow.Controllers
             var model = new ProfileViewModel
             {
                 CustomerName = $"{klient.Imie} {klient.Nazwisko}",
+                Login = userLogin,
+                Email = klient.Email ?? "",
+                Phone = klient.Telefon ?? "",
                 
                 // --- SEKCJA WYPOŻYCZEŃ ---
                 Rentals = _context.Wypozyczenia
@@ -167,6 +170,7 @@ namespace meow.Controllers
                         HttpContext.Session.SetInt32("UserId", powiazanyKlient.IdKlienta);
                 }
 
+                await HttpContext.Session.CommitAsync();
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Error = _localizer["Err_InvalidLogin"].Value;

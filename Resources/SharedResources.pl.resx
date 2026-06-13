@@ -240,6 +240,10 @@
 
   <data name="Admin_Nav_OrdersRentals" xml:space="preserve"><value>[Admin] Zamówienia i Wypożyczenia</value></data>
 
+  <data name="Admin_Nav_Reports" xml:space="preserve"><value>[Admin] Raporty finansowe</value></data>
+
+  <data name="Reports_BackToRentals" xml:space="preserve"><value>Wróć do wypożyczeń</value></data>
+
   <data name="Admin_Dashboard_Title" xml:space="preserve"><value>Panel Zarządzania Administratora</value></data>
 
   <data name="Admin_ConsoleTitle" xml:space="preserve"><value>Konsola Administracyjna</value></data>
@@ -286,6 +290,10 @@
   <data name="Msg_CartEmpty" xml:space="preserve"><value>Twój koszyk był pusty lub zamówienie zostało już przetworzone.</value></data>
   <data name="Msg_ProductSoldOut" xml:space="preserve"><value>Przepraszamy, produkt „{0}” wyprzedał się w międzyczasie.</value></data>
   <data name="Msg_OrderSuccess" xml:space="preserve"><value>✅ Sukces! Zamówienie zostało pomyślnie złożone w sklepie meow.</value></data>
+  <data name="Msg_OrderSuccessDetail" xml:space="preserve"><value>✅ Zamówienie złożone! Numer paczki: {0}. {1}</value></data>
+  <data name="Msg_OrderEmailSent" xml:space="preserve"><value>Potwierdzenie wysłano przez Brevo na {0} (sprawdź też spam).</value></data>
+  <data name="Msg_OrderEmailFailed" xml:space="preserve"><value>Nie udało się wysłać e-maila — zamówienie jest zapisane w systemie.</value></data>
+  <data name="Msg_OrderEmailMissing" xml:space="preserve"><value>Brak adresu e-mail w profilu — powiadomienie nie zostało wysłane.</value></data>
   <data name="Msg_OrderError" xml:space="preserve"><value>Błąd systemu zamówień: {0}</value></data>
   <data name="Msg_ClientNameRequired" xml:space="preserve"><value>Błąd: Imię i nazwisko nie mogą być puste.</value></data>
   <data name="Msg_ClientRegistered" xml:space="preserve"><value>Klient {0} {1} został zarejestrowany w systemie meow!</value></data>
@@ -299,7 +307,7 @@
   <data name="Msg_ReserveSuccess" xml:space="preserve"><value>✅ Sukces! Egzemplarz (#{0}) został zarezerwowany. Zapraszamy po odbiór do dnia: {1} r. do godziny 18:00.</value></data>
   <data name="Msg_ReturnDateInvalid" xml:space="preserve"><value>Błąd: Data zwrotu nie może być wcześniejsza niż data wydania!</value></data>
   <data name="Msg_ReturnFine" xml:space="preserve"><value>Zwrot zarejestrowany. Naliczono opłatę za {0} dni spóźnienia w wysokości: {1} zł.</value></data>
-  <data name="Msg_ReturnOnTime" xml:space="preserve"><value>Książka zwrócona w terminie. Brak opłat karnych! ?</value></data>
+  <data name="Msg_ReturnOnTime" xml:space="preserve"><value>Książka zwrócona w terminie. Brak opłat karnych!</value></data>
   <data name="Msg_TrackingMissing" xml:space="preserve"><value>Błąd: Brak numeru śledzenia paczki.</value></data>
   <data name="Msg_PackageNotFound" xml:space="preserve"><value>Nie odnaleziono paczki o podanym numerze śledzenia.</value></data>
   <data name="Msg_PackageShipped" xml:space="preserve"><value>Status zaktualizowany: Zbiorcza paczka {0} została przekazana kurierowi! 🚚</value></data>
@@ -314,6 +322,11 @@
   <data name="Profile_Title" xml:space="preserve"><value>Moje Konto</value></data>
   <data name="Profile_Welcome" xml:space="preserve"><value>Witaj, {0}!</value></data>
   <data name="Profile_Subtitle" xml:space="preserve"><value>Zarządzaj swoimi wypożyczeniami i zamówieniami w jednym miejscu.</value></data>
+  <data name="Profile_AccountTitle" xml:space="preserve"><value>Dane konta</value></data>
+  <data name="Profile_Login" xml:space="preserve"><value>Login</value></data>
+  <data name="Profile_Email" xml:space="preserve"><value>E-mail</value></data>
+  <data name="Profile_Phone" xml:space="preserve"><value>Telefon</value></data>
+  <data name="Profile_EmailMissing" xml:space="preserve"><value>brak — uzupełnij przy następnym zamówieniu</value></data>
   <data name="Profile_FinesTitle" xml:space="preserve"><value>Masz nieopłacone naliczone opłaty (kary)!</value></data>
   <data name="Profile_FinesTotal" xml:space="preserve"><value>Łączna kwota do uregulowania w kasie biblioteki wynosi:</value></data>
   <data name="Profile_FinesColTitle" xml:space="preserve"><value>Tytuł książki</value></data>
@@ -332,7 +345,7 @@
   <data name="Profile_ColTracking" xml:space="preserve"><value>Numer śledzenia</value></data>
   <data name="Profile_ColValue" xml:space="preserve"><value>Wartość</value></data>
   <data name="Profile_ColAction" xml:space="preserve"><value>Akcja</value></data>
-  <data name="Profile_BtnDetails" xml:space="preserve"><value>SZCZEGӣY ?</value></data>
+  <data name="Profile_BtnDetails" xml:space="preserve"><value>Szczegóły</value></data>
   <data name="Profile_PackageItems" xml:space="preserve"><value>Zakupione produkty w tej paczce:</value></data>
   <data name="Profile_ItemAuthor" xml:space="preserve"><value>autor:</value></data>
   <data name="Profile_ItemQty" xml:space="preserve"><value>Ilość:</value></data>
@@ -408,7 +421,7 @@
   <data name="Checkout_ProductsValue" xml:space="preserve"><value>Wartość produktów</value></data>
   <data name="Checkout_DeliveryCost" xml:space="preserve"><value>Koszt dostawy</value></data>
   <data name="Checkout_DeliveryLater" xml:space="preserve"><value>wyliczany w kroku 2</value></data>
-  <data name="Checkout_NextDelivery" xml:space="preserve"><value>Dalej do dostawy ?</value></data>
+  <data name="Checkout_NextDelivery" xml:space="preserve"><value>Dalej do dostawy</value></data>
   <data name="Checkout_Country_PL" xml:space="preserve"><value>Polska</value></data>
   <data name="Checkout_Country_DE" xml:space="preserve"><value>Niemcy</value></data>
   <data name="Checkout_Country_CZ" xml:space="preserve"><value>Czechy</value></data>
@@ -477,7 +490,7 @@
   <data name="Rentals_ColOrderDate" xml:space="preserve"><value>Data Złożenia</value></data>
   <data name="Rentals_ColShipmentStatus" xml:space="preserve"><value>Status Przesyłki</value></data>
   <data name="Rentals_ColExpedition" xml:space="preserve"><value>Ekspedycja / Akcja</value></data>
-  <data name="Rentals_BtnContents" xml:space="preserve"><value>SKŁAD ?</value></data>
+  <data name="Rentals_BtnContents" xml:space="preserve"><value>Skład</value></data>
   <data name="Rentals_BtnShip" xml:space="preserve"><value>Nadaj kurierem</value></data>
   <data name="Rentals_Completed" xml:space="preserve"><value>Zrealizowane</value></data>
   <data name="Rentals_PackageNumber" xml:space="preserve"><value>Numer paczki systemowej:</value></data>

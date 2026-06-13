@@ -28,7 +28,10 @@ var wydane = Model.Where(w => w.IdEgzemplarz != null && w.DataZwrotu == null && 
 <div class="rentals-box">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <h2 style="color: #234465; font-size: 26px; font-weight: bold; margin: 0;">@Localizer["Rentals_Title"]</h2>
-        <a href="/Rentals/Create" style="background: #f1c40f; color: #234465; text-decoration: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; font-size: 14px;">@Localizer["Rentals_NewIssue"]</a>
+        <div style="display: flex; gap: 12px;">
+            <a href="/Reports/Index" style="background: #234465; color: white; text-decoration: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; font-size: 14px;">@Localizer["Admin_Nav_Reports"]</a>
+            <a href="/Rentals/Create" style="background: #f1c40f; color: #234465; text-decoration: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; font-size: 14px;">@Localizer["Rentals_NewIssue"]</a>
+        </div>
     </div>
 
     @if (TempData["Message"] != null)
